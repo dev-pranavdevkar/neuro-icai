@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 // use App\Http\Controllers\V1\Website\Role;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+
 class WebAuthController extends Controller
 {
 
@@ -114,8 +115,8 @@ class WebAuthController extends Controller
             //     }
             // }
 
-                $role=Role::query()->where('name',$request->role)->first();
-                $newUser->assignRole($role);
+            $role = Role::query()->where('name', $request->role)->first();
+            $newUser->assignRole($role);
             $newUser->save();
 
             $userRoles = $newUser->roles->pluck('name');
@@ -161,7 +162,6 @@ class WebAuthController extends Controller
                 }
             } else {
                 return $this->sendError('User does not exist or user doesn\'t have access', [], true);
-
             }
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
@@ -169,7 +169,7 @@ class WebAuthController extends Controller
     }
     public function forgetPassword(Request $request)
     {
-        try{
+        try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email|max:255',
             ]);
@@ -190,96 +190,84 @@ class WebAuthController extends Controller
             $to_email = $user->email;
             // dd($to_email);
 
-            $data = array('otp' => $otp,'to_name' => $to_name);
+            $data = array('otp' => $otp, 'to_name' => $to_name);
 
             Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
 
                 $message->to($to_email, $to_name)
                     ->subject('Otp For New Password');
                 $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
-
             });
-             return $this->sendResponse([], 'Otp Send Successfully', true);
-
-        }catch(Exception $e){
-            return $this->sendError("Something went wrong",[$e->getMessage(),$e->getTrace()],500);
+            return $this->sendResponse([], 'Otp Send Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError("Something went wrong", [$e->getMessage(), $e->getTrace()], 500);
         }
-
     }
 
-public function changeForgetPassword(Request $request)
-{
-    try {
+    public function changeForgetPassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|string|email|max:255',
+                'otp' => 'required|numeric',
+                'new_password' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return $this->sendError('Email Id does Not Exist', [], 200);
+            }
+
+
+            $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
+            $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
+
+            $time_diff = $to->diffInMinutes($from);
+            if ($time_diff > 5) {
+                return $this->sendError('Time Limit Expired', [], 200);
+            }
+
+            if ($user->forget_password_otp != $request->otp) {
+                return $this->sendError('Invalid Otp ! ', [], 200);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return $this->sendResponse([], 'Password Changed Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
+        }
+    }
+    public function verifyOtp(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'otp' => 'required|numeric',
-            'new_password' => 'required|string',
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|string',
         ]);
+
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
         }
 
         $user = User::where('email', $request->email)->first();
+
         if (!$user) {
-            return $this->sendError('Email Id does Not Exist', [], 200);
+            return response()->json(['message' => 'User not found'], 404);
         }
 
+        $userOtp = User::where('id', $user->id)->first();
 
-        $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
-        $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
-        $time_diff = $to->diffInMinutes($from);
-        if ($time_diff > 5) {
-            return $this->sendError('Time Limit Expired', [], 200);
+        if (!$userOtp || $userOtp->otp !== $request->otp) {
+            return response()->json(['message' => 'Invalid OTP'], 422);
         }
 
-        if ($user->forget_password_otp != $request->otp) {
-            return $this->sendError('Invalid Otp ! ', [], 200);
-        }
+        //         // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
+        //         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
 
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return $this->sendResponse([], 'Password Changed Successfully', true);
-
-
-    } catch (Exception $e) {
-        return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
+        return response()->json(['message' => 'OTP verified successfully'], true);
     }
 }
-public function verifyOtp(Request $request)
- {
- $validator = Validator::make($request->all(), [
- 'email' => 'required|email|exists:users,email',
-'otp' => 'required|string',
- ]);
-
- if ($validator->fails()) {
- return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
- }
-
- $user = User::where('email', $request->email)->first();
-
- if (!$user) {
- return response()->json(['message' => 'User not found'], 404);
- }
-
- $userOtp = User::where('id', $user->id)->first();
-
- if (!$userOtp || $userOtp->otp !== $request->otp) {
- return response()->json(['message' => 'Invalid OTP'], 422);
- }
-
-//         // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
-//         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
-
- return response()->json(['message' => 'OTP verified successfully'], true);
- }
-
-
-
-
-
-}
-
-
