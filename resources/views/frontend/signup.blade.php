@@ -117,17 +117,13 @@
                             </div>
 
                             <!-- Sign Up Button -->
-                            <button type="submit" id="signupButton" class="site-btn">Sign Up</button>
+                            <button type="submit" id="signupButton" class="site-btn" >Sign Up</button>
                             <!-- Success Message -->
                             @php
                                 $role = request('role');
                             @endphp
 
-                            @if ($role)
-                                <div class="alert alert-success mt-3">
-                                    You have successfully registered as {{ $role }}!
-                                </div>
-                            @endif
+                       
                             <!-- Login Link -->
                             <div class="mt-3 d-flex justify-content-center">
                                 <p> Already have an account? <a class="text-primery" href="/login">Login</a></p>

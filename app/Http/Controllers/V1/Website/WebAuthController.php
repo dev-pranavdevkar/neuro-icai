@@ -124,8 +124,9 @@ class WebAuthController extends Controller
             $response['userData'] = $newUser;
             // $response['userRoles'] = $userRoles;
             $response['assignedRoles'] = $assignedRoles;
-
-            return $this->sendResponse($response, 'Registered Successfully', true);
+            // To keep on signUp Page
+            return redirect()->route('login.index');
+            // return $this->sendResponse($response, 'Registered Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
@@ -153,8 +154,7 @@ class WebAuthController extends Controller
                     $getUser = User::query()->where('email', $request->email)->first();
                     $getUser->save();
                     $token = JWTAuth::fromUser($user);
-                    $response = ['token' => $token];
-                    $response['userData'] = $user;
+                    $response = ['token' => $token, 'userData' => $user];
                     return $this->sendResponse($response, 'Login Success', true);
                 } else {
                     return $this->sendError('Password mismatch', [], 422);
@@ -247,5 +247,37 @@ public function changeForgetPassword(Request $request)
         return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
     }
 }
+public function verifyOtp(Request $request)
+ {
+ $validator = Validator::make($request->all(), [
+ 'email' => 'required|email|exists:users,email',
+'otp' => 'required|string',
+ ]);
+
+ if ($validator->fails()) {
+ return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+ }
+
+ $user = User::where('email', $request->email)->first();
+
+ if (!$user) {
+ return response()->json(['message' => 'User not found'], 404);
+ }
+
+ $userOtp = User::where('id', $user->id)->first();
+
+ if (!$userOtp || $userOtp->otp !== $request->otp) {
+ return response()->json(['message' => 'Invalid OTP'], 422);
+ }
+
+//         // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
+//         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
+
+ return response()->json(['message' => 'OTP verified successfully'], true);
+ }
+
+
+
+
 
 }

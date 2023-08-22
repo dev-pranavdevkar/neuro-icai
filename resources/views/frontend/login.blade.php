@@ -112,38 +112,6 @@
         </div>
     </footer>
 
-    {{-- API call --}}
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#loginForm").submit(function(event) {
-                event.preventDefault();
-
-                var email = $("input[type='text']").val();
-                var password = $("input[type='password']").val();
-
-                var requestData = {
-                    email: email,
-                    password: password
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: "http://192.168.0.113:8000/api/v1/website/userLogin",
-                    data: JSON.stringify(requestData),
-                    contentType: "application/json",
-                    success: function(response) {
-                        console.log("API response:", response);
-                        // You can redirect the user or show a success message here
-                    },
-                    error: function(error) {
-                        console.error("API error:", error);
-                        // You can display an error message to the user here
-                    }
-                });
-            });
-        });
-    </script> --}}
 
     {{-- Js Plugins --}}
     <script src="{{ url('frontend/js/jquery-3.3.1.min.js') }}"></script>
@@ -156,6 +124,49 @@
     <script src="{{ url('frontend/js/owl.carousel.min.js') }}"></script>
     <script src="{{ url('frontend/js/main.js') }}"></script>
     <script src="{{ url('frontend/js/eyeicon.js') }}"></script>
+    
+
+    <script>
+        // Assume you have a form with id="loginForm" and fields with ids "email" and "password"
+    
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+    
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+    
+            try {
+                const response = await fetch('/api/user-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userData', JSON.stringify(data.userData));
+                    console.log(token)
+                    console.log(userData)
+                    // Redirect to a new page or perform other actions
+                    window.location.href = '/home';
+                    console.log("Pranav Devkar Script code")
+                } else {
+                    const errorData = await response.json();
+                    console.error('Login error:', errorData);
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        });
+    </script>
+    
+
+
+
+
 </body>
 
 </html>
