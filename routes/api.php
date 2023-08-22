@@ -140,10 +140,23 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
 
 //Student Notice Board
     Route::post('addStudentNoticeBoard', [MetaDataController::class, 'addStudentNoticeBoard']);
+    Route::post('addMembersNoticeBoard', [MetaDataController::class, 'addMembersNoticeBoard']);
+
     Route::post('editStudentNoticeBoard', [MetaDataController::class, 'editStudentNoticeBoard']);
+    Route::post('editMembersNoticeBoard', [MetaDataController::class, 'editMembersNoticeBoard']);
+
     Route::get('getStudentNoticeBoard', [MetaDataController::class, 'getStudentNoticeBoard']);
+    Route::get('getMembersNoticeBoard', [MetaDataController::class, 'getMembersNoticeBoard']);
+
     Route::get('getStudentNoticeBoardById', [MetaDataController::class, 'getStudentNoticeBoardById']);
     Route::delete('deleteStudentNoticeBoard', [MetaDataController::class, 'deleteStudentNoticeBoard']);
+
+    //Student Notice Board
+    Route::post('addStudentBatches', [MetaDataController::class, 'addStudentBatches']);
+    Route::post('editStudentBatches', [MetaDataController::class, 'editStudentBatches']);
+    Route::get('getStudentBatches', [MetaDataController::class, 'getStudentBatches']);
+    Route::get('getStudentBatchesById', [MetaDataController::class, 'getStudentBatchesById']);
+    Route::delete('deleteStudentBatches', [MetaDataController::class, 'deleteStudentBatches']);
 
     }
 

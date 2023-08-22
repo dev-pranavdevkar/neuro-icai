@@ -248,4 +248,32 @@ public function changeForgetPassword(Request $request)
     }
 }
 
+public function verifyOtp(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email|exists:users,email',
+        'otp' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+    }
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    $userOtp = User::where('id', $user->id)->first();
+
+    if (!$userOtp || $userOtp->otp !== $request->otp) {
+        return response()->json(['message' => 'Invalid OTP'], 422);
+    }
+
+    // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
+    // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
+
+    return response()->json(['message' => 'OTP verified successfully'], true);
+}
 }

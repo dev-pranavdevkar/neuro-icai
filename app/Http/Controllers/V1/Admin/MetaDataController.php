@@ -21,6 +21,7 @@ use App\Models\ApplyForJob;
 use App\Models\OffersAssociation;
 use App\Models\EventPresentationPdf;
 use App\Models\StudentNoticeBoard;
+use App\Models\StudentBatches;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class MetaDataController extends Controller
@@ -1086,8 +1087,8 @@ class MetaDataController extends Controller
             foreach ($request->offers as $eachoffers) {
                 // $editOffer = OffersAssociation::query()->where('association_id', $editAssociationDetails->id) ->where('id', $eachoffers['association_id'])->firstOrNew();
                 $editOffer = OffersAssociation::query()
-                ->where('association_id', $editAssociationDetails->id)
-                // ->where('association_id', $eachoffers->id)
+                // ->where('association_id', $editAssociationDetails->id)
+                ->where('id', $editAssociationDetails->association_id)
                 ->firstOrNew();
                 // $editOffer = OffersAssociation::query()->where('association_id');
                 if(is_null($editOffer)){
@@ -1862,9 +1863,11 @@ class MetaDataController extends Controller
 
             if ($request->has('ca_firm_name')) {
                 $editVacancy->ca_firm_name=$request->ca_firm_name;
-            }  if ($request->has('position')) {
-                $editVacancy->position=$request->position;
-            }if ($request->has('comments')) {
+            }
+              if ($request->has('position')) {
+            $editVacancy->position = $request->position;
+        }
+            if ($request->has('comments')) {
                 $editVacancy->comments=$request->comments;
             }if ($request->has('company_email')) {
                 $editVacancy->company_email=$request->company_email;
@@ -2616,7 +2619,7 @@ class MetaDataController extends Controller
           $validator = Validator::make($request->all(), [
 
           'title' => 'required|nullable',
-          'type' => 'required|nullable',
+        //   'type' => 'required|nullable',
             'notice_board_pdf'=>'required|nullable',
             'notice_board_logo'=>'required|nullable'
 
@@ -2627,7 +2630,7 @@ class MetaDataController extends Controller
           $newDetails = new StudentNoticeBoard;
 
           $newDetails->title=$request->title;
-          $newDetails->type=$request->type;
+          $newDetails->type='student';
         if ($request->notice_board_pdf != "") {
             if (!str_contains($request->notice_board_pdf, "http")) {
                 $newDetails->notice_board_pdf = $this->saveStudentNoticeBoardpdf($request->notice_board_pdf,$request->title);
@@ -2649,6 +2652,45 @@ class MetaDataController extends Controller
       }
   }
 
+  public function addMembersNoticeBoard(Request $request): \Illuminate\Http\JsonResponse
+  {
+
+      try {
+          $validator = Validator::make($request->all(), [
+
+          'title' => 'required|nullable',
+        //   'type' => 'required|nullable',
+            'notice_board_pdf'=>'required|nullable',
+            'notice_board_logo'=>'required|nullable'
+
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors());
+          }
+          $newDetails = new StudentNoticeBoard;
+
+          $newDetails->title=$request->title;
+          $newDetails->type='members';
+        if ($request->notice_board_pdf != "") {
+            if (!str_contains($request->notice_board_pdf, "http")) {
+                $newDetails->notice_board_pdf = $this->saveStudentNoticeBoardpdf($request->notice_board_pdf,$request->title);
+            }
+        }
+
+        if ($request->notice_board_logo != "") {
+            if (!str_contains($request->notice_board_logo, "http")) {
+                $newDetails->notice_board_logo = $this->saveStudentNoticeBoardLogo($request->notice_board_logo,$request->title);
+            }
+        }
+      $newDetails->save();
+
+                  return $this->sendResponse([],'Student notice board added successfully.', true);
+
+        }
+      catch (Exception $e) {
+          return $this->sendError('Something went wrong', $e->getTrace(), 413);
+      }
+  }
  public function getStudentNoticeBoard(Request $request)
  {
 	try{
@@ -2659,7 +2701,7 @@ class MetaDataController extends Controller
 		if ($validator->fails()) {
 			return $this->sendError('Validation Error.', $validator->errors(),400);
 		}
-		$query = StudentNoticeBoard::query();
+		$query = StudentNoticeBoard::query()->where('type', 'student');
 		$count=$query->count();
 		if($request->has('pageNo') && $request->has('limit')){
 			$limit = $request->limit;
@@ -2669,7 +2711,7 @@ class MetaDataController extends Controller
 		}
 		$data = $query->get();
 		if(count($data)>0){
-			$response['data'] =  $data;
+			$response['notice_board'] =  $data;
 			$response['count']=$count;
 			return $this->sendResponse($response,'Data Fetched Successfully', true);
 		}else{
@@ -2679,7 +2721,36 @@ class MetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(),500);
         }
 }
-
+public function getMembersNoticeBoard(Request $request)
+{
+   try{
+       $validator = Validator::make($request->all(), [
+           'pageNo'=>'numeric',
+           'limit'=>'numeric',
+       ]);
+       if ($validator->fails()) {
+           return $this->sendError('Validation Error.', $validator->errors(),400);
+       }
+       $query = StudentNoticeBoard::query()->where('type', 'members');
+       $count=$query->count();
+       if($request->has('pageNo') && $request->has('limit')){
+           $limit = $request->limit;
+           $pageNo = $request->pageNo;
+           $skip = $limit*$pageNo;
+           $query= $query->skip($skip)->limit($limit);
+       }
+       $data = $query->get();
+       if(count($data)>0){
+           $response['notice_board'] =  $data;
+           $response['count']=$count;
+           return $this->sendResponse($response,'Data Fetched Successfully', true);
+       }else{
+           return $this->sendResponse('No Data Available', [],false);
+       }
+   }catch (\Exception $e){
+           return $this->sendError($e->getMessage(), $e->getTrace(),500);
+       }
+}
 
 public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\JsonResponse
 {
@@ -2714,7 +2785,7 @@ public function editStudentNoticeBoard(Request $request):  \Illuminate\Http\Json
             $editItems->title = $request->title;
         }
         if($request->has('type')){
-            $editItems->type = $request->type;
+            $editItems->type ='student';
         }
         if ($request->notice_board_pdf != "") {
             if (!str_contains($request->notice_board_pdf, "http")) {
@@ -2736,6 +2807,44 @@ public function editStudentNoticeBoard(Request $request):  \Illuminate\Http\Json
       }
   }
 
+
+public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\JsonResponse
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:table_student_notice_board,id',
+
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $editItems = StudentNoticeBoard::query()->where('id', $request->id)->first();
+
+        if($request->has('title')){
+          $editItems->title = $request->title;
+      }
+      if($request->has('type')){
+          $editItems->type = 'members';
+      }
+      if ($request->notice_board_pdf != "") {
+          if (!str_contains($request->notice_board_pdf, "http")) {
+              $editItems->notice_board_pdf = $this->saveStudentNoticeBoardpdf($request->notice_board_pdf,$request->title);
+          }
+      }
+      if ($request->notice_board_logo != "") {
+          if (!str_contains($request->notice_board_logo, "http")) {
+              $editItems->notice_board_logo = $this->saveStudentNoticeBoardLogo($request->notice_board_logo,$request->title);
+          }
+      }
+      $editItems->update();
+
+
+
+        return $this->sendResponse([], 'Student notice board updated successfully');
+    } catch (Exception $e) {
+        return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+    }
+}
   public function deleteStudentNoticeBoard(Request $request){
 	try{
 		$validator = Validator::make($request->all(), [
@@ -2752,6 +2861,169 @@ public function editStudentNoticeBoard(Request $request):  \Illuminate\Http\Json
 		return $this->sendError('$e->getMessage()', $e->getTrace(),500);
 	}
   }
+
+
+
+
+  public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
+  {
+
+      try {
+          $validator = Validator::make($request->all(), [
+
+          'batch_name' => 'required|nullable',
+          'fee' => 'required|nullable',
+        //   'location_id' => 'required|nullable',
+          'end_date' => 'required|nullable',
+          'address_line_1' => 'required|nullable|string|max:255',
+          'address_line_2' => 'nullable|string|max:255',
+          'city' => 'required|nullable|string|max:255',
+          'state' => 'required|nullable|string|max:255',
+          'country' => 'required|nullable|string|max:255',
+          'pincode' => 'required|nullable|string|max:255',
+
+
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors());
+          }
+          $NewLocationDetails = new LocationDetails();
+          $NewLocationDetails->address_line_1=$request->address_line_1;
+          $NewLocationDetails->address_line_2=$request->address_line_2;
+          $NewLocationDetails->city=$request->city;
+          $NewLocationDetails->state=$request->state;
+          $NewLocationDetails->country=$request->country;
+          $NewLocationDetails->pincode=$request->pincode;
+          $NewLocationDetails->save();
+
+          $newDetails = new StudentBatches;
+          $newDetails->location_id=$NewLocationDetails->id;
+            $newDetails->batch_name = $request->batch_name;
+            $newDetails->fee = $request->fee;
+            $newDetails->start_date=$request->start_date;
+            $newDetails->end_date=$request->end_date;
+
+            $newDetails->save();
+
+                  return $this->sendResponse([],' Student batches added successfully.', true);
+
+        }
+      catch (Exception $e) {
+          return $this->sendError('Something went wrong', $e->getTrace(), 413);
+      }
+  }
+
+
+
+ public function getStudentBatches(Request $request)
+ {
+	try{
+		$validator = Validator::make($request->all(), [
+			'pageNo'=>'numeric',
+			'limit'=>'numeric',
+		]);
+		if ($validator->fails()) {
+			return $this->sendError('Validation Error.', $validator->errors(),400);
+		}
+		$query = StudentBatches::query();
+		$count=$query->count();
+		if($request->has('pageNo') && $request->has('limit')){
+			$limit = $request->limit;
+			$pageNo = $request->pageNo;
+			$skip = $limit*$pageNo;
+			$query= $query->skip($skip)->limit($limit);
+		}
+		$data = $query->get();
+		if(count($data)>0){
+			$response['data'] =  $data;
+			$response['count']=$count;
+			return $this->sendResponse($response,'Data Fetched Successfully', true);
+		}else{
+			return $this->sendResponse('No Data Available', [],false);
+		}
+	}catch (\Exception $e){
+            return $this->sendError($e->getMessage(), $e->getTrace(),500);
+        }
+}
+
+
+  public function editStudentBatches(Request $request):  \Illuminate\Http\JsonResponse
+  {
+      try {
+          $validator = Validator::make($request->all(), [
+              'id' => 'required|integer|exists:offers_association,id',
+
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors());
+          }
+          $editItems = StudentBatches::query()->where('id', $request->id)->first();
+
+          if($request->has('offers')){
+            $editItems->offers = $request->offers;
+        }
+        if($request->has('discount')){
+            $editItems->discount = $request->discount;
+        }
+        if($request->has('association_id')){
+            $editItems->association_id = $request->association_id;
+        }
+        if($request->has('is_active')){
+            $editItems->is_active = $request->is_active;
+        }
+
+        $editItems->update();
+
+
+
+          return $this->sendResponse([], 'Offers To Association updated successfully');
+      } catch (Exception $e) {
+          return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+      }
+  }
+
+  public function deleteStudentBatches(Request $request){
+	try{
+		$validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:offers_association,id',
+		]);
+		if ($validator->fails()) {
+			return $this->sendError('Validation Error.', $validator->errors(),400);
+		}
+        $user = StudentBatches::query()->where('id', $request->id)->first();
+
+		if(!is_null($user)){
+			if($user->delete()){
+				return $this->sendResponse([],'Offers To Association  Deleted Successfully', true);
+			}else{
+				return $this->sendResponse([],'Offers To Association  Deletion Failed', false);
+			}
+		}else{
+			return $this->sendResponse([],'No Apply Job  Found', false);
+		}
+	}catch (Exception $e){
+		return $this->sendError('$e->getMessage()', $e->getTrace(),500);
+	}
+  }
+
+
+  public function getStudentBatchesById(Request $request):  \Illuminate\Http\JsonResponse
+  {
+      try {
+          $validator = Validator::make($request->all(), [
+              'id' => 'required|integer|exists:offers_association,id',
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors());
+          }
+          $getitems = StudentBatches::query()->where('id', $request->id)->first();
+
+          return $this->sendResponse(["apply_job_details" => $getitems], 'Data fetch successfully', true);
+      } catch (Exception $e) {
+          return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+      }
+  }
+
 
 }
 
