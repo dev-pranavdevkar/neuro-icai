@@ -68,9 +68,11 @@
                     <div class="hero__form">
                         <h3>Enter 4 Digit Code</h3>
                         <p class="text-center">We Send Code To
-                            <b>pranavdevkar@gmail.com</b>
+                            <b>yourmailid@domain.com</b>
                         </p>
-                        <form action="#">
+                        <form id="verifyOtp" action="{{ route('verifyOtp') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
 
                             <h5></h5>
                             <p>
@@ -100,7 +102,13 @@
                     <div class="hero__form">
                         <h3>Reset Password</h3>
 
-                        <form action="#">
+                        <form id="changeForgetPassword" action="{{ route('changeForgetPassword') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="input-full-width">
+                            <p>Email Id</p>
+                            <input type="email" id="email" name="email">
+                        </div>
 
                             <div class="input-full-width">
                                 <label for="password">Password</label>
@@ -112,7 +120,7 @@
                                 </div>
                             </div>
                             <div class="input-full-width">
-                                <label for="password">Password</label>
+                                <label for="password">Confirm Password</label>
                                 <div class="password-input-wrapper">
                                     <input type="password" id="password_confirmation" name="password_confirmation"
                                         required>
