@@ -1,6 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\frontend\HomeController;
+use App\Http\Controllers\frontend\ContactController;
+use App\Http\Controllers\frontend\LoginController;
+use  App\Http\Controllers\frontend\SignupController;
+use App\Http\Controllers\frontend\ForgetPasswordController;
+use App\Http\Controllers\V1\Website\WebAuthController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +21,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+
+Route::get('/',[HomeController::class, 'index']);
+Route::get('/contact',[ContactController::class, 'index']);
+Route::get('/login',[LoginController::class, 'index']);
+Route::get('/signup',[SignupController::class, 'index']);
+Route::get('/forgetPassword',[ForgetPasswordController::class, 'index']);
+Route::post('/signup', [WebAuthController::class, 'registerUser'])->name('registerUser');
+Route::post('/login', [WebAuthController::class, 'userLogin'])->name('userLogin');
+
+
