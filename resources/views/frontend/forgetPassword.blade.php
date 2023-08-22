@@ -41,11 +41,12 @@
                     <div class="hero__form">
                         <h3>Forget Password</h3>
 
-                        <form action="#">
-
+                        <form id="forgetPAssword" action="{{ route('forgetPassword') }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
                             <div class="input-full-width">
                                 <p>Email Id</p>
-                                <input type="text">
+                                <input type="email" id="email" name="email">
                             </div>
 
 
@@ -113,11 +114,12 @@
                             <div class="input-full-width">
                                 <label for="password">Password</label>
                                 <div class="password-input-wrapper">
-                                    <input type="password" id="password_confirmation" name="password_confirmation" required>
+                                    <input type="password" id="password_confirmation" name="password_confirmation"
+                                        required>
                                     <span class="password-toggle"
-                                    onclick="togglePasswordVisibility('password_confirmation')">
-                                    <i class="fa fa-eye" id="eye-icon-password_confirmation"></i>
-                                </span>
+                                        onclick="togglePasswordVisibility('password_confirmation')">
+                                        <i class="fa fa-eye" id="eye-icon-password_confirmation"></i>
+                                    </span>
                                 </div>
                             </div>
 
@@ -196,18 +198,39 @@
     {{-- ------------------------------ --}}
 
     {{-- Script to hide Forget Passwor Screen --}}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sendOTPButton = document.getElementById("sendOTPButton");
-            const forgetPasswordBlock = document.getElementById("forgetPassword");
-            const otpScreenBlock = document.getElementById("otpscreen");
+ <!-- ... (your existing HTML code) ... -->
 
-            sendOTPButton.addEventListener("click", function() {
-                forgetPasswordBlock.style.display = "none";
-                otpScreenBlock.style.display = "block";
-            });
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const sendOTPButton = document.getElementById("sendOTPButton");
+        const forgetPasswordBlock = document.getElementById("forgetPassword");
+        const otpScreenBlock = document.getElementById("otpscreen");
+        const verifyOTPButton = document.querySelector("#otpscreen .site-btn");
+        const otpInputs = document.querySelectorAll(".otp-input");
+        const resetPasswordBlock = document.getElementById("resetPassword");
+
+        // Handle sending OTP and showing OTP screen
+        sendOTPButton.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            forgetPasswordBlock.style.display = "none";
+            otpScreenBlock.style.display = "block";
+            otpInputs[0].focus(); // Focus on the first OTP input field
         });
-    </script>
+
+        // Handle verifying OTP and showing reset password screen
+        verifyOTPButton.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            otpScreenBlock.style.display = "none";
+            resetPasswordBlock.style.display = "block";
+        });
+    });
+    document.getElementById("emailPlaceholder").innerText = "pranavdevkar@gmail.com"; // Replace with actual email
+</script>
+
+<!-- ... (rest of your HTML code) ... -->
+
 
     {{-- --------------------------------------- --}}
 
@@ -228,31 +251,3 @@
 
 
 
-{{-- 
-    <form action="#">
-                            <div class="input-list">
-                                <div class="input-list-item">
-                                    <p>Amount of money ($):</p>
-                                    <input type="text">
-                                </div>
-                                <div class="input-list-item">
-                                    <p>How long for (day):</p>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="input-full-width">
-                                <p>Repayment:</p>
-                                <input type="text">
-                            </div>
-                            <div class="input-list last">
-                                <div class="input-list-item">
-                                    <p>Name:</p>
-                                    <input type="text">
-                                </div>
-                                <div class="input-list-item">
-                                    <p>Phone:</p>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <button type="submit" class="site-btn">Get Your Loan Now!</button>
-                        </form> --}}

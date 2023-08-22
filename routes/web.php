@@ -33,5 +33,6 @@ Route::get('/signup',[SignupController::class, 'index']);
 Route::get('/forgetPassword',[ForgetPasswordController::class, 'index']);
 Route::post('/signup', [WebAuthController::class, 'registerUser'])->name('registerUser');
 Route::post('/login', [WebAuthController::class, 'userLogin'])->name('userLogin');
+Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->name('forgetPassword');
 
 
