@@ -24,12 +24,12 @@
             height: 43px;
             border-radius: 2px;
             font-size: 15px;
-            color: #5c5c5c;
+            color: ##000;
             padding-left: 15px;
             border: 1px solid rgba(0, 0, 0, 0.1);
 
             &::placeholder {
-                color: #5c5c5c;
+                color: ##000;
             }
         }
 
@@ -137,7 +137,7 @@
 
     a {
         font-size: 11px;
-        color: #5c5c5c;
+        color: ##000;
         text-transform: uppercase;
         display: inline-block;
         padding: 6px 15px 4px;

@@ -5,7 +5,7 @@
     <div class="item">
         <section class="hero set-bg" data-setbg="{{ url('frontend/img/homeBannerSlide1.jpeg') }}">
             <div class="container">
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-lg-5">
                         <div class="hero__text">
                             <h2>Find The Best Monthly Payment</h2>
@@ -50,14 +50,14 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </section>
     </div>
     <div class="item">
         <section class="hero set-bg" data-setbg="{{ url('frontend/img/homeBannerSlide2.jpeg') }}">
             <div class="container">
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-lg-5">
                         <div class="hero__text">
                             <h2>Find The Best Monthly Payment</h2>
@@ -102,14 +102,14 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </section>
     </div>
     <div class="item">
         <section class="hero set-bg" data-setbg="{{ url('frontend/img/hero-bg.jpg') }}">
             <div class="container">
-                <div class="row">
+                {{-- <div class="row">
                     <div class="col-lg-5">
                         <div class="hero__text">
                             <h2>Find The Best Monthly Payment</h2>
@@ -154,7 +154,7 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </section>
     </div>

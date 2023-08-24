@@ -161,62 +161,62 @@
                                 <li class="active"><a href="{{ url('/') }}">Home</a></li>
                                 <li><a href="{{ url('/') }}">About Us</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/') }}"> About Pune Branch </a></li>
-                                        <li><a href="{{ url('/') }}"> Chairman Communique </a></li>
-                                        <li><a href="{{ url('/') }}"> Managing Committee </a></li>
-                                        <li><a href="{{ url('/') }}"> Our Torch Bearer </a></li>
-                                        <li><a href="{{ url('/') }}"> Sub Committees </a></li>
-                                        <li><a href="{{ url('/') }}"> Study Circles in Pune </a></li>
-                                        <li><a href="{{ url('/') }}"> Annual Reports </a></li>
-                                        <li><a href="{{ url('/') }}"> Past Chairmen </a></li>
-                                        <li><a href="{{ url('/') }}"> Our Success Stories </a></li>
-                                        <li><a href="{{ url('/') }}"> Updates </a></li>
+                                        <li><a href="{{ url('/aboutPuneBranch') }}"> About Pune Branch </a></li>
+                                        <li><a href="{{ url('/chairmanCommunique') }}"> Chairman Communique </a></li>
+                                        <li><a href="{{ url('/managingCommittee') }}"> Managing Committee </a></li>
+                                        <li><a href="{{ url('/torchBearer') }}"> Our Torch Bearer </a></li>
+                                        <li><a href="{{ url('/subCommittees') }}"> Sub Committees </a></li>
+                                        <li><a href="{{ url('/studyCirclesPune') }}"> Study Circles in Pune </a></li>
+                                        <li><a href="{{ url('/annualReports') }}"> Annual Reports </a></li>
+                                        <li><a href="{{ url('/pastChairmen') }}"> Past Chairmen </a></li>
+                                        <li><a href="{{ url('/successStories') }}"> Our Success Stories </a></li>
+                                        <li><a href="{{ url('/updates') }}"> Updates </a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{{ url('/') }}">Members</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/') }}"> Pune Member's Newsletter </a></li>
-                                        <li><a href="{{ url('/') }}"> Managing Committee Minutes </a></li>
-                                        <li><a href="{{ url('/') }}"> Exposure Drafts </a></li>
-                                        <li><a href="{{ url('/') }}"> Subscribe For SMS Alerts </a></li>
-                                        <li><a href="{{ url('/') }}"> Updates for Members </a></li>
+                                        <li><a href="{{ url('/puneMembersNewsletter') }}"> Pune Member's Newsletter </a></li>
+                                        <li><a href="{{ url('/managingCommitteeMinutes') }}"> Managing Committee Minutes </a></li>
+                                        <li><a href="{{ url('/exposureDrafts') }}"> Exposure Drafts </a></li>
+                                        <li><a href="{{ url('/subscribeForSMSAlerts') }}"> Subscribe For SMS Alerts </a></li>
+                                        <li><a href="{{ url('/updatesForMembers') }}"> Updates for Members </a></li>
                                     </ul>
 
                                 </li>
                                 <li><a href="{{ url('/') }}">Students</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/') }}"> About Pune WICASA </a></li>
-                                        <li><a href="{{ url('/') }}"> WICASA Managing Committee </a></li>
-                                        <li><a href="{{ url('/') }}"> Student's Noticeboard </a></li>
-                                        <li><a href="{{ url('/') }}"> Pune WICASA Newsletter </a></li>
-                                        <li><a href="{{ url('/') }}"> Coaching Classes </a></li>
-                                        <li><a href="{{ url('/') }}"> Subscribe for SMS Alerts </a></li>
+                                        <li><a href="{{ url('/aboutPuneWICASA') }}"> About Pune WICASA </a></li>
+                                        <li><a href="{{ url('/WICASAManagingCommittee') }}"> WICASA Managing Committee </a></li>
+                                        <li><a href="{{ url('/studentsNoticeboard') }}"> Student's Noticeboard </a></li>
+                                        <li><a href="{{ url('/puneWICASANewsletter') }}"> Pune WICASA Newsletter </a></li>
+                                        <li><a href="{{ url('/coachingClasses') }}"> Coaching Classes </a></li>
+                                        <li><a href="{{ url('/subscribeForSMSAlerts') }}"> Subscribe for SMS Alerts </a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{{ url('/') }}">Events</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/') }}"> Upcomming Events </a></li>
-                                        <li><a href="{{ url('/') }}"> Past Events </a></li>
+                                        <li><a href="{{ url('/upcommingEvents') }}"> Upcomming Events </a></li>
+                                        <li><a href="{{ url('/pastEvents') }}"> Past Events </a></li>
                                        
                                     </ul>
                                 </li>
                                 <li><a href="{{ url('/') }}">Vacancies</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/') }}"> View Vacancies </a></li>
-                                        <li><a href="{{ url('/') }}"> Submit a Vacancy </a></li>
+                                        <li><a href="{{ url('/viewVacancies') }}"> View Vacancies </a></li>
+                                        <li><a href="{{ url('/submitVacancies') }}"> Submit a Vacancy </a></li>
                                        
                                     </ul>
                                 </li>
                                 <li><a href="{{ url('/') }}">Downloads</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/') }}"> Presentations </a></li>
+                                        <li><a href="{{ url('/presentations') }}"> Presentations </a></li>
                                        
                                        
                                     </ul>
                                 </li>
                             
                                 <li><a href="{{ url('/contact') }}">Contact Us</a></li>
-                                <li><a href="{{ url('/') }}">Help</a></li>
+                                <li><a href="{{ url('/help') }}">Help</a></li>
                             </ul>
                         </nav>
                         <div class="header__search">
