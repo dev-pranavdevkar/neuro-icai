@@ -134,8 +134,8 @@
                             <ul class="header__top__widget text-right">
                               
                                 <li>
-                                    @if(isset($response['userData']))
-                                        <i class="fa fa-user"></i>{{ $response['userData']->name }}
+                                    @if(Auth::user())
+                                        <i class="fa fa-user"></i>{{Auth::user()->name }}
                                     @else
                                         <i class="fa fa-user"></i><a class="text-white" href="{{ url('/login') }}">Login</a> / <a class="text-white" href="{{ url('/signup') }}">Register</a>
                                     @endif

@@ -93,7 +93,8 @@ class WebAuthController extends Controller
                     $token = JWTAuth::fromUser($user);
                     $response = ['token' => $token, 'userData' => $user];
                     // return $this->sendResponse($response, 'Login Success', true);
-                    return view('frontend.login', ['response' => $response]);
+                    return redirect()->route('dashboard');
+                    
                 } else {
                     return $this->sendError('Password mismatch', [], 422);
                 }
@@ -206,5 +207,9 @@ class WebAuthController extends Controller
         //         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
 
         return response()->json(['message' => 'OTP verified successfully'], true);
+    }
+
+    public function dashboard(){
+        return view('frontend.userSection.dashboard');
     }
 }
