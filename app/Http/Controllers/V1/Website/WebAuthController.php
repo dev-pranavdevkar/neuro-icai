@@ -18,51 +18,7 @@ use Spatie\Permission\Models\Role;
 class WebAuthController extends Controller
 {
 
-    // public function registerUser(Request $request)
-    // {
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'name' => 'required|string|max:255',
-    //             'email' => 'required|string|email|max:255|unique:users',
-    //             'password' => 'required|string|min:6|confirmed',
 
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors());
-    //         }
-    //         if ($request->role == 'SuperAdmin') {
-    //             return $this->sendResponse([], 'Sorry you can\'t be super admin.It\'s our property', true);
-    //         }
-
-    //         $newUser = new User();
-    //         $newUser->password = Hash::make($request['password']);
-    //         $newUser->name = $request->name;
-    //         $newUser->email = $request->email;
-    //         $newUser->last_name = $request->last_name;
-    //         $newUser->date_of_birth = $request->date_of_birth;
-    //         $newUser->mobile_no = $request->mobile_no;
-    //         $newUser->otp = $request->otp;
-    //         // $newUser->last_login_at = Carbon::now();
-
-    //         $role = Role::where('name', $request->role)->first();
-    //         $user = User::find(1);
-    //          $studentRole = Role::where('name', 'student')->first();
-    //         $adminRole = Role::where('name', 'admin')->first();
-    //         $memberRole=Role::where('name','members')->first();
-    //         // Assign roles to the user
-    //          $newUser->assignRole($studentRole); // Assign student role
-    //         $newUser->assignRole($adminRole);
-    //          $newUser->assignRole($memberRole);
-    //         $newUser->assignRole($Role);
-    //         $newUser->save();
-    //         $token = JWTAuth::fromUser($newUser);
-    //         $response = ['token' => $token];
-    //         $response['userData'] = $newUser;
-    //         return $this->sendResponse($response, 'Registered Successfully', true);
-    //     } catch (Exception $e) {
-    //         return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
-    //     }
-    // }
 
     public function registerUser(Request $request)
     {
@@ -93,27 +49,7 @@ class WebAuthController extends Controller
 
             // Assign roles based on user's role value
             $assignedRoles = [];
-            // if ($request->role == 'members') {
-            //     $membersRole = Role::where('name', 'members')->first();
-            //     if ($membersRole) {
-            //         $newUser->assignRole($membersRole);
-            //         $assignedRoles[] = 'members';
-            //     }
-            // }
-            // if ($request->role == 'student') {
-            //     $studentRole = Role::where('name', 'student')->first();
-            //     if ($studentRole) {
-            //         $newUser->assignRole($studentRole);
-            //         $assignedRoles[] = 'student';
-            //     }
-            // }
-            // if ($request->role == 'admin') {
-            //     $adminRole = Role::where('name', 'admin')->first();
-            //     if ($adminRole) {
-            //         $newUser->assignRole($adminRole);
-            //         $assignedRoles[] = 'admin';
-            //     }
-            // }
+
 
             $role = Role::query()->where('name', $request->role)->first();
             $newUser->assignRole($role);
@@ -156,7 +92,8 @@ class WebAuthController extends Controller
                     $getUser->save();
                     $token = JWTAuth::fromUser($user);
                     $response = ['token' => $token, 'userData' => $user];
-                    return $this->sendResponse($response, 'Login Success', true);
+                    // return $this->sendResponse($response, 'Login Success', true);
+                    return view('frontend.login', ['response' => $response]);
                 } else {
                     return $this->sendError('Password mismatch', [], 422);
                 }

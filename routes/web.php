@@ -37,4 +37,8 @@ Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->na
 Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verifyOtp');
 Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPassword'])->name('changeForgetPassword');
 Route::get('/login', [LoginController::class, 'index'])->name('login.index');
+// Define the named route with a direct view
+// Route::view('/login', 'frontend.login')->name('login.index');
+
+
 

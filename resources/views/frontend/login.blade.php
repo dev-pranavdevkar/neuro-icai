@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
@@ -25,14 +25,15 @@
 </head>
 
 <body class="bg-primary h-100">
-    <!-- Page Preloder -->
+
     <div id="preloder">
         <div class="loader"></div>
     </div>
     <header class="bg-white d-flex justify-content-center ">
         <a href="{{ url('/') }}"> <img src="{{ url('frontend/img/logo.jpg') }}" alt=""></a>
-    </header>
-
+    </header> --}}
+    @extends('frontend.layouts.main')
+    @section('main-container')
     <section class="">
         <div class="container ">
             <div class="row d-flex justify-content-center align-items-center my-4">
@@ -87,13 +88,18 @@
                                         src="{{ url('frontend/img/facebook_logo.png') }}" alt="Facebook Logo" /></div>
                             </div>
                         </form>
+                        {{-- @if(isset($response['userData']))
+                        <p>Welcome, {{ $response['userData']->name }}</p>
+                        <p>Email: {{ $response['userData']->email }}</p>
+                    @endif --}}
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </section>
-
+    @endsection
+{{-- 
     <footer class="login-footer p-2 w-100">
         <div class="d-flex justify-content-between align-items-center justify-content-between px-5 w-100">
             <div>
@@ -106,15 +112,13 @@
             </div>
             <div>
                 <p> Developed By | <a class="text-neuromonk" href="https://neuromonk.com/" target="_blank">
-                        {{-- <img src="{{ url('frontend/img/neuromonk.png') }}"alt=""> --}}
+                      
                         Neuromonk Infotech Pvt Ltd</a>
                 </p>
             </div>
         </div>
     </footer>
 
-
-    {{-- Js Plugins --}}
     <script src="{{ url('frontend/js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ url('frontend/js/bootstrap.min.js') }}"></script>
     <script src="{{ url('frontend/js/jquery.nice-select.min.js') }}"></script>
@@ -125,49 +129,9 @@
     <script src="{{ url('frontend/js/owl.carousel.min.js') }}"></script>
     <script src="{{ url('frontend/js/main.js') }}"></script>
     <script src="{{ url('frontend/js/eyeicon.js') }}"></script>
-    
-
-    <script>
-        // Assume you have a form with id="loginForm" and fields with ids "email" and "password"
-    
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-    
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-    
-            try {
-                const response = await fetch('/api/user-login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-    
-                if (response.ok) {
-                    const data = await response.json();
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('userData', JSON.stringify(data.userData));
-                    console.log(token)
-                    console.log(userData)
-                    // Redirect to a new page or perform other actions
-                    window.location.href = '/home';
-                    console.log("Pranav Devkar Script code")
-                } else {
-                    const errorData = await response.json();
-                    console.error('Login error:', errorData);
-                }
-            } catch (error) {
-                console.error('An error occurred:', error);
-            }
-        });
-    </script>
-    
-
 
 
 
 </body>
 
-</html>
+</html> --}}
