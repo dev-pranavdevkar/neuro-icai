@@ -310,6 +310,13 @@
 
 
     <section class="home-about spad">
+
+
+ 
+   
+      
+
+
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1588,4 +1595,38 @@
         </div>
     </div>
     <!-- Contact End -->
+
+
+
+
+    @if(isset($eventDetails['event_details']) && count($eventDetails['event_details']) > 0)
+    <div>
+        <h2>Event Details:</h2>
+        <ul>
+            @foreach($eventDetails['event_details'] as $event)
+                <li>
+                    {{ count($eventDetails['event_details']) }} <!-- Output event count -->
+                    {{ $eventDetails['event_details'][0]->event_name }} <!-- Output first event name -->
+                    {{ $eventDetails['event_details'][0]->location_details->city }} <!-- Output city of first event's location -->
+                    
+                </li>
+            @endforeach
+        </ul>
+    </div>
+@else
+    <p>No event details available.</p>
+@endif
+    
+
+
+
+
+
+
+
+
+
+
+
+
 @endsection

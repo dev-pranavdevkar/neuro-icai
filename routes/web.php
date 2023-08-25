@@ -32,7 +32,11 @@ use App\Http\Controllers\frontend\DownloadsController;
 
 // Pages
 
-Route::get('/',[HomeController::class, 'index']);
+Route::get('/', function () {
+    $webAuthController = new WebAuthController();
+    $eventDetails = $webAuthController->getAllEventDetails(request());
+    return app()->call([HomeController::class, 'index'], compact('eventDetails'));
+});
 Route::get('/contact',[HomeController::class, 'contact']);
 Route::get('/help',[HomeController::class, 'help']);
 

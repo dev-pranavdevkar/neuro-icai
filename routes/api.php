@@ -225,6 +225,16 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
 
+
+    /*=======================Home Page get All API======================================================= */
+    Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
+    Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
+    Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
+    Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
+    Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
+    Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    /*=================================================================================================== */
+
     Route::get('open', 'WebAuthController@open');
 
     Route::group(
