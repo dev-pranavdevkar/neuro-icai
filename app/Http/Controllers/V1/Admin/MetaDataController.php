@@ -256,8 +256,6 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = Banner::query(); // Replace "ModelName" with your actual model name
             $count = $query->count();
 
@@ -311,8 +309,6 @@ class MetaDataController extends Controller
                     $editBannerDetails->banner_image = $this->saveFile($request->banner_image, $request->banner_image);
                 }
             }
-
-
             $editBannerDetails->save();
             return $this->sendResponse([], 'banner details updated successfully');
         } catch (Exception $e) {
@@ -335,11 +331,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-
-
     public function addLocationDetails(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'address_line_1' => 'required|nullable|string|max:255',
@@ -370,7 +363,6 @@ class MetaDataController extends Controller
     }
     public function getAllLocationDetails(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -379,11 +371,8 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = LocationDetails::query(); // Replace "ModelName" with your actual model name
             $count = $query->count();
-
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -428,7 +417,6 @@ class MetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $editLocation = LocationDetails::query()->where('id', $request->id)->first();
-
             if ($request->has('address_line_1')) {
                 $editLocation->address_line_1=$request->address_line_1;
             }
@@ -447,8 +435,6 @@ class MetaDataController extends Controller
             if ($request->has('pincode')) {
                 $editLocation->pincode=$request->pincode;
             }
-
-
             $editLocation->save();
             return $this->sendResponse([], 'location details updated successfully');
         } catch (Exception $e) {
@@ -474,7 +460,6 @@ class MetaDataController extends Controller
 
     public function addEventDetails(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'event_name' => 'required|string|max:255',
@@ -483,10 +468,11 @@ class MetaDataController extends Controller
                 'event_end_date' => 'required|date',
                 'event_cut_off_date' => 'required|date',
                 'event_fee' => 'required',
-                'price_for_students' => 'required',
+                //'price_for_students' => 'required',
                 'price_for_members' => 'required',
-                // 'location_id' => 'required|integer|exists:location_details,id',
-                // 'broacher_pdf' => 'required',
+                'early_bird_date'=>'nullable|date',
+                'early_bird_non_member_fees'=>'nullable|numeric',
+                'early_bird_member_fees'=>'nullable|numeric',
                 'images.*'=>'array',
                 'images.*.event_images'=>'string',
                 'presentationvedio.*'=>'array',
@@ -500,12 +486,11 @@ class MetaDataController extends Controller
                 'country' => 'required|nullable|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
 
-
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
+
             $NewLocationDetails = new LocationDetails();
                 $NewLocationDetails->address_line_1=$request->address_line_1;
                 $NewLocationDetails->address_line_2=$request->address_line_2;
@@ -514,46 +499,41 @@ class MetaDataController extends Controller
                 $NewLocationDetails->country=$request->country;
                 $NewLocationDetails->pincode=$request->pincode;
                 $NewLocationDetails->save();
+                if (is_array($request->eventsData) || is_object($request->eventsData)) {
+            foreach ($request->eventsData as $eventData) {
             $newEventDetails = new EventDetails();
             $newEventDetails->location_id=$NewLocationDetails->id;
-            $newEventDetails->event_name=$request->event_name;
-            $newEventDetails->event_description=$request->event_description;
-            $newEventDetails->event_start_date=$request->event_start_date;
-            $newEventDetails->event_end_date=$request->event_end_date;
-            $newEventDetails->event_cut_off_date=$request->event_cut_off_date;
-            $newEventDetails->event_fee=$request->event_fee;
-            $newEventDetails->price_for_members=$request->price_for_members;
-            $newEventDetails->price_for_students=$request->price_for_students;
-            // $newEventDetails->event_name=$request->event_name;
-            // $newEventDetails->event_name=$request->event_name;
-
-
-
-            // if ($request->broacher_pdf != "") {
-            //     if (!str_contains($request->broacher_pdf, "http")) {
-            //         $newEventDetails->broacher_pdf = $this->saveBroacherPdf($request->broacher_pdf,$request->event_name);
-            //     }
-            // }
-
-            $newEventDetails->save();
-
-            // $eachPresentation=$request->video_link;
-            foreach($request->video_link as $eachPresentation){
-                $newPresentationVideo = new EventPresentationVideo();
-                $newPresentationVideo->event_id=$newEventDetails->id;
-                if ($request->video_link != "") {
-                    if (!str_contains($eachPresentation, "http")) {
-                        $newPresentationVideo->video_link = $this->saveEventPresentationVideo($eachPresentation);
-                    }
+            $newEventDetails->event_name=$eventData['event_name'];
+            $newEventDetails->event_description=$eventData['event_description'];
+            $newEventDetails->event_start_date=$eventData['event_start_date'];
+            $newEventDetails->event_end_date=$eventData['event_end_date'];
+            $newEventDetails->event_cut_off_date=$eventData['event_cut_off_date'];
+            $newEventDetails->event_fee=$eventData['event_fee'];
+            $newEventDetails->price_for_members=$eventData['price_for_members'];
+           // $newEventDetails->price_for_students=$request->price_for_students;
+            $newEventDetails->early_bird_date=$eventData['early_bird_date'];
+            $newEventDetails->early_bird_non_member_fees=$eventData['early_bird_non_member_fees'];
+            $newEventDetails->early_bird_member_fees=$eventData['early_bird_member_fees'];
+            //$newEventDetails->parent_event
+            if (isset($eventData['parent_event_id'])) {
+                $parentEvent = EventDetails::find($eventData['parent_event_id']);
+                if ($parentEvent) {
+                    $newEventDetails->parent_event()->associate($parentEvent);
                 }
-                $newPresentationVideo->save();
-
             }
 
-
-
-                // dd($request->all());
-            // $eachimages=$request->event_images;
+            $newEventDetails->save();
+            }
+        }
+            if (is_array($request->video_link) || is_object($request->video_link)) {
+            foreach($request->video_link as $eachVideo){
+                $newPresentationVideo = new EventPresentationVideo();
+                $newPresentationVideo->event_id = $newEventDetails->id;
+                $newPresentationVideo->video_link = $eachVideo['video_link'];
+                $newPresentationVideo->save();
+            }
+        }
+        if (is_array($request->event_images) || is_object($request->event_images)) {
         foreach($request->event_images as $eachimages){
             $newEventImages = new EventImages();
             $newEventImages->event_id=$newEventDetails->id;
@@ -563,9 +543,9 @@ class MetaDataController extends Controller
                 }
             }
             $newEventImages->save();
-
         }
-
+    }
+    if (is_array($request->presentation_pdf) || is_object($request->presentation_pdf)) {
         foreach($request->presentation_pdf as $eachPdf){
             $newEventPdf=new EventPresentationPdf();
             $newEventPdf->event_id=$newEventDetails->id;
@@ -577,10 +557,7 @@ class MetaDataController extends Controller
             }
             $newEventPdf->save();
         }
-
-
-
-
+    }
 
             return $this->sendResponse([], 'Event Details added successfully', true);
         }
@@ -589,9 +566,9 @@ class MetaDataController extends Controller
         }
     }
 
+
     public function getAllEventDetails(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -601,12 +578,9 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-            // $query = LocationDetails::query();
             $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
             if ($request->has('filter')) {
                 $filter = $request->filter;
-
                 if ($filter === 'upcoming') {
                     $query = $query->where('event_end_date', '>', date('Y-m-d'));
                 } elseif ($filter === 'past') {
@@ -614,7 +588,15 @@ class MetaDataController extends Controller
                 }
             }
             $count = $query->count();
-
+            if ($request->has('event_name')) {
+                $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
+            }
+            if ($request->has('event_start_date')) {
+                $query = $query->where('event_start_date', 'like', '%' . $request->event_start_date . '%');
+            }
+            if ($request->has('event_fee')) {
+                $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+            }
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -652,8 +634,6 @@ class MetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-
-
     // public function getAllEventDetails(Request $request)
     // {
 
@@ -665,8 +645,6 @@ class MetaDataController extends Controller
     //         if ($validator->fails()) {
     //             return $this->sendError('Validation Error.', $validator->errors(), 400);
     //         }
-
-
     //         $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
     //         $count = $query->count();
 
@@ -785,10 +763,7 @@ class MetaDataController extends Controller
             if ($request->has('pincode')) {
                 $editLocation->pincode=$request->pincode;
             }
-
-
             $editLocation->save();
-
                     // $eachPresentation=$request->video_link;
             foreach($request->video_link as $eachPresentation){
                 $editPresentationVideo = new EventPresentationVideo();
@@ -799,11 +774,7 @@ class MetaDataController extends Controller
                     }
                 }
                 $editPresentationVideo->save();
-
             }
-
-
-
                 // dd($request->all());
             // $eachimages=$request->event_images;
         foreach($request->event_images as $eachimages){
@@ -815,9 +786,7 @@ class MetaDataController extends Controller
                 }
             }
             $editEventImages->save();
-
         }
-
         foreach($request->presentation_pdf as $eachPdf){
             $editEventPdf=new EventPresentationPdf();
             $editEventPdf->event_id=$editEventDetails->id;
@@ -858,7 +827,6 @@ class MetaDataController extends Controller
 
     public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'company_name' => 'required|string|max:255',
@@ -867,9 +835,7 @@ class MetaDataController extends Controller
                 'end_date' => 'required|date',
                 'mobile_no' => 'required',
                 'limits' => 'required',
-
                 // 'location_id' => 'required|integer|exists:location_details,id',
-
                 'company_logo' => 'required',
                 'benifits' => 'required|string|nullable',
                 // 'offers_pdf'=>'required|nullable',
@@ -883,8 +849,6 @@ class MetaDataController extends Controller
                 'state' => 'required|nullable|string|max:255',
                 'country' => 'required|nullable|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
-
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -905,7 +869,6 @@ class MetaDataController extends Controller
             $newAssociationDetails->end_date=$request->end_date;
             $newAssociationDetails->mobile_no=$request->mobile_no;
             $newAssociationDetails->limits=$request->limits;
-
             // $newAssociationDetails->location_id=$request->location_id;
             $newAssociationDetails->benifits = $request->benifits;
             if ($request->company_logo != "") {
@@ -941,18 +904,14 @@ class MetaDataController extends Controller
                 $newOffer->discount = $eachoffers['discount']; // No need for ['discount']
                 $newOffer->save();
             }
-
-
             return $this->sendResponse([], 'Association Details added successfully', true);
         }
         catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
     public function getAllAssociationDetails(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -961,8 +920,6 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = AssociationDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
             $count = $query->count();
 
@@ -989,9 +946,7 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-
     public function getAssociationDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -1003,7 +958,6 @@ class MetaDataController extends Controller
             }
             $getitems = AssociationDetails::query()->where('id', $request->id)->with(['location_details'])->first();
             $getOffersOfAssociation = OffersAssociation::query()->where('association_id', $request->id)->get();
-
             return $this->sendResponse(["association_details" => $getitems,"offers_of_association"=>$getOffersOfAssociation], 'Data fetch successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
@@ -1014,13 +968,11 @@ class MetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|integer|exists:association_details,id',
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $editAssociationDetails = AssociationDetails::query()->where('id', $request->id)->first();
-
             if ($request->has('company_name')) {
                 $editAssociationDetails->company_name=$request->company_name;
             }   if ($request->has('company_email')) {
@@ -1037,7 +989,6 @@ class MetaDataController extends Controller
             //  if ($request->has('location_id')) {
             //     $editAssociationDetails->location_id=$request->location_id;
             // }
-
             if ($request->company_logo != "") {
                 if (!str_contains($request->company_logo, "http")) {
                     $editAssociationDetails->company_logo = $this->saveFile($request->company_logo, $request->company_name);
@@ -1056,11 +1007,8 @@ class MetaDataController extends Controller
                     $editAssociationDetails->images = $this->saveAssociationImage($request->images,$request->company_name);
                 }
             }
-
             $editAssociationDetails->save();
-
             $editLocation = LocationDetails::query()->where('id', $editAssociationDetails->location_id)->first();
-
             if ($request->has('address_line_1')) {
                 $editLocation->address_line_1=$request->address_line_1;
             }
@@ -1079,11 +1027,8 @@ class MetaDataController extends Controller
             if ($request->has('pincode')) {
                 $editLocation->pincode=$request->pincode;
             }
-
-
             $editLocation->save();
             $arraYOfNewAssociationId = [];
-
             foreach ($request->offers as $eachoffers) {
                 // $editOffer = OffersAssociation::query()->where('association_id', $editAssociationDetails->id) ->where('id', $eachoffers['association_id'])->firstOrNew();
                 $editOffer = OffersAssociation::query()
@@ -1128,7 +1073,6 @@ class MetaDataController extends Controller
     }
     public function getRegisterToAssociation(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1182,13 +1126,11 @@ class MetaDataController extends Controller
     // }
     public function addNewsLetterForStudent(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 // 'for_newsletter' => 'required',
                 'upload_newsletter_pdf'=>'required',
                 'uploaded_date' => 'required|date',
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1196,14 +1138,11 @@ class MetaDataController extends Controller
             $newNewsLetterDetails = new NewsLetterDetails();
             $newNewsLetterDetails->for_newsletter='Student';
             $newNewsLetterDetails->uploaded_date=$request->uploaded_date;
-
             if ($request->upload_newsletter_pdf != "") {
                 if (!str_contains($request->upload_newsletter_pdf, "http")) {
                     $newNewsLetterDetails->upload_newsletter_pdf = $this->saveNewsLetterPdf($request->upload_newsletter_pdf,$request->for_newsletter);
                 }
             }
-
-
             $newNewsLetterDetails->save();
             return $this->sendResponse([], 'News letter added successfully', true);
         }
@@ -1228,14 +1167,11 @@ class MetaDataController extends Controller
             $newNewsLetterDetails = new NewsLetterDetails();
             $newNewsLetterDetails->for_newsletter='Members';
             $newNewsLetterDetails->uploaded_date=$request->uploaded_date;
-
             if ($request->upload_newsletter_pdf != "") {
                 if (!str_contains($request->upload_newsletter_pdf, "http")) {
                     $newNewsLetterDetails->upload_newsletter_pdf = $this->saveNewsLetterPdf($request->upload_newsletter_pdf,$request->for_newsletter);
                 }
             }
-
-
             $newNewsLetterDetails->save();
             return $this->sendResponse([], 'News letter added successfully', true);
         }
@@ -1243,11 +1179,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
-
     public function getAllNewLetterDetailsForStudent(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1256,8 +1189,6 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = NewsLetterDetails::query()->where('for_newsletter', 'student'); // Replace "ModelName" with your actual model name
             // if ($request->has('userType')) {
             //     $userType = $request->userType;
@@ -1290,10 +1221,8 @@ class MetaDataController extends Controller
         }
 
     }
-
     public function getAllNewLetterDetailsForMembers(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1302,12 +1231,8 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = NewsLetterDetails::query()->where('for_newsletter', 'members'); // Replace "ModelName" with your actual model name
-
             $count = $query->count();
-
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -1325,12 +1250,9 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-
     public function getAllNewsLetters(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1339,12 +1261,8 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = NewsLetterDetails::query(); // Replace "ModelName" with your actual model name
-
             $count = $query->count();
-
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -1362,9 +1280,7 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-
     public function getNewsLetterDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -1385,33 +1301,27 @@ class MetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|integer|exists:newsletter_details,id',
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $editNewsLetterDetails = NewsLetterDetails::query()->where('id', $request->id)->first();
-
             if ($request->has('for_newsletter')) {
                 $editNewsLetterDetails->for_newsletter='Student';
             }   if ($request->has('uploaded_date')) {
                 $editNewsLetterDetails->uploaded_date=$request->uploaded_date;
             }
-
             if ($request->upload_newsletter_pdf != "") {
                 if (!str_contains($request->upload_newsletter_pdf, "http")) {
                     $editNewsLetterDetails->upload_newsletter_pdf = $this->saveNewsLetterPdf($request->upload_newsletter_pdf, $request->upload_newsletter_pdf);
                 }
             }
-
             $editNewsLetterDetails->save();
             return $this->sendResponse([], 'NewsLetter details updated successfully');
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-
-
     public function editNewsLetterForMembers(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -1423,21 +1333,18 @@ class MetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $editNewsLetterDetails = NewsLetterDetails::query()->where('id', $request->id)->first();
-
             if ($request->has('for_newsletter')) {
                 $editNewsLetterDetails->for_newsletter='Members';
             }   if ($request->has('uploaded_date')) {
                 $editNewsLetterDetails->uploaded_date=$request->uploaded_date;
             }
-
             if ($request->upload_newsletter_pdf != "") {
                 if (!str_contains($request->upload_newsletter_pdf, "http")) {
                     $editNewsLetterDetails->upload_newsletter_pdf = $this->saveNewsLetterPdf($request->upload_newsletter_pdf, $request->upload_newsletter_pdf);
                 }
             }
-
             $editNewsLetterDetails->save();
-            return $this->sendResponse([], 'NewsLetter details updated successfully');
+            return $this->sendResponse([], 'Newsletter details updated successfully');
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
@@ -1453,22 +1360,19 @@ class MetaDataController extends Controller
             }
             $user = NewsLetterDetails::query()->where('id', $request->id)->first();
             $user->delete();
-            return $this->sendResponse([], 'NewsLetter Details deleted successfully', true);
+            return $this->sendResponse([], 'Newsletter Details deleted successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-
     public function addVoluntaryContribution(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'user_type' => 'required|string',
                 'price'=>'required',
                 'available_place' => 'required',
                 'quantity'=>'required|integer'
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1485,11 +1389,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
-
     public function getVoluntaryContribution(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1498,11 +1399,8 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = VoluntaryContribution::query(); // Replace "ModelName" with your actual model name
             $count = $query->count();
-
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -1520,9 +1418,7 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-
     public function getVoluntaryContributionById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -1561,8 +1457,6 @@ class MetaDataController extends Controller
             if ($request->has('quantity')) {
                 $editVoluntaryContribution->quantity=$request->quantity;
             }
-
-
             $editVoluntaryContribution->save();
             return $this->sendResponse([], 'VoluntaryContribution Details updated successfully');
         } catch (Exception $e) {
@@ -1585,24 +1479,17 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-
-
     public function addPaymentMode(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
-
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $newPaymentMode = new PaymentMode();
             $newPaymentMode->name=$request->name;
-
-
             $newPaymentMode->save();
             return $this->sendResponse([], 'Payment Mode Details added successfully', true);
         }
@@ -1668,7 +1555,6 @@ class MetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|integer|exists:payment_mode,id',
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1678,9 +1564,6 @@ class MetaDataController extends Controller
             if ($request->has('name')) {
                 $editPaymentMode->name=$request->name;
             }
-
-
-
             $editPaymentMode->save();
             return $this->sendResponse([], 'Payment Mode Details updated successfully');
         } catch (Exception $e) {
@@ -1703,11 +1586,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-
-
     public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'ca_firm_name' => 'required',
@@ -1727,8 +1607,6 @@ class MetaDataController extends Controller
                 'state' => 'required|nullable|string|max:255',
                 'country' => 'required|nullable|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
-
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1761,11 +1639,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
-
     public function getAllVacancyDetails(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1774,8 +1649,6 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = VacancyDetails::query()->with(['location_details','user_details']); // Replace "ModelName" with your actual model name
             // Apply the filter for the CA firm name if it is provided in the request
             if ($request->has('ca_firm_name')) {
@@ -1786,10 +1659,8 @@ class MetaDataController extends Controller
                 $Position = $request->input('position');
                 $query->where('position', 'LIKE', "%{$Position}%");
             }
-
             if ($request->has('pincode')) {
                 $locationId = $request->input('pincode');
-
                 // Assuming there is a relationship between VacancyDetails and LocationDetails model
                 $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
                     $locationQuery->where(function ($query) use ($locationId) {
@@ -1800,7 +1671,6 @@ class MetaDataController extends Controller
             }
             if ($request->has('city')) {
                 $locationId = $request->input('city');
-
                 // Assuming there is a relationship between VacancyDetails and LocationDetails model
                 $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
                     $locationQuery->where(function ($query) use ($locationId) {
@@ -1811,9 +1681,7 @@ class MetaDataController extends Controller
             }
             $currentDate = date('Y-m-d');
             $query->where('expiry_date', '>=', $currentDate);
-
             $count = $query->count();
-
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -1831,9 +1699,7 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-
     public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -1854,7 +1720,6 @@ class MetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|integer|exists:vacancy_details,id',
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1866,7 +1731,7 @@ class MetaDataController extends Controller
             }
               if ($request->has('position')) {
             $editVacancy->position = $request->position;
-        }
+            }
             if ($request->has('comments')) {
                 $editVacancy->comments=$request->comments;
             }if ($request->has('company_email')) {
@@ -1912,8 +1777,6 @@ class MetaDataController extends Controller
             if ($request->has('pincode')) {
                 $editLocation->pincode=$request->pincode;
             }
-
-
             $editLocation->save();
             return $this->sendResponse([], 'Vacancy Details updated successfully');
         } catch (Exception $e) {
@@ -1936,10 +1799,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-
     public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'event_id' => 'required|integer|exists:event_details,id',
@@ -1952,8 +1813,6 @@ class MetaDataController extends Controller
                 'voluntary_donation_amount' => 'required|nullable',
                 'event_price' => 'required|nullable',
                 'total_amount' => 'required|nullable',
-
-
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1977,10 +1836,8 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
     public function getAllEventRegistration(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1989,11 +1846,8 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-
-
             $query = EventRegistration::query()->with(['event_details','user_details','paymentmode_details','voluntary_contribution_details']); // Replace "ModelName" with your actual model name
             $count = $query->count();
-
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -2011,9 +1865,7 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-
     public function getEventRegistrationById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -2029,7 +1881,6 @@ class MetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-
     public function editEventRegistration(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -2041,7 +1892,6 @@ class MetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $editVacancy = EventRegistration::query()->where('id', $request->id)->first();
-
             if ($request->has('event_id')) {
                 $editVacancy->event_id=$request->event_id;
             }  if ($request->has('position')) {
@@ -2069,8 +1919,6 @@ class MetaDataController extends Controller
 			if($request->has('total_amount')){
 				$editVacancy->total_amount = $request->total_amount;
 			}
-
-
             $editVacancy->save();
             return $this->sendResponse([], 'event registration updated successfully');
         } catch (Exception $e) {
@@ -2160,23 +2008,16 @@ class MetaDataController extends Controller
             if ($existingRegistration) {
                 return $this->sendError('User is already registered for an association.', [], 422);
             }
-
-
             $association = AssociationDetails::find($request->association_id);
-
             if (!$association) {
                 return $this->sendError('Association not found.', [], 404);
             }
-
             $limit = (int) $association->limit;
             $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)->count();
-
             // Check if the association's limit is set and has reached its capacity
             if ($registeredUsersCount >= $limit && $limit==$limit &&$limit!=$registeredUsersCount) {
                 return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
             }
-
-
             // Proceed with registering the user to the association
             $newDetails = new RegisterToAssocitationDetails;
             $newDetails->user_id = $request->user_id;
@@ -2184,14 +2025,11 @@ class MetaDataController extends Controller
             $newDetails->created_by_user_id = $request->created_by_user_id;
             $newDetails->offers_association_id=$request->offers_association_id;
             $newDetails->save();
-
             return $this->sendResponse([], 'RegisterToAssocitationDetails Created Successfully.', true);
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
-
   public function getRegisterToAssocitationDetails(Request $request){
 	try{
 		$validator = Validator::make($request->all(), [
@@ -2531,8 +2369,6 @@ class MetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(),500);
         }
 }
-
-
   public function editOffersAssociation(Request $request):  \Illuminate\Http\JsonResponse
   {
       try {
@@ -2860,10 +2696,7 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
 	}catch (Exception $e){
 		return $this->sendError('$e->getMessage()', $e->getTrace(),500);
 	}
-  }
-
-
-
+}
 
   public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
   {
@@ -2881,8 +2714,6 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
           'state' => 'required|nullable|string|max:255',
           'country' => 'required|nullable|string|max:255',
           'pincode' => 'required|nullable|string|max:255',
-
-
           ]);
           if ($validator->fails()) {
               return $this->sendError('Validation Error.', $validator->errors());
@@ -2895,16 +2726,13 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
           $NewLocationDetails->country=$request->country;
           $NewLocationDetails->pincode=$request->pincode;
           $NewLocationDetails->save();
-
           $newDetails = new StudentBatches;
           $newDetails->location_id=$NewLocationDetails->id;
             $newDetails->batch_name = $request->batch_name;
             $newDetails->fee = $request->fee;
             $newDetails->start_date=$request->start_date;
             $newDetails->end_date=$request->end_date;
-
             $newDetails->save();
-
                   return $this->sendResponse([],' Student batches added successfully.', true);
 
         }

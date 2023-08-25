@@ -81,14 +81,8 @@ class AuthController extends Controller
 
             $role = Role::where('name', $request->role)->first();
             $user = User::find(1);
-             $studentRole = Role::where('name', 'student')->first();
-            $adminRole = Role::where('name', 'admin')->first();
-            $memberRole=Role::where('name','members')->first();
-            // Assign roles to the user
-             $newUser->assignRole($studentRole); // Assign student role
-            $newUser->assignRole($adminRole);
-             $newUser->assignRole($memberRole);
-            $newUser->assignRole($Role);
+
+            $newUser->assignRole($role);
             $newUser->save();
             $token = JWTAuth::fromUser($newUser);
             $response = ['token' => $token];
@@ -99,30 +93,6 @@ class AuthController extends Controller
         }
     }
 
-    // public function getAuthenticatedUser()
-    //     {
-    //             try {
-
-    //                     if (! $user = JWTAuth::parseToken()->authenticate()) {
-    //                             return response()->json(['user_not_found'], 404);
-    //                     }
-
-    //             } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-    //                     return response()->json(['token_expired'], $e->getStatusCode());
-
-    //             } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-    //                     return response()->json(['token_invalid'], $e->getStatusCode());
-
-    //             } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-    //                     return response()->json(['token_absent'], $e->getStatusCode());
-
-    //             }
-
-    //             return response()->json(compact('user'));
-    //     }
 
         public function forgetPassword(Request $request)
         {
@@ -175,13 +145,10 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 return $this->sendError('Email Id does Not Exist', [], 200);
             }
-
-
             $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
             $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
@@ -189,19 +156,52 @@ class AuthController extends Controller
             if ($time_diff > 5) {
                 return $this->sendError('Time Limit Expired', [], 200);
             }
-
             if ($user->forget_password_otp != $request->otp) {
                 return $this->sendError('Invalid Otp ! ', [], 200);
             }
-
             $user->password = Hash::make($request->new_password);
             $user->save();
-
             return $this->sendResponse([], 'Password Changed Successfully', true);
-
-
         } catch (Exception $e) {
             return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
+        }
+    }
+    public function UpdateProfile(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'nullable',
+                'email' => 'nullable',
+                'last_name' => 'nullable',
+                'mobile_no' => 'nullable',
+                'date_of_birth' => 'nullable',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+
+            $user=Auth::user()->id;
+          
+            $editUser = User::query()->where('id',$user)->first();
+            if ($request->has('name')) {
+                $editUser->name=$request->name;
+            }
+            if ($request->has('last_name')) {
+                $editUser->last_name=$request->last_name;
+            }
+            if ($request->has('email')) {
+                $editUser->email=$request->email;
+            }
+            if ($request->has('mobile_no')) {
+                $editUser->mobile_no=$request->mobile_no;
+            }
+            if ($request->has('date_of_birth')) {
+                $editUser->date_of_birth=$request->date_of_birth;
+            }
+           $editUser->save();
+            return $this->sendResponse([], 'Profile updated Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
 }

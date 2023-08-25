@@ -5,6 +5,15 @@ namespace App\Http\Controllers\V1\Website;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\EventDetails;
+use App\Models\EventImages;
+use App\Models\EventPresentationPdf;
+use App\Models\EventPresentationVideo;
+use App\Models\NewsLetterDetails;
+use App\Models\StudentNoticeBoard;
+use App\Models\VacancyDetails;
+use App\Models\AssociationDetails;
+use App\Models\OffersAssociation;
 use Auth;
 use JWTAuth;
 use Carbon\Carbon;
@@ -275,5 +284,263 @@ public function verifyOtp(Request $request)
     // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
 
     return response()->json(['message' => 'OTP verified successfully'], true);
+}
+public function getAllEventDetails(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'filter' => 'in:upcoming,past',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
+        if ($request->has('filter')) {
+            $filter = $request->filter;
+            if ($filter === 'upcoming') {
+                $query = $query->where('event_end_date', '>', date('Y-m-d'));
+            } elseif ($filter === 'past') {
+                $query = $query->where('event_end_date', '<', date('Y-m-d'));
+            }
+        }
+        $count = $query->count();
+        if ($request->has('event_name')) {
+            $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
+        }
+        if ($request->has('event_start_date')) {
+            $query = $query->where('event_start_date', 'like', '%' . $request->event_start_date . '%');
+        }
+        if ($request->has('event_fee')) {
+            $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+        }
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+        $data = $query->orderBy('id', 'DESC')->get();
+        foreach ($data as $user) {
+            if ($user['id'] != null) {
+                $product = EventPresentationVideo::query()->where('event_id', $user['id'])->get();
+                $user['event_presentation_video'] = $product;
+            }
+        }
+        foreach ($data as $user) {
+            if ($user['id'] != null) {
+                $product = EventImages::query()->where('event_id', $user['id'])->get();
+                $user['event_images'] = $product;
+            }
+        }
+        foreach ($data as $user) {
+            if ($user['id'] != null) {
+                $product = EventPresentationPdf::query()->where('event_id', $user['id'])->get();
+                $user['event_presentation_pdf'] = $product;
+            }
+        }
+        if (count($data) > 0) {
+            $response['event_details'] = $data;
+            // $response['LocationDetails']=$data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
+public function getAllNewLetterDetailsForStudent(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $query = NewsLetterDetails::query()->where('for_newsletter', 'student');
+
+        $count = $query->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+        $data = $query->orderBy('id', 'DESC')->get();
+        if (count($data) > 0) {
+            $response['news_letter_details'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+
+}
+public function getAllNewLetterDetailsForMembers(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $query = NewsLetterDetails::query()->where('for_newsletter', 'members'); // Replace "ModelName" with your actual model name
+        $count = $query->count();
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+        $data = $query->orderBy('id', 'DESC')->get();
+        if (count($data) > 0) {
+            $response['news_letter_details'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
+public function getStudentNoticeBoard(Request $request)
+ {
+	try{
+		$validator = Validator::make($request->all(), [
+			'pageNo'=>'numeric',
+			'limit'=>'numeric',
+		]);
+		if ($validator->fails()) {
+			return $this->sendError('Validation Error.', $validator->errors(),400);
+		}
+		$query = StudentNoticeBoard::query()->where('type', 'student');
+		$count=$query->count();
+		if($request->has('pageNo') && $request->has('limit')){
+			$limit = $request->limit;
+			$pageNo = $request->pageNo;
+			$skip = $limit*$pageNo;
+			$query= $query->skip($skip)->limit($limit);
+		}
+		$data = $query->get();
+		if(count($data)>0){
+			$response['notice_board'] =  $data;
+			$response['count']=$count;
+			return $this->sendResponse($response,'Data Fetched Successfully', true);
+		}else{
+			return $this->sendResponse('No Data Available', [],false);
+		}
+	}catch (\Exception $e){
+            return $this->sendError($e->getMessage(), $e->getTrace(),500);
+        }
+}
+public function getAllVacancyDetails(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $query = VacancyDetails::query()->with(['location_details','user_details']); // Replace "ModelName" with your actual model name
+        // Apply the filter for the CA firm name if it is provided in the request
+        if ($request->has('ca_firm_name')) {
+            $caFirmName = $request->input('ca_firm_name');
+            $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
+        }
+        if ($request->has('position')) {
+            $Position = $request->input('position');
+            $query->where('position', 'LIKE', "%{$Position}%");
+        }
+        if ($request->has('pincode')) {
+            $locationId = $request->input('pincode');
+            // Assuming there is a relationship between VacancyDetails and LocationDetails model
+            $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+                $locationQuery->where(function ($query) use ($locationId) {
+                    $query->where('pincode', 'LIKE', "%{$locationId}%");
+                        // ->orWhere('city', 'LIKE', "%{$locationId}%");
+                });
+            });
+        }
+        if ($request->has('city')) {
+            $locationId = $request->input('city');
+            // Assuming there is a relationship between VacancyDetails and LocationDetails model
+            $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+                $locationQuery->where(function ($query) use ($locationId) {
+                    $query->where('city', 'LIKE', "%{$locationId}%");
+                        // ->orWhere('city', 'LIKE', "%{$locationId}%");
+                });
+            });
+        }
+        $currentDate = date('Y-m-d');
+        $query->where('expiry_date', '>=', $currentDate);
+        $count = $query->count();
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+        $data = $query->orderBy('id', 'DESC')->get();
+        if (count($data) > 0) {
+            $response['vacancy_details'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
+public function getAllAssociationDetails(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $query = AssociationDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
+        $count = $query->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+        $data = $query->orderBy('id', 'DESC')->get();
+        foreach ($data as $user) {
+            if ($user['id'] != null) {
+                $product = OffersAssociation::query()->where('association_id', $user['id'])->get();
+                $user['offers_of_association'] = $product;
+            }
+        }
+        if (count($data) > 0) {
+            $response['association_details'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
 }
 }

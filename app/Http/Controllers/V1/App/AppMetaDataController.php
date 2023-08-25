@@ -65,7 +65,6 @@ class AppMetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(),500);
         }
   }
-
   public function saveCompanyLogo($image): string
   {
       $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
@@ -98,7 +97,6 @@ class AppMetaDataController extends Controller
   }
   public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
   {
-
       try {
           $validator = Validator::make($request->all(), [
             //   'company_name' => 'required|string|max:255',
@@ -128,7 +126,6 @@ class AppMetaDataController extends Controller
           $newAssociationDetails->end_date=$request->end_date;
           $newAssociationDetails->mobile_no=$request->mobile_no;
           $newAssociationDetails->limits=$request->limits;
-
           $newAssociationDetails->location_id=$request->location_id;
           $newAssociationDetails->benifits = $request->benifits;
           if ($request->company_logo != "") {
@@ -154,7 +151,6 @@ class AppMetaDataController extends Controller
         //       $newOffer->offers=$eachoffers['offers'];
         //       $newOffer->discount=$eachoffers['discount'];
         //       $newOffer->save();
-
         //   }
           foreach ($request->offers as $eachoffers) {
             $newOffer = new OffersAssociation();
@@ -163,9 +159,6 @@ class AppMetaDataController extends Controller
             $newOffer->discount = $eachoffers['discount'];
             $newOffer->save();
         }
-
-
-
           return $this->sendResponse([], 'Association Details added successfully', true);
       }
       catch (Exception $e) {
@@ -179,21 +172,15 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             'user_id' => 'required|nullable',
             'association_id' => 'required|nullable',
             'created_by_user_id' => 'required|nullable',
-
-
         ]);
-
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
-
         $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)->first();
 
         if ($existingRegistration) {
             return $this->sendError('User is already registered for an association.', [], 422);
         }
-
-
         $association = AssociationDetails::find($request->association_id);
 
         if (!$association) {
@@ -207,8 +194,6 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
         if ($registeredUsersCount >= $limit && $limit==$limit &&$limit!=$registeredUsersCount) {
             return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
         }
-
-
         // Proceed with registering the user to the association
         $newDetails = new RegisterToAssocitationDetails;
         $newDetails->user_id = $request->user_id;
@@ -216,11 +201,6 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
         $newDetails->created_by_user_id = $request->created_by_user_id;
         $newDetails->offers_association_id=$request->offers_association_id;
         $newDetails->save();
-
-
-
-
-
         return $this->sendResponse([], 'RegisterToAssocitationDetails Created Successfully.', true);
     } catch (Exception $e) {
         return $this->sendError('Something went wrong', $e->getTrace(), 413);
@@ -311,130 +291,6 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
       }
   }
 
-
-
-
-//   public function getUpcomingEvent(Request $request)
-//     {
-
-//         try {
-//             $validator = Validator::make($request->all(), [
-//                 'pageNo' => 'numeric',
-//                 'limit' => 'numeric',
-//                 'filter' => 'in:upcoming,past',
-//             ]);
-//             if ($validator->fails()) {
-//                 return $this->sendError('Validation Error.', $validator->errors(), 400);
-//             }
-
-//             // $query = LocationDetails::query();
-//             $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
-//             if ($request->has('filter')) {
-//                 $filter = $request->filter;
-
-//                 if ($filter === 'upcoming') {
-//                     $query = $query->where('event_end_date', '>', date('Y-m-d'));
-//                 }
-
-//             }
-//             $count = $query->count();
-
-//             if ($request->has('pageNo') && $request->has('limit')) {
-//                 $limit = $request->limit;
-//                 $pageNo = $request->pageNo;
-//                 $skip = $limit * $pageNo;
-//                 $query = $query->skip($skip)->limit($limit);
-//             }
-//             $data = $query->orderBy('id', 'DESC')->get();
-//             foreach ($data as $user) {
-//                 if ($user['id'] != null) {
-//                     $product = EventPresentationVedio::query()->where('event_id', $user['id'])->get();
-//                     $user['event_presentation_vedio'] = $product;
-//                 }
-//             }
-//             foreach ($data as $user) {
-//                 if ($user['id'] != null) {
-//                     $product = EventImages::query()->where('event_id', $user['id'])->get();
-//                     $user['event_images'] = $product;
-//                 }
-//             }
-
-//             if (count($data) > 0) {
-//                 $response['EventDetails'] = $data;
-//                 // $response['LocationDetails']=$data;
-//                 $response['count'] = $count;
-//                 return $this->sendResponse($response, 'Data Fetched Successfully', true);
-//             } else {
-//                 return $this->sendResponse('No Data Available', [], false);
-//             }
-//         } catch (Exception $e) {
-//             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
-//         }
-//     }
-    // public function getPastEvents(Request $request)
-    // {
-
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'pageNo' => 'numeric',
-    //             'limit' => 'numeric',
-    //             'filter' => 'in:upcoming,past',
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors(), 400);
-    //         }
-
-    //         // $query = LocationDetails::query();
-    //         $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
-    //         if ($request->has('filter')) {
-    //             $filter = $request->filter;
-
-    //             // if ($filter === 'upcoming') {
-    //             //     $query = $query->where('event_end_date', '>', date('Y-m-d'));
-    //             // }
-    //             if ($filter === 'past') {
-    //                 $query = $query->where('event_end_date', '<', date('Y-m-d'));
-    //             }
-    //         }
-    //         $count = $query->count();
-
-    //         if ($request->has('pageNo') && $request->has('limit')) {
-    //             $limit = $request->limit;
-    //             $pageNo = $request->pageNo;
-    //             $skip = $limit * $pageNo;
-    //             $query = $query->skip($skip)->limit($limit);
-    //         }
-    //         $data = $query->orderBy('id', 'DESC')->get();
-    //         foreach ($data as $user) {
-    //             if ($user['id'] != null) {
-    //                 $product = EventPresentationVedio::query()->where('event_id', $user['id'])->get();
-    //                 $user['event_presentation_vedio'] = $product;
-    //             }
-    //         }
-    //         foreach ($data as $user) {
-    //             if ($user['id'] != null) {
-    //                 $product = EventImages::query()->where('event_id', $user['id'])->get();
-    //                 $user['event_images'] = $product;
-    //             }
-    //         }
-    //         // foreach ($data as $user) {
-    //         //     if ($user['id'] != null) {
-    //         //         $product = LocationDetails::query()->where('location_id', $user['id'])->get();
-    //         //         $user['location_details'] = $product;
-    //         //     }
-    //         // }
-    //         if (count($data) > 0) {
-    //             $response['EventDetails'] = $data;
-    //             // $response['LocationDetails']=$data;
-    //             $response['count'] = $count;
-    //             return $this->sendResponse($response, 'Data Fetched Successfully', true);
-    //         } else {
-    //             return $this->sendResponse('No Data Available', [], false);
-    //         }
-    //     } catch (Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
-    //     }
-    // }
     public function getPastEvents(Request $request)
 {
     try {
@@ -509,9 +365,6 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
 }
-
-
-
     public function getEventDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {

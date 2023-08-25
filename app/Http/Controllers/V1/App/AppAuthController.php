@@ -51,8 +51,6 @@ class AppAuthController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-
-
     public function registerUser(Request $request)
     {
         try {
@@ -69,12 +67,10 @@ class AppAuthController extends Controller
             if ($request->role == 'SuperAdmin') {
                 return $this->sendResponse([], 'Sorry you can\'t be super admin. It\'s our property', true);
             }
-
             // Check if the requested role is either "student" or "member"
             if ($request->role != 'student' && $request->role != 'members') {
                 return $this->sendError('Invalid role.', [], 400);
             }
-
             $newUser = new User();
             $newUser->password = Hash::make($request['password']);
             $newUser->name = $request->name;
@@ -83,14 +79,12 @@ class AppAuthController extends Controller
             $newUser->date_of_birth = $request->date_of_birth;
             $newUser->mobile_no = $request->mobile_no;
             $newUser->otp = $request->otp;
-
             // Find the corresponding role based on the request
             $role = Role::where('name', $request->role)->first();
            // echo $role;
             if (!$role) {
                 return $this->sendError('Invalid role.', [], 422);
             }
-
             $studentRole = Role::where('name', 'student')->first();
 $adminRole = Role::where('name', 'admin')->first();
 $memberRole = Role::where('name', 'members')->first();
@@ -113,8 +107,6 @@ return $this->sendResponse($response, 'Registered Successfully', true);
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
-
-
         public function forgetPassword(Request $request)
         {
             try{
@@ -152,9 +144,7 @@ return $this->sendResponse($response, 'Registered Successfully', true);
             }catch(Exception $e){
                 return $this->sendError("Something went wrong",[$e->getMessage(),$e->getTrace()],500);
             }
-
         }
-
     public function changeForgetPassword(Request $request)
     {
         try {
@@ -171,8 +161,6 @@ return $this->sendResponse($response, 'Registered Successfully', true);
             if (!$user) {
                 return $this->sendError('Email Id does Not Exist', [], true);
             }
-
-
             $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
             $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
 
@@ -180,17 +168,12 @@ return $this->sendResponse($response, 'Registered Successfully', true);
             if ($time_diff > 5) {
                 return $this->sendError('Time Limit Expired', [], true);
             }
-
             if ($user->forget_password_otp != $request->otp) {
                 return $this->sendError('Invalid Otp ! ', [], true);
             }
-
             $user->password = Hash::make($request->new_password);
             $user->save();
-
             return $this->sendResponse([], 'Password Changed Successfully', true);
-
-
         } catch (Exception $e) {
             return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
         }

@@ -42,6 +42,8 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
    Route::post('user', [AuthController::class, 'getAuthenticatedUser']);
         Route::post('closed', [MetaDataController::class, 'closed']);
 
+        //update profile
+        Route::post('UpdateProfile', [AuthController::class, 'UpdateProfile']);
 
         //DashboardCount
         Route::get('getDashboardCount', [DashboardController::class, 'getDashboardCount']);
@@ -238,6 +240,12 @@ Route::post('userLogin', [WebAuthController::class, 'userLogin']);
 
 Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
 Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
+Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
+Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
+Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
+Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
+Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
+Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
 
     Route::get('open', 'WebAuthController@open');
 
