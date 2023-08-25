@@ -1,11 +1,10 @@
 @extends('frontend.layouts.main')
 @section('main-container')
-
-<div class="owl-carousel homeBanner__slider">
-    <div class="item">
-        <section class="hero set-bg" data-setbg="{{ url('frontend/img/homeBannerSlide1.jpeg') }}">
-            <div class="container">
-                {{-- <div class="row">
+    <div class="owl-carousel homeBanner__slider">
+        <div class="item">
+            <section class="hero set-bg" data-setbg="{{ url('frontend/img/homeBannerSlide1.jpeg') }}">
+                <div class="container">
+                    {{-- <div class="row">
                     <div class="col-lg-5">
                         <div class="hero__text">
                             <h2>Find The Best Monthly Payment</h2>
@@ -51,13 +50,13 @@
                         </div>
                     </div>
                 </div> --}}
-            </div>
-        </section>
-    </div>
-    <div class="item">
-        <section class="hero set-bg" data-setbg="{{ url('frontend/img/homeBannerSlide2.jpeg') }}">
-            <div class="container">
-                {{-- <div class="row">
+                </div>
+            </section>
+        </div>
+        <div class="item">
+            <section class="hero set-bg" data-setbg="{{ url('frontend/img/homeBannerSlide2.jpeg') }}">
+                <div class="container">
+                    {{-- <div class="row">
                     <div class="col-lg-5">
                         <div class="hero__text">
                             <h2>Find The Best Monthly Payment</h2>
@@ -103,13 +102,13 @@
                         </div>
                     </div>
                 </div> --}}
-            </div>
-        </section>
-    </div>
-    <div class="item">
-        <section class="hero set-bg" data-setbg="{{ url('frontend/img/hero-bg.jpg') }}">
-            <div class="container">
-                {{-- <div class="row">
+                </div>
+            </section>
+        </div>
+        <div class="item">
+            <section class="hero set-bg" data-setbg="{{ url('frontend/img/hero-bg.jpg') }}">
+                <div class="container">
+                    {{-- <div class="row">
                     <div class="col-lg-5">
                         <div class="hero__text">
                             <h2>Find The Best Monthly Payment</h2>
@@ -155,11 +154,11 @@
                         </div>
                     </div>
                 </div> --}}
-            </div>
-        </section>
+                </div>
+            </section>
+        </div>
+        <!-- Add more items as needed -->
     </div>
-    <!-- Add more items as needed -->
-</div>
 
     <!-- Hero Section Begin -->
     {{-- <section class="hero set-bg" data-setbg="{{ url('frontend/img/hero-bg.jpg') }}">
@@ -281,7 +280,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </section>
@@ -309,7 +308,7 @@
 
 
 
-    
+
     <section class="home-about spad">
         <div class="container">
             <div class="row">
@@ -375,7 +374,8 @@
                             <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
                             <div class="">
                                 <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
+                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
+                                            26-08-2023
                                         </a></li>
                                     <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
                                         </a>
@@ -514,7 +514,7 @@
 
 
     <!-- Letest Updates Section Begin -->
-    <section class="home-about spad">
+    <section class="home-about bg-light spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -632,13 +632,112 @@
     <!-- Letest Updates Section End -->
 
     <!-- Home About Begin -->
-   
+
     <!-- Home About End -->
 
-
+    <!-- Association Section Begin -->
+    <section class="latest spad">
+        <div class="testimonial spad set-bg" data-setbg="{{ url('frontend/img/testimonial/testimonial-bg.jpg') }}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-title">
+                            <h2>Association</h2>
+                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting has been the</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial__carousel ">
+            <div class="container">
+                <div class="row">
+                    <div class="testimonial__slider owl-carousel">
+                        <div class="col-lg-4">
+                            <div class="testimonial__item">
+                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
+                                <h5>The Institute Of Chartered Accountants Of India</h5>
+                                {{-- <span>ICAI Pune</span> --}}
+                                <div class="posted-details">
+                                    <ul class="d-flex justify-content-center">
+                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
+                                                2023</a>
+                                        </li>
+                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <p>You need to pay special attention to the type of colors in your business cards. For
+                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
+                                    too.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="testimonial__item">
+                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
+                                <h5>The Institute Of Chartered Accountants Of India</h5>
+                                {{-- <span>ICAI Pune</span> --}}
+                                <div class="posted-details">
+                                    <ul class="d-flex justify-content-center">
+                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
+                                                2023</a>
+                                        </li>
+                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <p>You need to pay special attention to the type of colors in your business cards. For
+                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
+                                    too.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="testimonial__item">
+                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
+                                <h5>The Institute Of Chartered Accountants Of India</h5>
+                                {{-- <span>ICAI Pune</span> --}}
+                                <div class="posted-details">
+                                    <ul class="d-flex justify-content-center">
+                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
+                                                2023</a>
+                                        </li>
+                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <p>You need to pay special attention to the type of colors in your business cards. For
+                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
+                                    too.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="testimonial__item">
+                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
+                                <h5>The Institute Of Chartered Accountants Of India</h5>
+                                {{-- <span>ICAI Pune</span> --}}
+                                <div class="posted-details">
+                                    <ul class="d-flex justify-content-center">
+                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
+                                                2023</a>
+                                        </li>
+                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <p>You need to pay special attention to the type of colors in your business cards. For
+                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
+                                    too.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Association Section End -->
 
     <!-- Choose Section Begin -->
-    <section class="choose spad">
+    <section class="choose spad bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -702,7 +801,231 @@
     <!-- Choose Section End -->
 
     <!-- Newsletter Section Begin -->
-    <section class="py-5 loan-services">
+
+
+    <section class="choose spad ">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>Newsletter</h2>
+                        <p>This question should make the viewer want to open the brochure to learn more.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-12 mb-5">
+                    <div class="choose__item ">
+                        <div class="d-flex justify-content-center">
+                            <div class="circle-box">
+                                <img src="{{ url('frontend/img/student.png') }}" alt="">
+                            </div>
+                        </div>
+                        {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
+                        <h5>Student's Newsletter</h5>
+                        <div class="row">
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3 ">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="pt-lg-5 pt-4 text-center ">
+                            <a href="#" class="primary-btn">View More</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12 mb-5">
+                    <div class="choose__item ">
+                        <div class="d-flex justify-content-center">
+                            <div class="circle-box">
+                                <img src="{{ url('frontend/img/member.png') }}" alt="">
+                            </div>
+                        </div>
+                        {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
+                        <h5>Member's Newsletter</h5>
+                        <div class="row">
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 py-3">
+                                <div class="card newsletter-card w-100">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-3 ">
+                                                <a href="{{ url('/') }}"><img
+                                                        src="{{ url('frontend/img/download-pdf.png') }}"
+                                                        alt=""></a>
+                                            </div>
+                                            <div class="col-9 text-right">
+                                                <div class="">
+                                                    <h4> April 2023</h4>
+                                                </div>
+                                                <div>
+                                                    <b> Members </b>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="pt-lg-5 pt-4 text-center ">
+                            <a href="#" class="primary-btn">View More</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    {{-- <section class="py-5 loan-services">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -714,7 +1037,7 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-5  mb-4">
                     <h3 class="pb-3">Members Newsletters</h3>
                     <div class="row">
                         <div class="col-lg-6 col-12 py-3">
@@ -804,7 +1127,7 @@
                         <a href="#" class="primary-btn">View More</a>
                     </div>
                 </div>
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-5 offset-lg-2 mb-4">
                     <h3 class="pb-3">Students Newsletters</h3>
                     <div class="row">
                         <div class="col-lg-6 col-12 py-3">
@@ -899,12 +1222,12 @@
             </div>
 
         </div>
-    </section>
+    </section> --}}
     <!-- Newsletter Section End -->
 
 
     <!-- Call Section Begin -->
-    <section class="call spad set-bg" data-setbg="{{ url('frontend/img/call-bg.jpg') }}">
+    {{-- <section class="call spad set-bg" data-setbg="{{ url('frontend/img/call-bg.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-md-6">
@@ -940,11 +1263,11 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
     <!-- Call Section End -->
 
     <!-- Vacancies Section Begin -->
-    <section class="home-about spad">
+    <section class="home-about spad bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -1101,7 +1424,7 @@
 
 
     <!-- Counter Begin -->
-    <div class="counter bg-light spad">
+    {{-- <div class="counter bg-light spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-6">
@@ -1145,7 +1468,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- Counter End -->
 
 
@@ -1216,100 +1539,7 @@
     </section> --}}
     <!-- Blog Section End -->
 
-    <!-- Testimonial Section Begin -->
-    <div class="testimonial spad set-bg" data-setbg="{{ url('frontend/img/testimonial/testimonial-bg.jpg') }}">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title">
-                        <h2>Association</h2>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting has been the</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="testimonial__carousel mb-5">
-        <div class="container">
-            <div class="row">
-                <div class="testimonial__slider owl-carousel">
-                    <div class="col-lg-4">
-                        <div class="testimonial__item">
-                            <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                            <h5>The Institute Of Chartered Accountants Of India</h5>
-                            {{-- <span>ICAI Pune</span> --}}
-                            <div class="posted-details">
-                                <ul class="d-flex justify-content-center">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest, 2023</a>
-                                    </li>
-                                    {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                    </li>
-                                </ul>
-                            </div>
-                            <p>You need to pay special attention to the type of colors in your business cards. For
-                                instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                too.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="testimonial__item">
-                            <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                            <h5>The Institute Of Chartered Accountants Of India</h5>
-                            {{-- <span>ICAI Pune</span> --}}
-                            <div class="posted-details">
-                                <ul class="d-flex justify-content-center">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest, 2023</a>
-                                    </li>
-                                    {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                    </li>
-                                </ul>
-                            </div>
-                            <p>You need to pay special attention to the type of colors in your business cards. For
-                                instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                too.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="testimonial__item">
-                            <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                            <h5>The Institute Of Chartered Accountants Of India</h5>
-                            {{-- <span>ICAI Pune</span> --}}
-                            <div class="posted-details">
-                                <ul class="d-flex justify-content-center">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest, 2023</a>
-                                    </li>
-                                    {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                    </li>
-                                </ul>
-                            </div>
-                            <p>You need to pay special attention to the type of colors in your business cards. For
-                                instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                too.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="testimonial__item">
-                            <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                            <h5>The Institute Of Chartered Accountants Of India</h5>
-                            {{-- <span>ICAI Pune</span> --}}
-                            <div class="posted-details">
-                                <ul class="d-flex justify-content-center">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest, 2023</a>
-                                    </li>
-                                    {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                    </li>
-                                </ul>
-                            </div>
-                            <p>You need to pay special attention to the type of colors in your business cards. For
-                                instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                too.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Testimonial Section End -->
+
     <!-- Contact Begin -->
     <div class="contact-widget set-bg" data-setbg="{{ url('frontend/img/contact-widget.jpg') }}">
         <div class="container">
@@ -1321,10 +1551,10 @@
                                 <h4>Pune Branch</h4>
                                 <a href="https://goo.gl/maps/asVSnzzd8GKHVHhe8">
                                     <p>Pune Branch of WIRC of ICAI<br />
-                                    ICAI Bhawan, Plot No. 8,
-                                    Near Mahavir Electronics,
-                                    Parshwanath Nagar, Bibwewadi,
-                                    Pune - 411 037</p>
+                                        ICAI Bhawan, Plot No. 8,
+                                        Near Mahavir Electronics,
+                                        Parshwanath Nagar, Bibwewadi,
+                                        Pune - 411 037</p>
                                 </a>
                             </div>
                         </div>
@@ -1341,7 +1571,8 @@
                             <div class="contact__widget__item">
                                 <h4>Coaching Classes</h4>
                                 <p>Pune Branch of WIRC of ICAI,<br />
-                                    Kumar Prestige Point, Gate No. 4, 1st Floor, Office No. 5A, Shukrawar Peth, Pune –
+                                    Kumar Prestige Point, Gate No. 4, 1st Floor, Office No. 5A, Shukrawar Peth, Pune
+                                    –
                                     411002</p>
                             </div>
                         </div>
@@ -1357,6 +1588,4 @@
         </div>
     </div>
     <!-- Contact End -->
-
-
 @endsection
