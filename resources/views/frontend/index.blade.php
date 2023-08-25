@@ -226,7 +226,7 @@
                                 few hundreds and students in about couple of thousands. The Branch has now Membership about
                                 9000 Members, including 3500 Members from Industry and About 22,000 students.</p>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-lg-6 col-md-6">
                                 <div class="home__about__item">
                                     <h4>Our Vision</h4>
@@ -240,8 +240,8 @@
                                     <p>The brochure must grab a viewer’s attention and hold it long enough to</p>
                                 </div>
                             </div>
-                        </div>
-                        <a href="£" class="primary-btn">learn More</a>
+                        </div> --}}
+                        <a href="£" class="primary-btn bottom-btn">More Details</a>
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-1">
@@ -252,10 +252,65 @@
             </div>
         </div>
     </section>
+    <section class="loan-services spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 ">
+                    <div class=""> {{-- class="home__about__img" --}}
+                        <img src="{{ url('frontend/img/ca-rajesh-agarwal.jpg') }}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-7 offset-lg-2">
+                    <div class="home__about__text">
+                        <div class="section-title">
+                            <h2>CA Rajesh Agarwal</h2>
+
+                            <p>I am taking over the charge as a Chairman of the vibrant and prestigious 'Pune Branch of WIRC
+                                of ICAI' with great honour and deep sense of gratitude. I am overwhelmed for getting this
+                                opportunity to serve our profession.</p>
+                            <p>At the same time, I am confident that with your guidance, support and blessings, I will be
+                                able to live up to your expectations.</p>
+                            <p>If anyone ask me what is integral part of my life, I will sincerely and proudly say, “ICAI is
+                                an integral part of my life”</p>
+                            <p>I am extremely grateful to my Alma mater i.e. ICAI, as it has given me a lot of respect and
+                                power.</p>
+
+                        </div>
+                        <div class="mb-5 d-flex ">
+                            <a href="#" class="primary-btn bottom-btn">More Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
     <!-- Home About End -->
 
     <!-- Upcomming Events Section Begin -->
-    <section class="loan-services spad">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    <section class="home-about spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -577,40 +632,7 @@
     <!-- Letest Updates Section End -->
 
     <!-- Home About Begin -->
-    <section class="loan-services spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="home__about__text">
-                        <div class="section-title">
-                            <h2>CA Rajesh Agarwal
-
-                            </h2>
-
-                            <p>I am taking over the charge as a Chairman of the vibrant and prestigious 'Pune Branch of WIRC
-                                of ICAI' with great honour and deep sense of gratitude. I am overwhelmed for getting this
-                                opportunity to serve our profession.</p>
-                            <p>At the same time, I am confident that with your guidance, support and blessings, I will be
-                                able to live up to your expectations.</p>
-                            <p>If anyone ask me what is integral part of my life, I will sincerely and proudly say, “ICAI is
-                                an integral part of my life”</p>
-                            <p>I am extremely grateful to my Alma mater i.e. ICAI, as it has given me a lot of respect and
-                                power.</p>
-
-                        </div>
-                        <div class="mb-5">
-                            <a href="#" class="primary-btn">learn More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5  offset-lg-1  text-lg-right d-flex align-items-center justify-content-lg-end justify-content-center">
-                    <div class=""> {{-- class="home__about__img" --}}
-                        <img src="{{ url('frontend/img/ca-rajesh-agarwal.jpg') }}" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+   
     <!-- Home About End -->
 
 

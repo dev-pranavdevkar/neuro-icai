@@ -540,8 +540,8 @@ ol {
 }
 
 .spad {
-	padding-top: 50px;
-	padding-bottom: 50px;
+	padding-top: 25px;
+	padding-bottom: 25px;
 }
 
 .text-white h1,
@@ -1132,9 +1132,9 @@ ol {
   Home About
 -----------------------*/
 
-.home__about__text {
+/* .home__about__text {
 	padding-top: 40px;
-}
+} */
 
 .home__about__text .section-title {
 	text-align: left;
@@ -1165,8 +1165,8 @@ ol {
 -----------------------*/
 
 .loan-services {
-	padding-bottom: 0;
-	padding-top: 50px;
+	padding-bottom: 25px;
+	padding-top: 25px;
 	background: #f6f7f9;
 }
 
@@ -1251,8 +1251,8 @@ ol {
 -----------------------*/
 
 .choose {
-	padding-bottom: 20px;
-	padding-top: 80px;
+	padding-bottom: 25px;
+	padding-top: 25px;
 }
 
 .choose__item {
@@ -1393,8 +1393,8 @@ ol {
 -----------------------*/
 
 .counter {
-	padding-top: 80px;
-	padding-bottom: 60px;
+	padding-top: 25px;
+	padding-bottom: 25px;
 }
 
 .counter__item {
@@ -4005,7 +4005,10 @@ ol {
 }
 
 .homeBanner__slider .item .hero{
-	height: 85vh;
+	height: 60vh;
 }
-
+.bottom-btn{
+	position:absolute;
+	bottom:0;
+}
   
