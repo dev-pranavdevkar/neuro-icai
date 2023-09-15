@@ -255,14 +255,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 ">
-                    <div class=""> {{-- class="home__about__img" --}}
+                    <div class="text-center text-lg-left"> {{-- class="home__about__img" --}}
                         <img src="{{ url('frontend/img/ca-rajesh-agarwal.jpg') }}" alt="">
                     </div>
                 </div>
                 <div class="col-lg-7 offset-lg-2">
                     <div class="home__about__text">
                         <div class="section-title">
-                            <h2>CA Rajesh Agarwal</h2>
+                            <h2 class="text-center text-lg-left">CA Rajesh Agarwal</h2>
 
                             <p>I am taking over the charge as a Chairman of the vibrant and prestigious 'Pune Branch of WIRC
                                 of ICAI' with great honour and deep sense of gratitude. I am overwhelmed for getting this
@@ -830,7 +830,7 @@
                         </div>
                         {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
                         <h5>Student's Newsletter</h5>
-                        <div class="row">
+                        <div class="row px-4 px-lg-0">
                             <div class="col-lg-6 col-12 py-3">
                                 <div class="card newsletter-card w-100">
                                     <div class="card-body">
@@ -933,7 +933,7 @@
                         </div>
                         {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
                         <h5>Member's Newsletter</h5>
-                        <div class="row">
+                        <div class="row px-4 px-lg-0">
                             <div class="col-lg-6 col-12 py-3">
                                 <div class="card newsletter-card w-100">
                                     <div class="card-body">

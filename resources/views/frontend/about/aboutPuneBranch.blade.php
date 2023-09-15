@@ -46,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-lg-4 col-md-4">
                     <div class="about__item">
                         <h4>Our Vision</h4>
@@ -71,7 +71,7 @@
                             want to keep the</p>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </section>
     <!-- About End -->
