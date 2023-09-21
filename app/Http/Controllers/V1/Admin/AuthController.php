@@ -78,10 +78,8 @@ class AuthController extends Controller
             $newUser->mobile_no = $request->mobile_no;
             $newUser->otp = $request->otp;
             // $newUser->last_login_at = Carbon::now();
-
             $role = Role::where('name', $request->role)->first();
             $user = User::find(1);
-
             $newUser->assignRole($role);
             $newUser->save();
             $token = JWTAuth::fromUser($newUser);
@@ -133,7 +131,6 @@ class AuthController extends Controller
             }
 
         }
-
     public function changeForgetPassword(Request $request)
     {
         try {
@@ -179,9 +176,7 @@ class AuthController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-
             $user=Auth::user()->id;
-          
             $editUser = User::query()->where('id',$user)->first();
             if ($request->has('name')) {
                 $editUser->name=$request->name;

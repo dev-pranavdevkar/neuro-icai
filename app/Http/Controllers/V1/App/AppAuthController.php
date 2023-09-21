@@ -15,42 +15,84 @@ use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Auth;
 use Spatie\Permission\Models\Role;
-
+ use Illuminate\Support\Str; // Import the Str facade
+use App\Models\LocationDetails;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AppAuthController extends Controller
 {
-    public function userLogin(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required|string|min:6',
+    // public function userLogin(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'email' => 'required|email',
+    //             'password' => 'required|string|min:6',
 
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
-            }
-            $user = User::where('email', $request->email)->first();
-            if (!is_null($user)) {
-                if (Hash::check($request->password, $user->password)) {
-                    Auth::login($user);
-                    $getUser = User::query()->where('email', $request->email)->first();
-                    $getUser->save();
-                    $token = JWTAuth::fromUser($user);
-                    $response = ['token' => $token];
-                    $response['userData'] = $user;
-                    return $this->sendResponse($response, 'Login Success', true);
-                } else {
-                    return $this->sendError('Password mismatch', [], 422);
-                }
-            } else {
-                return $this->sendError('User does not exist or user doesn\'t have access', [], true);
-            }
-        } catch (Exception $e) {
-            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
+    //         $user = User::where('email', $request->email)->first();
+    //         if (!is_null($user)) {
+    //             if (Hash::check($request->password, $user->password)) {
+    //                 Auth::login($user);
+    //                 $getUser = User::query()->where('email', $request->email)->first();
+    //                 $getUser->save();
+    //                 $token = JWTAuth::fromUser($user);
+    //                 $response = ['token' => $token];
+    //                 $response['userData'] = $user;
+    //                 $response['permissions'] = $user->getAllPermissions();
+    //               //  $response['role'] = $user->roles->first();
+    //                 return $this->sendResponse($response, 'Login Success', true);
+    //             } else {
+    //                 return $this->sendError('Password mismatch', [], 422);
+    //             }
+    //         }
+    //     } catch (Exception $e) {
+    //         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+    //     }
+    // }
+    public function userLogin(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'credential' => 'required|string',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
+
+        $user = User::where(function ($query) use ($request) {
+            $query->where('email', $request->credential)
+                ->orWhere('generated_user_id', $request->credential);
+        })->first();
+
+        if (!is_null($user)) {
+            if (Hash::check($request->password, $user->password)) {
+                Auth::login($user);
+                $getUser = User::query()->where('email', $user->email)->first();
+                    $location_id= $getUser->location_id;
+                $getUser->save();
+                $token = JWTAuth::fromUser($user);
+                $response = ['token' => $token];
+                $response['userData'] = $user;
+                $response['permissions'] = $user->getAllPermissions();
+                    $response['location_details'] = LocationDetails::query()->where('id', $location_id)->first();
+                //  $response['role'] = $user->roles->first();
+                return $this->sendResponse($response, 'Login Success', true);
+            } else {
+                return $this->sendError('Password mismatch', [], 422);
+            }
+        } else {
+            return $this->sendError('User not found', [], 404);
+        }
+    } catch (Exception $e) {
+        return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
     }
+}
+
     public function registerUser(Request $request)
     {
         try {
@@ -67,7 +109,6 @@ class AppAuthController extends Controller
             if ($request->role == 'SuperAdmin') {
                 return $this->sendResponse([], 'Sorry you can\'t be super admin. It\'s our property', true);
             }
-            // Check if the requested role is either "student" or "member"
             if ($request->role != 'student' && $request->role != 'members') {
                 return $this->sendError('Invalid role.', [], 400);
             }
@@ -79,34 +120,76 @@ class AppAuthController extends Controller
             $newUser->date_of_birth = $request->date_of_birth;
             $newUser->mobile_no = $request->mobile_no;
             $newUser->otp = $request->otp;
-            // Find the corresponding role based on the request
+            $newUser->generated_user_id = $request->generated_user_id;
             $role = Role::where('name', $request->role)->first();
-           // echo $role;
-            if (!$role) {
-                return $this->sendError('Invalid role.', [], 422);
-            }
-            $studentRole = Role::where('name', 'student')->first();
-$adminRole = Role::where('name', 'admin')->first();
-$memberRole = Role::where('name', 'members')->first();
-$role = Role::where('name', $request->role)->first();
-
-if (!$studentRole || !$adminRole || !$memberRole || !$role) {
-    return $this->sendError('Invalid role.', [], 422);
-}
-
-$newUser->assignRole([$studentRole, $adminRole, $memberRole, $role]);
-$newUser->save();
-
-$token = JWTAuth::fromUser($newUser);
-$response = ['token' => $token];
-$response['userData'] = $newUser;
-return $this->sendResponse($response, 'Registered Successfully', true);
-
+            $newUser->assignRole($role);
+            $newAddress = new LocationDetails;
+            $newAddress->address_line_1 = $request->address_line_1;
+            $newAddress->pincode = $request->pincode;
+            $newAddress->save();
+            $newUser->location_id = $newAddress->id;
+            $newUser->save();
+            $token = JWTAuth::fromUser($newUser);
+            $response = ['token' => $token];
+            $response['userData'] = $newUser;
+             $response['location_details'] = LocationDetails::query()->where('id',$newUser->location_id)->first();
             return $this->sendResponse($response, 'Registered Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
+
+
+// public function registerUser(Request $request)
+// {
+//     try {
+//         $validator = Validator::make($request->all(), [
+//             'name' => 'required|string|max:255',
+//             'email' => 'required|string|email|max:255|unique:users',
+//             'password' => 'required|string|min:6|confirmed',
+//             'role' => 'required|string|in:student,members',
+//         ]);
+
+//         if ($validator->fails()) {
+//             return $this->sendError('Validation Error.', $validator->errors());
+//         }
+
+//         if ($request->role == 'SuperAdmin') {
+//             return $this->sendResponse([], 'Sorry, you can\'t be a super admin. It\'s our property', true);
+//         }
+
+//         $role = Role::where('name', $request->role)->first();
+
+//         if (!$role) {
+//             return $this->sendError('Invalid role.', [], 400);
+//         }
+
+//         // Generate the user ID
+//         $count = User::query()->count() + 1;
+//         $userId = substr(Str::slug($request->name), 0, 3) . substr(Str::slug($request->role), 0, 3) . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+//         $newUser = new User();
+//         $newUser->password = Hash::make($request['password']);
+//         $newUser->name = $request->name;
+//         $newUser->email = $request->email;
+//         $newUser->last_name = $request->last_name;
+//         $newUser->date_of_birth = $request->date_of_birth;
+//         $newUser->mobile_no = $request->mobile_no;
+//         $newUser->otp = $request->otp;
+//         $newUser->assignRole($role);
+//         $newUser->generated_user_id = $userId; // Assign the generated user ID
+//         $newUser->save();
+
+//         $token = JWTAuth::fromUser($newUser);
+//         $response = ['token' => $token];
+//         $response['userData'] = $newUser;
+//         return $this->sendResponse($response, 'Registered Successfully', true);
+//     } catch (Exception $e) {
+//         return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
+//     }
+// }
+
+
         public function forgetPassword(Request $request)
         {
             try{

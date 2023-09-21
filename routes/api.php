@@ -39,35 +39,49 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::get('open', 'MetaDataController@open');
 
     Route::group(['middleware' => [ 'jwt.verify']], function () {
-   Route::post('user', [AuthController::class, 'getAuthenticatedUser']);
-        Route::post('closed', [MetaDataController::class, 'closed']);
+    Route::post('user', [AuthController::class, 'getAuthenticatedUser']);
+    Route::post('closed', [MetaDataController::class, 'closed']);
 
-        //update profile
-        Route::post('UpdateProfile', [AuthController::class, 'UpdateProfile']);
+    //update profile
+    Route::post('UpdateProfile', [AuthController::class, 'UpdateProfile']);
 
-        //DashboardCount
-        Route::get('getDashboardCount', [DashboardController::class, 'getDashboardCount']);
+    //dashboard member count
+    Route::get('getDashboardMemberCount', [DashboardController::class, 'getDashboardMemberCount']);
 
-        //BannerDetails
+    //dashboard student Count
+    Route::get('getDashboardStudentCount', [DashboardController::class, 'getDashboardStudentCount']);
+
+    //BannerDetails
     Route::post('addBanner', [MetaDataController::class, 'addBanner']);
     Route::get('getAllBanner', [MetaDataController::class, 'getAllBanner']);
     Route::delete('deleteBannerDetailsbyId', [MetaDataController::class, 'deleteBannerDetailsbyId']);
     Route::post('editBanner', [MetaDataController::class, 'editBanner']);
     Route::get('getBannerById', [MetaDataController::class, 'getBannerById']);
 
-//LocationDetails
+    //LocationDetails
     Route::post('addLocationDetails', [MetaDataController::class, 'addLocationDetails']);
     Route::get('getAllLocationDetails', [MetaDataController::class, 'getAllLocationDetails']);
     Route::delete('deleteLocationDetailsById', [MetaDataController::class, 'deleteLocationDetailsById']);
     Route::post('editLocationDetailsById', [MetaDataController::class, 'editLocationDetailsById']);
     Route::get('getLocationById', [MetaDataController::class, 'getLocationById']);
 
-//EventDetails
+    //EventDetails
     Route::post('addEventDetails', [MetaDataController::class, 'addEventDetails']);
     Route::post('editEventDetailById', [MetaDataController::class, 'editEventDetailById']);
     Route::get('getEventDetailsById', [MetaDataController::class, 'getEventDetailsById']);
     Route::get('getAllEventDetails', [MetaDataController::class, 'getAllEventDetails']);
     Route::delete('deleteEventDetailsById', [MetaDataController::class, 'deleteEventDetailsById']);
+
+    Route::get('getAllUserRegisterToEvent', [MetaDataController::class, 'getAllUserRegisterToEvent']);
+
+    //get all user attend to the event
+    Route::get('getAllUserAttendTheEvent', [MetaDataController::class, 'getAllUserAttendTheEvent']);
+
+    //get all upcoming event
+    Route::get('getAllUpcomingEvent', [MetaDataController::class, 'getAllUpcomingEvent']);
+
+    //get all ongoing event
+    Route::get('getAllOngoingEvent', [MetaDataController::class, 'getAllOngoingEvent']);
 
     //AssociationDetails
     Route::post('addAssociationDetails', [MetaDataController::class, 'addAssociationDetails']);
@@ -124,6 +138,8 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::get('getAllEventRegistration', [MetaDataController::class, 'getAllEventRegistration']);
     Route::delete('deleteEventRegistration', [MetaDataController::class, 'deleteEventRegistration']);
 
+
+
     //RegisterToAssociation
     Route::post('addRegisterToAssociation', [MetaDataController::class, 'addRegisterToAssociation']);
     Route::post('editRegisterToAssociation', [MetaDataController::class, 'editRegisterToAssociation']);
@@ -132,7 +148,7 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::delete('deleteRegisterToAssociation', [MetaDataController::class, 'deleteRegisterToAssociation']);
     Route::get('getRegisterToAssociation', [MetaDataController::class, 'getRegisterToAssociation']);
 
-//ApplyForJob
+    //ApplyForJob
     Route::post('addApplyJob', [MetaDataController::class, 'addApplyJob']);
     Route::post('editApplyJob', [MetaDataController::class, 'editApplyJob']);
     Route::get('getApplyJOb', [MetaDataController::class, 'getApplyJOb']);
@@ -140,7 +156,7 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::delete('deleteApplyJob', [MetaDataController::class, 'deleteApplyJob']);
     Route::get('getRegisterUserToVacancy', [MetaDataController::class, 'getRegisterUserToVacancy']);
 
-//Student Notice Board
+    //Student Notice Board
     Route::post('addStudentNoticeBoard', [MetaDataController::class, 'addStudentNoticeBoard']);
     Route::post('addMembersNoticeBoard', [MetaDataController::class, 'addMembersNoticeBoard']);
 
@@ -160,9 +176,20 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::get('getStudentBatchesById', [MetaDataController::class, 'getStudentBatchesById']);
     Route::delete('deleteStudentBatches', [MetaDataController::class, 'deleteStudentBatches']);
 
-    }
+    //get upcoming batches
+    Route::get('getAllUpcomingBatches', [MetaDataController::class, 'getAllUpcomingBatches']);
 
-);
+    //get ongoing batches
+    Route::get('getAllOngoingBatches', [MetaDataController::class, 'getAllOngoingBatches']);
+
+    //event presentation
+    Route::post('addEventPresentationPdf', [MetaDataController::class, 'addEventPresentationPdf']);
+    //event images
+    Route::post('addEventImage', [MetaDataController::class, 'addEventImage']);
+    //event video
+    Route::post('addEventVideoLink', [MetaDataController::class, 'addEventVideoLink']);
+
+});
 });
 Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function ()
 {
@@ -175,15 +202,11 @@ Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPass
 
     Route::get('open', 'AppMetaDataController@open');
 
-    Route::group(['middleware' => [ 'jwt.verify']], function () {
-   Route::post('user', [AppAuthController::class, 'getAuthenticatedUser']);
+        Route::group(['middleware' => [ 'jwt.verify']], function () {
+        Route::post('user', [AppAuthController::class, 'getAuthenticatedUser']);
         Route::post('closed', [AppMetaDataController::class, 'closed']);
 
-
-
-
-
-//OffersToAssociation
+        //OffersToAssociation
         Route::get('getOffersToAssociationById', [AppMetaDataController::class, 'getOffersToAssociationById']);
         Route::get('getOffersToAssociation', [AppMetaDataController::class, 'getOffersToAssociation']);
         //RegisterToAssociation
@@ -198,9 +221,10 @@ Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPass
         Route::get('getPastEvents', [AppMetaDataController::class, 'getPastEvents']);
         Route::get('getEventDetailsById', [AppMetaDataController::class, 'getEventDetailsById']);
 
-//EventRegistration
+        //EventRegistration
         Route::post('addEventRegistration', [AppMetaDataController::class, 'addEventRegistration']);
-
+         //payment verification
+        Route::post('paymentVerification', [AppMetaDataController::class, 'paymentVerification']);
 
         //AssociationDetails
         Route::get('getAllAssociationDetails', [AppMetaDataController::class, 'getAllAssociationDetails']);
@@ -220,24 +244,17 @@ Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPass
         Route::get('getVacancyDetailsById', [AppMetaDataController::class, 'getVacancyDetailsById']);
         //ApplyForJob
         Route::post('addApplyJob', [AppMetaDataController::class, 'addApplyJob']);
-//Student Notice Board
+        //Student Notice Board
         Route::get('getStudentNoticeBoard', [AppMetaDataController::class, 'getStudentNoticeBoard']);
         Route::get('getStudentNoticeBoardById', [AppMetaDataController::class, 'getStudentNoticeBoardById']);
-
     }
-
 );
 });
-
 //website
-
 Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function ()
 {
     Route::post('registerUser', [WebAuthController::class,'registerUser']);
 Route::post('userLogin', [WebAuthController::class, 'userLogin']);
-
-
-
 Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
 Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
 Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);

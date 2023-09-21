@@ -139,11 +139,6 @@ class WebAuthController extends Controller
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
-
-
-
-
-
     public function userLogin(Request $request)
     {
         try {
@@ -215,7 +210,6 @@ class WebAuthController extends Controller
         }
 
     }
-
 public function changeForgetPassword(Request $request)
 {
     try {
