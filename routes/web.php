@@ -51,6 +51,7 @@ Route::get('/subCommittees',[AboutController::class, 'subCommittees']);
 Route::get('/successStories',[AboutController::class, 'successStories']);
 Route::get('/torchBearer',[AboutController::class, 'torchBearer']);
 Route::get('/updates',[AboutController::class, 'updates']);
+Route::get('/updates/updatesDetails',[AboutController::class, 'updatesDetails']);
 
 
 // Members Dropdown Pages
@@ -58,7 +59,7 @@ Route::get('/exposureDrafts',[MembersController::class, 'exposureDrafts']);
 Route::get('/managingCommitteeMinutes',[MembersController::class, 'managingCommitteeMinutes']);
 Route::get('/puneMembersNewsletter',[MembersController::class, 'puneMembersNewsletter']);
 Route::get('/updatesForMembers',[MembersController::class, 'updatesForMembers']);
-Route::get('/pastChairmen',[MembersController::class, 'pastChairmen']);
+
 
 // Students Dropdown Pages
 Route::get('/aboutPuneWICASA',[StudentsController::class, 'aboutPuneWICASA']);

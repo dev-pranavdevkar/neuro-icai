@@ -26,8 +26,5 @@ class MembersController extends Controller
         return view('frontend.members.updatesForMembers');
     }
 
-    public function pastChairmen()
-    {
-        return view('frontend.members.pastChairmen');
-    }
+  
 }

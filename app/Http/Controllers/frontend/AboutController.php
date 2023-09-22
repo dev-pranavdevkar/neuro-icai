@@ -53,6 +53,10 @@ class AboutController extends Controller
 
     public function updates()
     {
-        return view('frontend.about.updates');
+        return view('frontend.about.updates.updates');
+    }
+    public function updatesDetails()
+    {
+        return view('frontend.about.updates.updatesDetails');
     }
 }
