@@ -200,7 +200,30 @@ img {
 .text-nowrap {
 	text-wrap: nowrap;
 }
+.event-page .card{
+	border: none;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	padding: 1.5rem;
+}
+.event-page .card .card-body{
+	border: 1px solid #909090;
 
+}
+.event-page .card .card-title{
+	font-size: 18px;
+	font-weight: 600;
+	text-align: center;
+
+}
+.event-page .card .card-body a{
+	color:#283960 ;
+	font-weight: 600;
+}
+.event-page table tr td,
+.event-page table tr th{
+	border: none;
+	padding: 3px 0px;
+}
 .border-left-primery {
 	border-left: 1px solid #283960;
 }
@@ -310,7 +333,21 @@ img {
 	text-decoration: none !important;
 	outline: none !important;
 	color: #283960 !important;
-	border: 1px solid #283960 !important;
+	border: 2px solid #283960 !important;
+	background: transparent;
+}
+
+.btn-secondary {
+	background: #1AA5CE;
+	border: 2px solid #1AA5CE !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+	text-decoration: none !important;
+	outline: none !important;
+	color: #1AA5CE !important;
+	border: 2px solid #1AA5CE !important;
 	background: transparent;
 }
 

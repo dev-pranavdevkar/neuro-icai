@@ -68,7 +68,7 @@ Route::get('/students/aboutPuneWICASA',[StudentsController::class, 'aboutPuneWIC
 Route::get('/students/coachingClasses',[StudentsController::class, 'coachingClasses']);
 Route::get('/students/puneWICASANewsletter',[StudentsController::class, 'puneWICASANewsletter']);
 Route::get('/students/studentsNoticeboard',[StudentsController::class, 'studentsNoticeboard']);
-Route::get('/students/students/subscribeForSMSAlerts',[StudentsController::class, 'subscribeForSMSAlerts']);
+Route::get('/students/subscribeForSMSAlerts',[StudentsController::class, 'subscribeForSMSAlerts']);
 Route::get('/students/WICASAManagingCommittee',[StudentsController::class, 'WICASAManagingCommittee']);
 
 
