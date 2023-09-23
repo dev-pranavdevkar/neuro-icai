@@ -23,7 +23,15 @@ class MembersController extends Controller
 
     public function updatesForMembers()
     {
-        return view('frontend.members.updatesForMembers');
+        return view('frontend.members.updates.updatesForMembers');
+    }
+    public function subscribeForSMSAlerts()
+    {
+        return view('frontend.members.subscribeForSMSAlerts');
+    }
+    public function updatesDetails()
+    {
+        return view('frontend.members.updates.updatesDetails');
     }
 
   

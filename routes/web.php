@@ -41,42 +41,44 @@ Route::get('/contact',[HomeController::class, 'contact']);
 Route::get('/help',[HomeController::class, 'help']);
 
 // About Us Dropdown Pages
-Route::get('/aboutPuneBranch',[AboutController::class, 'aboutPuneBranch']);
-Route::get('/annualReports',[AboutController::class, 'annualReports']);
-Route::get('/chairmanCommunique',[AboutController::class, 'chairmanCommunique']);
-Route::get('/managingCommittee',[AboutController::class, 'managingCommittee']);
-Route::get('/pastChairmen',[AboutController::class, 'pastChairmen']);
-Route::get('/studyCirclesPune',[AboutController::class, 'studyCirclesPune']);
-Route::get('/subCommittees',[AboutController::class, 'subCommittees']);
-Route::get('/successStories',[AboutController::class, 'successStories']);
-Route::get('/torchBearer',[AboutController::class, 'torchBearer']);
-Route::get('/updates',[AboutController::class, 'updates']);
-Route::get('/updates/updatesDetails',[AboutController::class, 'updatesDetails']);
+Route::get('/about/aboutPuneBranch',[AboutController::class, 'aboutPuneBranch']);
+Route::get('/about/annualReports',[AboutController::class, 'annualReports']);
+Route::get('/about/chairmanCommunique',[AboutController::class, 'chairmanCommunique']);
+Route::get('/about/managingCommittee',[AboutController::class, 'managingCommittee']);
+Route::get('/about/pastChairmen',[AboutController::class, 'pastChairmen']);
+Route::get('/about/studyCirclesPune',[AboutController::class, 'studyCirclesPune']);
+Route::get('/about/subCommittees',[AboutController::class, 'subCommittees']);
+Route::get('/about/successStories',[AboutController::class, 'successStories']);
+Route::get('/about/torchBearer',[AboutController::class, 'torchBearer']);
+Route::get('/about/updates',[AboutController::class, 'updates']);
+Route::get('/about/updates/updatesDetails',[AboutController::class, 'updatesDetails']);
 
 
 // Members Dropdown Pages
-Route::get('/exposureDrafts',[MembersController::class, 'exposureDrafts']);
-Route::get('/managingCommitteeMinutes',[MembersController::class, 'managingCommitteeMinutes']);
-Route::get('/puneMembersNewsletter',[MembersController::class, 'puneMembersNewsletter']);
-Route::get('/updatesForMembers',[MembersController::class, 'updatesForMembers']);
+Route::get('/members/exposureDrafts',[MembersController::class, 'exposureDrafts']);
+Route::get('/members/managingCommitteeMinutes',[MembersController::class, 'managingCommitteeMinutes']);
+Route::get('/members/puneMembersNewsletter',[MembersController::class, 'puneMembersNewsletter']);
+Route::get('/members/updatesForMembers',[MembersController::class, 'updatesForMembers']);
+Route::get('/members/updatesForMembers/updatesDetails',[MembersController::class, 'updatesForMembers']);
+Route::get('/members/subscribeForSMSAlerts',[MembersController::class, 'subscribeForSMSAlerts']);
 
 
 // Students Dropdown Pages
-Route::get('/aboutPuneWICASA',[StudentsController::class, 'aboutPuneWICASA']);
-Route::get('/coachingClasses',[StudentsController::class, 'coachingClasses']);
-Route::get('/puneWICASANewsletter',[StudentsController::class, 'puneWICASANewsletter']);
-Route::get('/studentsNoticeboard',[StudentsController::class, 'studentsNoticeboard']);
-Route::get('/subscribeForSMSAlerts',[StudentsController::class, 'subscribeForSMSAlerts']);
-Route::get('/WICASAManagingCommittee',[StudentsController::class, 'WICASAManagingCommittee']);
+Route::get('/students/aboutPuneWICASA',[StudentsController::class, 'aboutPuneWICASA']);
+Route::get('/students/coachingClasses',[StudentsController::class, 'coachingClasses']);
+Route::get('/students/puneWICASANewsletter',[StudentsController::class, 'puneWICASANewsletter']);
+Route::get('/students/studentsNoticeboard',[StudentsController::class, 'studentsNoticeboard']);
+Route::get('/students/students/subscribeForSMSAlerts',[StudentsController::class, 'subscribeForSMSAlerts']);
+Route::get('/students/WICASAManagingCommittee',[StudentsController::class, 'WICASAManagingCommittee']);
 
 
 // Events Dropdown Pages
-Route::get('/pastEvents',[EventsController::class, 'pastEvents']);
-Route::get('/upcommingEvents',[EventsController::class, 'upcommingEvents']);
+Route::get('/events/pastEvents',[EventsController::class, 'pastEvents']);
+Route::get('/events/upcommingEvents',[EventsController::class, 'upcommingEvents']);
 
 // Vacancies Dropdown Pages
-Route::get('/submitVacancies',[VacanciesController::class, 'submitVacancies']);
-Route::get('/viewVacancies',[VacanciesController::class, 'viewVacancies']);
+Route::get('/vacancies/submitVacancies',[VacanciesController::class, 'submitVacancies']);
+Route::get('/vacancies/viewVacancies',[VacanciesController::class, 'viewVacancies']);
 
 // Downloads Dropdown Pages
 Route::get('/downloadsdownloads',[DownloadsController::class, 'downloads']);
