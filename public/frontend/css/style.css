@@ -404,6 +404,60 @@ img {
 	content: "";
 }
 
+/* .association-logo{
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+	border: 2px solid #283960;
+} */
+.readMoreUnderline {
+	font-size: 12px;
+    color: #283960 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 0;
+	
+    position: relative;
+}
+.readMoreUnderline:after {
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    height: 2px;
+    width: 100%;
+    background: #283960;
+    content: "";
+}
+
+.readMoreUnderline:hover {
+	font-size: 12px;
+    color: #000 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 0;
+	
+    position: relative;
+}
+.readMoreUnderline:after:hover {
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    height: 2px;
+    width: 100%;
+    background: #000;
+    content: "";
+}
+
+.notice-board-section ul li a{
+	color: #000;
+}
+.notice-board-section ul li a:hover{
+	color: #1AA5CE;
+}
+
+
 .events-card img {
 	height: 200px;
 	object-fit: cover;

@@ -77,11 +77,6 @@ class WebAuthController extends Controller
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
-
-
-
-
-
     public function userLogin(Request $request)
     {
         try {
@@ -254,7 +249,7 @@ public function getAllEventDetails(Request $request)
                 $query = $query->where('event_end_date', '<', date('Y-m-d'));
             }
         }
-        $count = $query->count();
+       
         if ($request->has('event_name')) {
             $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
         }
@@ -264,6 +259,7 @@ public function getAllEventDetails(Request $request)
         if ($request->has('event_fee')) {
             $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
         }
+        $count = $query->count();
         if ($request->has('pageNo') && $request->has('limit')) {
             $limit = $request->limit;
             $pageNo = $request->pageNo;

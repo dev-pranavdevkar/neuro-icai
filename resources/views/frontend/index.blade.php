@@ -225,22 +225,8 @@
                                 few hundreds and students in about couple of thousands. The Branch has now Membership about
                                 9000 Members, including 3500 Members from Industry and About 22,000 students.</p>
                         </div>
-                        {{-- <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="home__about__item">
-                                    <h4>Our Vision</h4>
-                                    <p>You could try by giving the viewer paper cut, but that’s not the kind of
-                                        attention</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="home__about__item">
-                                    <h4>Our Mission</h4>
-                                    <p>The brochure must grab a viewer’s attention and hold it long enough to</p>
-                                </div>
-                            </div>
-                        </div> --}}
-                        <a href="£" class="primary-btn bottom-btn">More Details</a>
+
+                        <a href="{{ url('/about/aboutPuneBranch') }}" class="primary-btn bottom-btn">More Details</a>
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-1">
@@ -276,7 +262,7 @@
 
                         </div>
                         <div class="mb-5 d-flex ">
-                            <a href="#" class="primary-btn bottom-btn">More Details</a>
+                            <a href="{{ url('/about/chairmanCommunique') }}" class="primary-btn bottom-btn">More Details</a>
                         </div>
                     </div>
                 </div>
@@ -288,35 +274,7 @@
 
     <!-- Upcomming Events Section Begin -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <section class="home-about spad">
-
-
- 
-   
-      
-
-
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -326,194 +284,56 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-4.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
+            </div>
+            <div class="row d-flex justify-content-center">
+                @if (isset($eventDetails) && count($eventDetails) > 0)
+                    @foreach ($eventDetails as $event)
+                        <div class="col-lg-3 py-3 py-lg-0">
+                            {{-- ------------------------------------------------------------------------------------------- --}}
+                            <div class="card events-card h-100">
+                                <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-4.jpg') }}"
+                                    alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $event['event_name'] }}</h5>
+                                    <div class="">
+                                        <ul class="events">
+                                            <li><a href="{{ url('/') }}"><i
+                                                        class="fa fa-calendar"></i>{{ $event['event_start_date'] }} To
+                                                    {{ $event['event_end_date'] }}
+                                                </a></li>
+                                            <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To
+                                                    06:00 PM
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="text-center">
+                                        <a class="readMore" href="#">Read More</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
+                            {{-- ------------------------------------------------------------------------------------------- --}}
                         </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-2.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-2.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-2.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
+                    @endforeach
+
+
+                    {{-- Commented Code is Pagination Code --}}
+                    {{-- <div>
+                    {!! $eventDetails->links() !!}
+                </div> --}}
+                @else
+                    <h1>No event details available.</h1>
+                @endif
             </div>
 
 
 
         </div>
         <div class="container-fluid">
-            <div class="loan__services__list">
-                {{-- <div class="loan__services__item set-bg" data-setbg="{{ url('frontend/img/loan-services/ls-1.jpg') }}">
-                    <div class="loan__services__item__text">
-                        <h4><span>01.</span> Sub Regional Conference in Shegaon</h4>
-                        <div class="">
-                            <ul class="events">
-                                <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                    </a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="text-center">
-                            <a class="readMore" href="#">Read More</a>
-                        </div>
 
-
-                    </div>
-                </div> --}}
-                {{-- <div class="loan__services__item set-bg" data-setbg="{{ url('frontend/img/loan-services/ls-2.jpg') }}">
-                    <div class="loan__services__item__text">
-                        <h4><span>02.</span> National Conference on Direct Taxes</h4>
-                        <div class="">
-                            <ul class="events">
-                                <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                    </a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="text-center">
-                            <a class="readMore" href="#">Read More</a>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="loan__services__item set-bg" data-setbg="{{ url('frontend/img/loan-services/ls-3.jpg') }}">
-                    <div class="loan__services__item__text">
-                        <h4><span>03.</span> Global Professional Accountants Convention</h4>
-                        <div class="">
-                            <ul class="events">
-                                <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                    </a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="text-center">
-                            <a class="readMore" href="#">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="loan__services__item set-bg" data-setbg="{{ url('frontend/img/loan-services/ls-4.jpg') }}">
-                    <div class="loan__services__item__text">
-                        <h4><span>04.</span> Sub Regional Conference in Shegaon</h4>
-                        <div class="">
-                            <ul class="events">
-                                <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                    </a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="text-center">
-                            <a class="readMore" href="#">Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="loan__services__item set-bg" data-setbg="{{ url('frontend/img/loan-services/ls-5.jpg') }}">
-                    <div class="loan__services__item__text">
-                        <h4><span>05.</span> National Conference on Direct Taxes</h4>
-                        <div class="">
-                            <ul class="events">
-                                <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To 26-08-2023
-                                    </a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="text-center">
-                            <a class="readMore" href="#">Read More</a>
-                        </div>
-                    </div>
-                </div> --}}
-            </div>
 
             <div class="py-lg-5 pb-4 text-center ">
-                <a href="#" class="primary-btn">View More</a>
+                <a href="{{ url('events/upcommingEvents') }}" class="primary-btn">View More</a>
             </div>
         </div>
     </section>
@@ -531,105 +351,49 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
+            </div>
+            <div class="row d-flex justify-content-center">
+                @if (isset($eventDetails) && count($eventDetails) > 0)
+                    @foreach ($eventDetails as $event)
+                        <div class="col-lg-3 py-3 py-lg-0">
+                            {{-- ------------------------------------------------------------------------------------------- --}}
+                            <div class="card events-card h-100">
+                                <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-4.jpg') }}"
+                                    alt="Card image cap">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $event['event_name'] }}</h5>
+                                    <div class="">
+                                        <ul class="events">
+                                            <li><a href="{{ url('/') }}"><i
+                                                        class="fa fa-calendar"></i>{{ $event['event_start_date'] }} To
+                                                    {{ $event['event_end_date'] }}
+                                                </a></li>
+                                            <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To
+                                                    06:00 PM
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="text-center">
+                                        <a class="readMore" href="#">Read More</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
+                            {{-- ------------------------------------------------------------------------------------------- --}}
                         </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
+                    @endforeach
+
+
+                    {{-- Commented Code is Pagination Code --}}
+                    {{-- <div>
+            {!! $eventDetails->links() !!}
+        </div> --}}
+                @else
+                    <h1>No  Event details available.</h1>
+                @endif
             </div>
             <div class="py-4 text-center ">
-                <a href="#" class="primary-btn">View More</a>
+                <a href="{{ url('/about/updates') }}" class="primary-btn">View More</a>
             </div>
 
 
@@ -638,9 +402,6 @@
     </section>
     <!-- Letest Updates Section End -->
 
-    <!-- Home About Begin -->
-
-    <!-- Home About End -->
 
     <!-- Association Section Begin -->
     <section class="latest spad">
@@ -653,6 +414,7 @@
                             <p>Lorem Ipsum is simply dummy text of the printing and typesetting has been the</p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -660,82 +422,34 @@
             <div class="container">
                 <div class="row">
                     <div class="testimonial__slider owl-carousel">
-                        <div class="col-lg-4">
-                            <div class="testimonial__item">
-                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                                <h5>The Institute Of Chartered Accountants Of India</h5>
-                                {{-- <span>ICAI Pune</span> --}}
-                                <div class="posted-details">
-                                    <ul class="d-flex justify-content-center">
-                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
-                                                2023</a>
-                                        </li>
-                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                        </li>
-                                    </ul>
+                        @if (isset($associationDetails) && count($associationDetails) > 0)
+                            @foreach ($associationDetails as $association)
+                                <div class="col-lg-4">
+                                    <div class="testimonial__item">
+
+                                        <img src={{ $association['company_logo'] }} alt="">
+                                        <h5>{{ $association['company_name'] }}</h5>
+                                        {{-- <span>ICAI Pune</span> --}}
+                                        <div class="posted-details">
+                                            <ul class="d-flex justify-content-center">
+                                                <li><a href="{{ url('/') }}"><i
+                                                            class="fa fa-calendar"></i>{{ $association['start_date'] }}</a>
+                                                </li>
+                                                {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <p>You need to pay special attention to the type of colors in your business
+                                            cards. For
+                                            instance, if you’re in the funeral industry, bright-luminous type of colors
+                                            may not be
+                                            too.</p>
+                                    </div>
                                 </div>
-                                <p>You need to pay special attention to the type of colors in your business cards. For
-                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                    too.</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="testimonial__item">
-                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                                <h5>The Institute Of Chartered Accountants Of India</h5>
-                                {{-- <span>ICAI Pune</span> --}}
-                                <div class="posted-details">
-                                    <ul class="d-flex justify-content-center">
-                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
-                                                2023</a>
-                                        </li>
-                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                        </li>
-                                    </ul>
-                                </div>
-                                <p>You need to pay special attention to the type of colors in your business cards. For
-                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                    too.</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="testimonial__item">
-                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                                <h5>The Institute Of Chartered Accountants Of India</h5>
-                                {{-- <span>ICAI Pune</span> --}}
-                                <div class="posted-details">
-                                    <ul class="d-flex justify-content-center">
-                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
-                                                2023</a>
-                                        </li>
-                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                        </li>
-                                    </ul>
-                                </div>
-                                <p>You need to pay special attention to the type of colors in your business cards. For
-                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                    too.</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="testimonial__item">
-                                <img src="{{ url('frontend/img/i-love-icai-photo.jpg') }}" alt="">
-                                <h5>The Institute Of Chartered Accountants Of India</h5>
-                                {{-- <span>ICAI Pune</span> --}}
-                                <div class="posted-details">
-                                    <ul class="d-flex justify-content-center">
-                                        <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25th Augest,
-                                                2023</a>
-                                        </li>
-                                        {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
-                                        </li>
-                                    </ul>
-                                </div>
-                                <p>You need to pay special attention to the type of colors in your business cards. For
-                                    instance, if you’re in the funeral industry, bright-luminous type of colors may not be
-                                    too.</p>
-                            </div>
-                        </div>
+                            @endforeach
+                        @else
+                            <h1>Association Not available.</h1>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -744,7 +458,7 @@
     <!-- Association Section End -->
 
     <!-- Choose Section Begin -->
-    <section class="choose spad bg-light">
+    <section class="notice-board-section choose spad bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -764,17 +478,25 @@
                         </div>
                         {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
                         <h5>Member's Noticeboard</h5>
-                        <p>
-                        <ul class="text-left  px-lg-5 px-4 fa-list-notice">
-                            <li>Now Hiring for Various Post at Pune Branch</li>
-                            <li>Notice & 61st Annual Report of Pune Branch</li>
-                            <li>ICAI International Research Awards, 2023</li>
-                            <li>CA CMA CS - PMLA under some scenarios</li>
-                            <li>Now Hiring for Various Post at Pune Branch</li>
-                        </ul>
-                        </p>
+                        <div class="d-flex align-items-center">
+                            <p>
+                                @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
+                                    <ul class="text-left  px-lg-5 px-4 fa-list-notice">
+                                        @foreach ($studentNoticeBoard as $studentNotice)
+                                            <li>
+                                                <a href={{ $studentNotice['notice_board_pdf'] }}>
+                                                    {{ $studentNotice['title'] }}</a>
+
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <h1>No Notice details available.</h1>
+                                @endif
+                            </p>
+                        </div>
                         <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="#" class="primary-btn">View More</a>
+                            <a href="{{ url('/members/updatesForMembers') }}" class="primary-btn">View More</a>
                         </div>
                     </div>
                 </div>
@@ -788,16 +510,22 @@
                         {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
                         <h5>Student's Noticeboard</h5>
                         <p>
-                        <ul class="text-left  px-lg-5 px-4 fa-list-notice">
-                            <li>Now Hiring for Various Post at Pune Branch</li>
-                            <li>Notice & 61st Annual Report of Pune Branch</li>
-                            <li>ICAI International Research Awards, 2023</li>
-                            <li>CA CMA CS - PMLA under some scenarios</li>
-                            <li>Now Hiring for Various Post at Pune Branch</li>
-                        </ul>
+                            @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
+                                <ul class="text-left  px-lg-5 px-4 fa-list-notice">
+                                    @foreach ($studentNoticeBoard as $studentNotice)
+                                        <li>
+                                            <a href={{ $studentNotice['notice_board_pdf'] }}>
+                                                {{ $studentNotice['title'] }}</a>
+
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <h1>No Notice details available.</h1>
+                            @endif
                         </p>
                         <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="#" class="primary-btn">View More</a>
+                            <a href="{{ url('/students/studentsNoticeboard') }}" class="primary-btn">View More</a>
                         </div>
                     </div>
                 </div>
@@ -831,96 +559,38 @@
                         {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
                         <h5>Student's Newsletter</h5>
                         <div class="row px-4 px-lg-0">
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
+                            @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
+                                @foreach ($newsLetterDetails as $newsLetter)
+                                    <div class="col-lg-6 col-12 py-3">
+                                        <div class="card newsletter-card w-100">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-3 ">
+                                                        <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
+                                                                src="{{ url('frontend/img/download-pdf.png') }}"
+                                                                alt=""></a>
+                                                    </div>
+                                                    <div class="col-9 text-right">
+                                                        <div class="">
+                                                            <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                                                        </div>
+                                                        <div>
+                                                            <b> Students </b>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3 ">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
+                                @endforeach
+                            @else
+                                <h1>No Newsletter available.</h1>
+                            @endif
 
 
                         </div>
                         <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="#" class="primary-btn">View More</a>
+                            <a href="{{ url('/students/puneWICASANewsletter') }}" class="primary-btn">View More</a>
                         </div>
                     </div>
                 </div>
@@ -934,96 +604,40 @@
                         {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
                         <h5>Member's Newsletter</h5>
                         <div class="row px-4 px-lg-0">
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
+                            @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
+                                @foreach ($newsLetterDetails as $newsLetter)
+                                    <div class="col-lg-6 col-12 py-3">
+                                        <div class="card newsletter-card w-100">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-3 ">
+                                                        <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
+                                                                src="{{ url('frontend/img/download-pdf.png') }}"
+                                                                alt=""></a>
+                                                    </div>
+                                                    <div class="col-9 text-right">
+                                                        <div class="">
+                                                            <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                                                        </div>
+                                                        <div>
+                                                            <b> Members </b>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-12 py-3">
-                                <div class="card newsletter-card w-100">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-3 ">
-                                                <a href="{{ url('/') }}"><img
-                                                        src="{{ url('frontend/img/download-pdf.png') }}"
-                                                        alt=""></a>
-                                            </div>
-                                            <div class="col-9 text-right">
-                                                <div class="">
-                                                    <h4> April 2023</h4>
-                                                </div>
-                                                <div>
-                                                    <b> Members </b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                @endforeach
+                            @else
+                                <h1>No Newsletter available.</h1>
+                            @endif
+
 
 
 
                         </div>
                         <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="#" class="primary-btn">View More</a>
+                            <a href="{{ url('/members/puneMembersNewsletter') }}" class="primary-btn">View More</a>
                         </div>
                     </div>
                 </div>
@@ -1032,246 +646,7 @@
         </div>
     </section>
 
-    {{-- <section class="py-5 loan-services">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title">
-                        <h2>Newsletter</h2>
-                        <p>This question should make the viewer want to open the brochure to learn more.</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-lg-5  mb-4">
-                    <h3 class="pb-3">Members Newsletters</h3>
-                    <div class="row">
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Members </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Members </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Members </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Members </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="col-lg-12 text-center">
-                        <a href="#" class="primary-btn">View More</a>
-                    </div>
-                </div>
-                <div class="col-lg-5 offset-lg-2 mb-4">
-                    <h3 class="pb-3">Students Newsletters</h3>
-                    <div class="row">
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Students </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Students </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Students </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-12 py-3">
-                            <div class="card newsletter-card w-100">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-3">
-                                            <a href="{{ url('/') }}"><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
-                                        </div>
-                                        <div class="col-9 text-right">
-                                            <div class="">
-                                                <h4> April 2023</h4>
-                                            </div>
-                                            <div>
-                                                <b> Students </b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-12 text-center">
-                        <a href="#" class="primary-btn">View More</a>
-                    </div>
-
-
-
-                </div>
-            </div>
-
-        </div>
-    </section> --}}
-    <!-- Newsletter Section End -->
-
-
-    <!-- Call Section Begin -->
-    {{-- <section class="call spad set-bg" data-setbg="{{ url('frontend/img/call-bg.jpg') }}">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-5 col-md-6">
-                    <div class="call__text">
-                        <div class="section-title">
-                            <h2>Request A Call Back</h2>
-                            <p>Posters had been a very beneficial marketing tool because it had paved to deliver an
-                                effective message that conveyed customer’s attention.</p>
-                        </div>
-                        <a href="#">Contact Us</a>
-                    </div>
-                </div>
-                <div class="col-lg-6 offset-lg-1 col-md-6">
-                    <form action="#" class="call__form">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <input type="text" placeholder="Name">
-                            </div>
-                            <div class="col-lg-6">
-                                <input type="text" placeholder="Email">
-                            </div>
-                            <div class="col-lg-6">
-                                <input type="text" placeholder="Phone">
-                            </div>
-                            <div class="col-lg-6">
-                                <select>
-                                    <option value="">Choose Our Services</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="site-btn">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section> --}}
-    <!-- Call Section End -->
 
     <!-- Vacancies Section Begin -->
     <section class="home-about spad bg-light">
@@ -1285,131 +660,38 @@
                     </div>
                 </div>
                 <div class="testimonial__slider jobs__slider owl-carousel">
-                    <div class="col-lg-4 ">
+                    @foreach ($vacancyDetails as $vacancy)
+                        <div class="col-lg-4 ">
 
-                        <div class="card jobcard">
+                            <div class="card jobcard">
 
-                            <div class="card-body ">
-                                <h5 class="card-title">Article Assistant</h5>
-                                <h6 class="card-subtitle mb-2 ">Pravin N Jain & Associates</h6>
-                                <div class=" posted-details">
-                                    <ul class="d-flex justify-content-between">
-                                        <li><i class="fa fa-briefcase" aria-hidden="true"></i>01-03 Yrs</li>
-                                        <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                        <li><i class="fa fa-map-marker" aria-hidden="true"></i>Pune</li>
-                                    </ul>
-                                    <p class="mt-2">We are looking for Articles Assistant. The candidates will get
-                                        exposure in the field of Accounting, Statutory Audits, Internal Audits, Income Tax,
-                                        GST, TDS, etc.</p>
+                                <div class="card-body ">
+                                    <h5 class="card-title"> {{ $vacancy['position'] }}</h5>
+                                    <h6 class="card-subtitle mb-2 ">{{ $vacancy['ca_firm_name'] }}</h6>
+                                    <div class=" posted-details">
+                                        <ul class="d-flex justify-content-between">
+                                            <li><i class="fa fa-briefcase"
+                                                    aria-hidden="true"></i>{{ $vacancy['experience'] }} Yrs</li>
+                                            <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
+                                            <li><i class="fa fa-map-marker"
+                                                    aria-hidden="true"></i>{{ $vacancy['location_details']['city'] }}</li>
+                                        </ul>
+                                        <p class="mt-2">We are looking for {{ $vacancy['position'] }}. The candidates
+                                            will get
+                                            exposure in the field of Accounting, Statutory Audits, Internal Audits, Income
+                                            Tax,
+                                            GST, TDS, etc.</p>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary">View Details</a>
+                                    </div>
+
                                 </div>
-                                <div class="d-flex justify-content-end">
-                                    <a href="#" class="btn btn-primary">View Details</a>
-                                </div>
-
                             </div>
+
                         </div>
+                    @endforeach
 
-                    </div>
-                    <div class="col-lg-4 ">
-
-                        <div class="card jobcard">
-
-                            <div class="card-body ">
-                                <h5 class="card-title">Article Assistant</h5>
-                                <h6 class="card-subtitle mb-2 ">Pravin N Jain & Associates</h6>
-                                <div class=" posted-details">
-                                    <ul class="d-flex justify-content-between">
-                                        <li><i class="fa fa-briefcase" aria-hidden="true"></i>01-03 Yrs</li>
-                                        <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                        <li><i class="fa fa-map-marker" aria-hidden="true"></i>Pune</li>
-                                    </ul>
-                                    <p class="mt-2">We are looking for Articles Assistant. The candidates will get
-                                        exposure in the field of Accounting, Statutory Audits, Internal Audits, Income Tax,
-                                        GST, TDS, etc.</p>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <a href="#" class="btn btn-primary">View Details</a>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-4 ">
-
-                        <div class="card jobcard">
-
-                            <div class="card-body ">
-                                <h5 class="card-title">Article Assistant</h5>
-                                <h6 class="card-subtitle mb-2 ">Pravin N Jain & Associates</h6>
-                                <div class=" posted-details">
-                                    <ul class="d-flex justify-content-between">
-                                        <li><i class="fa fa-briefcase" aria-hidden="true"></i>01-03 Yrs</li>
-                                        <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                        <li><i class="fa fa-map-marker" aria-hidden="true"></i>Pune</li>
-                                    </ul>
-                                    <p class="mt-2">We are looking for Articles Assistant. The candidates will get
-                                        exposure in the field of Accounting, Statutory Audits, Internal Audits, Income Tax,
-                                        GST, TDS, etc.</p>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <a href="#" class="btn btn-primary">View Details</a>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-4 ">
-
-                        <div class="card jobcard">
-
-                            <div class="card-body ">
-                                <h5 class="card-title">Article Assistant</h5>
-                                <h6 class="card-subtitle mb-2 ">Pravin N Jain & Associates</h6>
-                                <div class=" posted-details">
-                                    <ul class="d-flex justify-content-between">
-                                        <li><i class="fa fa-briefcase" aria-hidden="true"></i>01-03 Yrs</li>
-                                        <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                        <li><i class="fa fa-map-marker" aria-hidden="true"></i>Pune</li>
-                                    </ul>
-                                    <p class="mt-2">We are looking for Articles Assistant. The candidates will get
-                                        exposure in the field of Accounting, Statutory Audits, Internal Audits, Income Tax,
-                                        GST, TDS, etc.</p>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <a href="#" class="btn btn-primary">View Details</a>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-4 ">
-
-                        <div class="card jobcard">
-
-                            <div class="card-body ">
-                                <h5 class="card-title">Article Assistant</h5>
-                                <h6 class="card-subtitle mb-2 ">Pravin N Jain & Associates</h6>
-                                <div class=" posted-details">
-                                    <ul class="d-flex justify-content-between">
-                                        <li><i class="fa fa-briefcase" aria-hidden="true"></i>01-03 Yrs</li>
-                                        <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                        <li><i class="fa fa-map-marker" aria-hidden="true"></i>Pune</li>
-                                    </ul>
-                                    <p class="mt-2">We are looking for Articles Assistant. The candidates will get
-                                        exposure in the field of Accounting, Statutory Audits, Internal Audits, Income Tax,
-                                        GST, TDS, etc.</p>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    <a href="#" class="btn btn-primary">View Details</a>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
 
             </div>
@@ -1480,71 +762,6 @@
 
 
 
-    <!-- Blog Section Begin -->
-    {{-- <section class="latest spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title">
-                        <h2>Latest Updates</h2>
-                        <p>Successfully arranged number of National and Regional conferences for the members and students.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="latest__blog__item">
-                        <h5><a href="#">Convocation Ceremony held on 27th May 2023 at Pune</a></h5>
-                        <p>Convocation Ceremony held on 27th May 2023 at Pune Click below link to…</p>
-                        <div class="latest__blog__author">
-
-                            <div class="latest__blog__author__text">
-                                <a href="">
-                                    <h6>Read More</h6>
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="latest__blog__item">
-                        <h5><a href="#">Convocation Ceremony held on 27th May 2023 at Pune</a></h5>
-                        <p>Convocation Ceremony held on 27th May 2023 at Pune Click below link to…</p>
-                        <div class="latest__blog__author">
-
-                            <div class="latest__blog__author__text">
-                                <a href="">
-                                    <h6>Read More</h6>
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="latest__blog__item">
-                        <h5><a href="#">Convocation Ceremony held on 27th May 2023 at Pune</a></h5>
-                        <p>Convocation Ceremony held on 27th May 2023 at Pune Click below link to…</p>
-                        <div class="latest__blog__author">
-
-                            <div class="latest__blog__author__text">
-                                <a href="">
-                                    <h6>Read More</h6>
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-12 text-center">
-                    <a href="#" class="primary-btn">View More</a>
-                </div>
-            </div>
-        </div>
-    </section> --}}
-    <!-- Blog Section End -->
 
 
     <!-- Contact Begin -->
@@ -1599,34 +816,33 @@
 
 
 
-    @if(isset($eventDetails['event_details']) && count($eventDetails['event_details']) > 0)
-    <div>
-        <h2>Event Details:</h2>
-        <ul>
-            @foreach($eventDetails['event_details'] as $event)
-                <li>
-                    {{ count($eventDetails['event_details']) }} <!-- Output event count -->
-                    {{ $eventDetails['event_details'][0]->event_name }} <!-- Output first event name -->
-                    {{ $eventDetails['event_details'][0]->location_details->city }} <!-- Output city of first event's location -->
-                    
-                </li>
-            @endforeach
-        </ul>
-    </div>
-@else
-    <p>No event details available.</p>
-@endif
-    
+    {{-- Working Code --}}
+    {{-- <div class="container">
+        @if (isset($eventDetails) && count($eventDetails) > 0)
+            <div class="">
+                <h2>Event Details:</h2>
+                <ul>
+                    @foreach ($eventDetails as $event)
+                        <li>
+                            Event Name: {{ $event['event_name'] }}
+                            Event Start Date: {{ $event['event_start_date'] }}
+                            Event End Date: {{ $event['event_end_date'] }}
+                            Location: {{ $event['location_details']['city'] }},
+                            {{ $event['location_details']['state'] }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div>
+                {!! $eventDetails->links() !!}
+            </div>
+        @else
+            <h1>No event details available.</h1>
+        @endif
 
+    </div> --}}
 
-
-
-
-
-
-
-
-
+    {{-- ---------------------- --}}
 
 
 @endsection

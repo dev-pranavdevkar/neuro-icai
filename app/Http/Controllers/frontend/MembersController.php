@@ -4,7 +4,7 @@ namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\NewsLetterDetails;
 class MembersController extends Controller
 {
     public function exposureDrafts()
@@ -18,7 +18,8 @@ class MembersController extends Controller
     }
     public function puneMembersNewsletter()
     {
-        return view('frontend.members.puneMembersNewsletter');
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(12);
+        return view('frontend.members.puneMembersNewsletter', compact( 'newsLetterDetails'));
     }
 
     public function updatesForMembers()
