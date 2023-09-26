@@ -9,7 +9,7 @@ use App\Http\Controllers\V1\App\AppAuthController;
 use App\Http\Controllers\V1\App\AppMetaDataController;
 use App\Http\Controllers\V1\Admin\DashboardController;
 use App\Http\Controllers\V1\Website\WebAuthController;
-
+use App\Http\Controllers\V1\Website\WebMetaDataController;
 use App\Http\Controllers\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -233,6 +233,8 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
     Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
     Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
+
     /*=================================================================================================== */
 
     Route::get('open', 'WebAuthController@open');

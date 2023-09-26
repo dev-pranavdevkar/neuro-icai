@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\NewsLetterDetails;
 use Illuminate\Http\Request;
 
 class StudentsController extends Controller
@@ -18,7 +19,8 @@ class StudentsController extends Controller
     }
     public function puneWICASANewsletter()
     {
-        return view('frontend.students.puneWICASANewsletter');
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(12);
+        return view('frontend.students.puneWICASANewsletter', compact( 'newsLetterDetails'));
     }
 
     public function studentsNoticeboard()

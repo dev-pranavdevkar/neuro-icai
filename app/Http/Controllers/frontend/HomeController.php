@@ -21,12 +21,13 @@ class HomeController extends Controller
         $newsLetterDetails = NewsLetterDetails::with([])->paginate(3);
         $vacancyDetails = VacancyDetails::with([])->paginate(3);
         return view('frontend.index', compact('eventDetails', 'associationDetails', 'studentNoticeBoard', 'newsLetterDetails', 'vacancyDetails'));
-
     }
-    public function contact(){
+    public function contact()
+    {
         return view('frontend.contact');
     }
-    public function help(){
+    public function help()
+    {
         return view('frontend.help');
     }
 }

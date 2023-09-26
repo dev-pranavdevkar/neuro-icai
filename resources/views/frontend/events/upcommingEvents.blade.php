@@ -22,69 +22,77 @@
 
 
         <div class="container">
+            @if (isset($eventDetails) && count($eventDetails) > 0)
             <div class="row">
 
-                <div class="col-lg-6 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Seminar on Trust</h5>
+                @foreach ($eventDetails as $event)
+            <div class="col-lg-6 py-3">
+                {{-- ------------------------------------------------------------------------------------------- --}}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $event['event_name'] }}</h5>
 
-                            <table class="table ">
+                        <table class="table ">
 
 
 
-                                <tbody>
-                                    <tr>
+                            <tbody>
+                                <tr>
 
-                                        <th scope="col">Event Start Date:</th>
-                                        <td scope="col">25-08-2023</td>
-                                    </tr>
-                                    <tr>
+                                    <th scope="col">Event Start Date:</th>
+                                    <td scope="col">{{ $event['event_start_date'] }}</td>
+                                </tr>
+                                <tr>
 
-                                        <th scope="col">Event End Date:</th>
-                                        <td scope="col">26-08-2023</td>
-                                    </tr>
-                                    <tr>
+                                    <th scope="col">Event End Date:</th>
+                                    <td scope="col"> {{ $event['event_end_date'] }}</td>
+                                </tr>
+                                <tr>
 
-                                        <th scope="col">Event Time:</th>
-                                        <td scope="col">10:00 AM To 06:00 PM</td>
-                                    </tr>
+                                    <th scope="col">Event Time:</th>
+                                    <td scope="col">10:00 AM To 06:00 PM</td>
+                                </tr>
 
-                                    <tr>
+                                <tr>
 
-                                        <th scope="col">Cut off Date:</th>
-                                        <td scope="col">25-08-2023 10:00 AM</td>
-                                    </tr>
-                                    <tr>
+                                    <th scope="col">Cut off Date:</th>
+                                    <td scope="col">{{ $event['event_cut_off_date'] }} 10:00 AM</td>
+                                </tr>
+                                <tr>
 
-                                        <th scope="col">Event Fee:</th>
-                                        <td scope="col"> ₹ 500</td>
-                                    </tr>
-                                    <tr>
+                                    <th scope="col">Event Fee:</th>
+                                    <td scope="col"> ₹ {{ $event['event_fee'] }}</td>
+                                </tr>
+                                <tr>
 
-                                        <th scope="col">Brochure:</th>
-                                        <td scope="col"> <a href="">Click Here To Download </a></td>
-                                    </tr>
-       
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-between">
-                                <div><a href=""><button type="button" class="btn btn-secondary">Details</button></a></div>
-                                <div><a href=""><button type="button" class="btn btn-primary">Register</button></a></div>
-                            </div>
-                         
+                                    <th scope="col">Brochure:</th>
+                                    <td scope="col"> <a href="{{ $event['broacher_pdf'] }}">Click Here To Download </a></td>
+                                </tr>
+   
+                            </tbody>
+                        </table>
+                        <div class="d-flex justify-content-between">
+                            <div><a href=""><button type="button" class="btn btn-secondary">Details</button></a></div>
+                            <div><a href=""><button type="button" class="btn btn-primary">Register</button></a></div>
                         </div>
+                     
                     </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
                 </div>
+                {{-- ------------------------------------------------------------------------------------------- --}}
+            </div>
+          
+            @endforeach
 
             </div>
-
+            @else
+            <h1>No event details available.</h1>
+        @endif
 
 
         </div>
 
     </section>
     <!-- Upcomming Events Section End -->
+
+
 @endsection
