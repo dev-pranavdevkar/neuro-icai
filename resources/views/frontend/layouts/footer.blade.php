@@ -35,7 +35,7 @@
                     <h5>Members</h5>
                     <div class="footer__widget">
                         <ul>
-                            <li><a href="{{ url('/') }}">Check CPE Hours</a></li>
+                            <li><a href="https://www.cpeicai.org/">Check CPE Hours</a></li>
                             <li><a href="{{ url('/') }}">Business Loans</a></li>
                             <li><a href="{{ url('/') }}">Exposure DRAFTS</a></li>
                             <li><a href="{{ url('/') }}">Members SMS Alerts</a></li>

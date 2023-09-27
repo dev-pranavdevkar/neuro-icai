@@ -469,6 +469,7 @@
                 </div>
             </div>
             <div class="row">
+                
                 <div class="col-lg-6 col-12 mb-5">
                     <div class="choose__item ">
                         <div class="d-flex justify-content-center">
