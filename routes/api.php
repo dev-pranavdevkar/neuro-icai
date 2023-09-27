@@ -9,7 +9,7 @@ use App\Http\Controllers\V1\App\AppAuthController;
 use App\Http\Controllers\V1\App\AppMetaDataController;
 use App\Http\Controllers\V1\Admin\DashboardController;
 use App\Http\Controllers\V1\Website\WebAuthController;
-
+use App\Http\Controllers\V1\Website\WebMetaDataController;
 use App\Http\Controllers\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +57,17 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::delete('deleteBannerDetailsbyId', [MetaDataController::class, 'deleteBannerDetailsbyId']);
     Route::post('editBanner', [MetaDataController::class, 'editBanner']);
     Route::get('getBannerById', [MetaDataController::class, 'getBannerById']);
+
+    //user
+    Route::get('getAllStudent', [MetaDataController::class, 'getAllStudent']);
+    Route::get('getAllMember', [MetaDataController::class, 'getAllMember']);
+
+    //company
+    Route::post('addComapny', [MetaDataController::class, 'addComapny']);
+    Route::post('editCompany', [MetaDataController::class, 'editCompany']);
+    Route::get('getAllCompany', [MetaDataController::class, 'getAllCompany']);
+    Route::get('getCompanyById', [MetaDataController::class, 'getCompanyById']);
+    Route::delete('deleteCompanyById', [MetaDataController::class, 'deleteCompanyById']);
 
     //LocationDetails
     Route::post('addLocationDetails', [MetaDataController::class, 'addLocationDetails']);
@@ -238,6 +249,9 @@ Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPass
         Route::get('getAllNewLetterDetailsForStudent', [AppMetaDataController::class, 'getAllNewLetterDetailsForStudent']);
         Route::get('getAllNewLetterDetailsForMembers', [AppMetaDataController::class, 'getAllNewLetterDetailsForMembers']);
 
+        //batches
+        Route::get('getStudentBatches', [MetaDataController::class, 'getStudentBatches']);
+        Route::get('getStudentBatchesById', [MetaDataController::class, 'getStudentBatchesById']);
 
         //VacancyDetails
         Route::get('getAllVacancyDetails', [AppMetaDataController::class, 'getAllVacancyDetails']);
@@ -254,16 +268,19 @@ Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPass
 Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function ()
 {
     Route::post('registerUser', [WebAuthController::class,'registerUser']);
-Route::post('userLogin', [WebAuthController::class, 'userLogin']);
-Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
-Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
-Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
-Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
-Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
-Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
-Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
-Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    Route::post('userLogin', [WebAuthController::class, 'userLogin']);
+    Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
+    Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
+    Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
+    Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
+    Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
+    Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
+    Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
+    Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
 
+    //get latest update
+    Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
+    Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
     Route::get('open', 'WebAuthController@open');
 
     Route::group(['middleware' => [ 'jwt.verify']], function () {

@@ -22,4 +22,13 @@ public function child_events()
 {
     return $this->hasMany(EventDetails::class, 'parent_event_id');
 }
+    public function event_images(){
+        return $this->hasMany(EventImages::class,'event_id');
+    }
+    public function event_video(){
+        return $this->hasMany(EventPresentationVideo::class,'event_id');
+    }
+    public function event_presntation(){
+        return $this->hasMany(EventPresentationPdf::class,'event_id');
+    }
 }

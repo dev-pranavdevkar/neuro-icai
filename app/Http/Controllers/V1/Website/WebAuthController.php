@@ -26,51 +26,7 @@ use Spatie\Permission\Models\Role;
 class WebAuthController extends Controller
 {
 
-    // public function registerUser(Request $request)
-    // {
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'name' => 'required|string|max:255',
-    //             'email' => 'required|string|email|max:255|unique:users',
-    //             'password' => 'required|string|min:6|confirmed',
 
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors());
-    //         }
-    //         if ($request->role == 'SuperAdmin') {
-    //             return $this->sendResponse([], 'Sorry you can\'t be super admin.It\'s our property', true);
-    //         }
-
-    //         $newUser = new User();
-    //         $newUser->password = Hash::make($request['password']);
-    //         $newUser->name = $request->name;
-    //         $newUser->email = $request->email;
-    //         $newUser->last_name = $request->last_name;
-    //         $newUser->date_of_birth = $request->date_of_birth;
-    //         $newUser->mobile_no = $request->mobile_no;
-    //         $newUser->otp = $request->otp;
-    //         // $newUser->last_login_at = Carbon::now();
-
-    //         $role = Role::where('name', $request->role)->first();
-    //         $user = User::find(1);
-    //          $studentRole = Role::where('name', 'student')->first();
-    //         $adminRole = Role::where('name', 'admin')->first();
-    //         $memberRole=Role::where('name','members')->first();
-    //         // Assign roles to the user
-    //          $newUser->assignRole($studentRole); // Assign student role
-    //         $newUser->assignRole($adminRole);
-    //          $newUser->assignRole($memberRole);
-    //         $newUser->assignRole($Role);
-    //         $newUser->save();
-    //         $token = JWTAuth::fromUser($newUser);
-    //         $response = ['token' => $token];
-    //         $response['userData'] = $newUser;
-    //         return $this->sendResponse($response, 'Registered Successfully', true);
-    //     } catch (Exception $e) {
-    //         return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
-    //     }
-    // }
 
     public function registerUser(Request $request)
     {
@@ -101,30 +57,10 @@ class WebAuthController extends Controller
 
             // Assign roles based on user's role value
             $assignedRoles = [];
-            // if ($request->role == 'members') {
-            //     $membersRole = Role::where('name', 'members')->first();
-            //     if ($membersRole) {
-            //         $newUser->assignRole($membersRole);
-            //         $assignedRoles[] = 'members';
-            //     }
-            // }
-            // if ($request->role == 'student') {
-            //     $studentRole = Role::where('name', 'student')->first();
-            //     if ($studentRole) {
-            //         $newUser->assignRole($studentRole);
-            //         $assignedRoles[] = 'student';
-            //     }
-            // }
-            // if ($request->role == 'admin') {
-            //     $adminRole = Role::where('name', 'admin')->first();
-            //     if ($adminRole) {
-            //         $newUser->assignRole($adminRole);
-            //         $assignedRoles[] = 'admin';
-            //     }
-            // }
 
-                $role=Role::query()->where('name',$request->role)->first();
-                $newUser->assignRole($role);
+
+            $role=Role::query()->where('name',$request->role)->first();
+            $newUser->assignRole($role);
             $newUser->save();
 
             $userRoles = $newUser->roles->pluck('name');
@@ -159,6 +95,7 @@ class WebAuthController extends Controller
                     $token = JWTAuth::fromUser($user);
                     $response = ['token' => $token];
                     $response['userData'] = $user;
+                    $response['permissions'] = $user->getAllPermissions();
                     return $this->sendResponse($response, 'Login Success', true);
                 } else {
                     return $this->sendError('Password mismatch', [], 422);
@@ -279,22 +216,25 @@ public function verifyOtp(Request $request)
 
     return response()->json(['message' => 'OTP verified successfully'], true);
 }
-public function getAllEventDetails(Request $request)
+  public function getAllEventDetails(Request $request)
 {
     try {
         $validator = Validator::make($request->all(), [
             'pageNo' => 'numeric',
             'limit' => 'numeric',
             'filter' => 'in:upcoming,past',
+            'event_start_date' => 'date_format:Y-m-d',
+            'event_end_date' => 'date_format:Y-m-d',
         ]);
+
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
-        $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
+        $query = EventDetails::query()->with(['location_details','event_images','event_video','event_presntation']);
         if ($request->has('filter')) {
             $filter = $request->filter;
             if ($filter === 'upcoming') {
-                $query = $query->where('event_end_date', '>', date('Y-m-d'));
+                $query = $query->where('event_start_date', '>', date('Y-m-d'));
             } elseif ($filter === 'past') {
                 $query = $query->where('event_end_date', '<', date('Y-m-d'));
             }
@@ -303,11 +243,11 @@ public function getAllEventDetails(Request $request)
         if ($request->has('event_name')) {
             $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
         }
-        if ($request->has('event_start_date')) {
-            $query = $query->where('event_start_date', 'like', '%' . $request->event_start_date . '%');
-        }
         if ($request->has('event_fee')) {
             $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+        }
+        if ($request->has('event_start_date') && $request->has('event_end_date')) {
+            $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
         }
         if ($request->has('pageNo') && $request->has('limit')) {
             $limit = $request->limit;
@@ -315,28 +255,23 @@ public function getAllEventDetails(Request $request)
             $skip = $limit * $pageNo;
             $query = $query->skip($skip)->limit($limit);
         }
-        $data = $query->orderBy('id', 'DESC')->get();
-        foreach ($data as $user) {
-            if ($user['id'] != null) {
-                $product = EventPresentationVideo::query()->where('event_id', $user['id'])->get();
-                $user['event_presentation_video'] = $product;
+         $data = $query->orderBy('id', 'DESC')->get();
+         $eventsData = [];
+
+    foreach ($data as $event) {
+        if ($event->parent_event_id === null) {
+            $event->children = [];
+            $eventsData[] = $event;
+        } else {
+            foreach ($eventsData as &$parentEvent) {
+                if ($parentEvent->id === $event->parent_event_id) {
+                    $parentEvent->children[] = $event;
+                }
             }
         }
-        foreach ($data as $user) {
-            if ($user['id'] != null) {
-                $product = EventImages::query()->where('event_id', $user['id'])->get();
-                $user['event_images'] = $product;
-            }
-        }
-        foreach ($data as $user) {
-            if ($user['id'] != null) {
-                $product = EventPresentationPdf::query()->where('event_id', $user['id'])->get();
-                $user['event_presentation_pdf'] = $product;
-            }
-        }
-        if (count($data) > 0) {
-            $response['event_details'] = $data;
-            // $response['LocationDetails']=$data;
+    }
+        if (count($eventsData) > 0) {
+            $response['event_details'] = $eventsData;
             $response['count'] = $count;
             return $this->sendResponse($response, 'Data Fetched Successfully', true);
         } else {
@@ -389,7 +324,7 @@ public function getAllNewLetterDetailsForMembers(Request $request)
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
-        $query = NewsLetterDetails::query()->where('for_newsletter', 'members'); // Replace "ModelName" with your actual model name
+        $query = NewsLetterDetails::query()->where('for_newsletter', 'members');
         $count = $query->count();
         if ($request->has('pageNo') && $request->has('limit')) {
             $limit = $request->limit;

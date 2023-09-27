@@ -22,6 +22,8 @@ use App\Models\OffersAssociation;
 use App\Models\EventPresentationPdf;
 use App\Models\StudentNoticeBoard;
 use App\Models\StudentBatches;
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManagerStatic as Image;
 use Carbon\Carbon;
@@ -224,7 +226,6 @@ class MetaDataController extends Controller
 
     public function addBanner(Request $request): \Illuminate\Http\JsonResponse
     {
-
         try {
             $validator = Validator::make($request->all(), [
 
@@ -503,10 +504,119 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-    public function addEventDetails(Request $request): \Illuminate\Http\JsonResponse
+    // public function addEventDetails(Request $request): \Illuminate\Http\JsonResponse
+    // {
+    //     try {
+    //           $request->merge(['eventsData' => json_decode($request->eventsData, true)]);
+    //         $validator = Validator::make($request->all(), [
+    //             'eventsData' => 'nullable|array',
+    //             'eventsData.*.event_name' => 'required|string|max:255',
+    //             'eventsData.*.event_description' => 'nullable|string|max:255',
+    //             'eventsData.*.event_start_date' => 'required|date',
+    //             'eventsData.*.event_end_date' => 'required|date',
+    //             'eventsData.*.event_cut_off_date' => 'required|date',
+    //             'eventsData.*.event_fee' => 'required',
+    //             //'price_for_students' => 'required',
+    //             'eventsData.*.price_for_members' => 'required',
+    //             'eventsData.*.early_bird_date' => 'nullable|date',
+    //             'eventsData.*.early_bird_non_member_fees' => 'nullable|numeric',
+    //             'eventsData.*.early_bird_member_fees' => 'nullable|numeric',
+    //             'eventsData.*.address_line_1' => 'required|nullable|string|max:255',
+    //             'eventsData.*.pincode' => 'required|nullable|string|max:255',
+    //             'images.*' => 'array',
+    //             'images.*.event_images' => 'nullable|string',
+    //             'presentationvedio.*' => 'array',
+    //             'presentationvedio.*.video_link' => 'string',
+    //             'presentationpdf.*' => 'array',
+    //             'presentationpdf.*.presentation_pdf' => 'string',
+
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
+    //         $isFirstEvent = true;
+
+    //         $parentEventId = null;
+    //         if (is_array($request->eventsData) || is_object($request->eventsData)) {
+    //             foreach ($request->eventsData as $eventData) {
+    //                 $NewLocationDetails = new LocationDetails();
+    //                 $NewLocationDetails->address_line_1 = $eventData['address_line_1'];
+    //                 $NewLocationDetails->pincode = $eventData['pincode'];
+    //                 $NewLocationDetails->save();
+    //                 $newEventDetails = new EventDetails();
+    //                 $newEventDetails->location_id = $NewLocationDetails->id;
+    //                 $newEventDetails->event_name = $eventData['event_name'];
+    //                 $newEventDetails->event_description = $eventData['event_description'];
+    //                 $newEventDetails->event_start_date = $eventData['event_start_date'];
+    //                 $newEventDetails->event_end_date = $eventData['event_end_date'];
+    //                 $newEventDetails->event_cut_off_date = $eventData['event_cut_off_date'];
+    //                 $newEventDetails->event_fee = $eventData['event_fee'];
+    //                 $newEventDetails->price_for_members = $eventData['price_for_members'];
+    //                 $newEventDetails->early_bird_date = $eventData['early_bird_date'];
+    //                 $newEventDetails->early_bird_non_member_fees = $eventData['early_bird_non_member_fees'];
+    //                 $newEventDetails->early_bird_member_fees = $eventData['early_bird_member_fees'];
+    //                 if ($parentEventId === null) {
+    //                     $newEventDetails->parent_event_id = null;
+    //                     $newEventDetails->save();
+    //                     $parentEventId = $newEventDetails->id;
+    //                 } else {
+    //                     $newEventDetails->parent_event_id = $parentEventId;
+    //                     $newEventDetails->save();
+    //                 }
+    //                 if (isset($eventData['parent_event_id'])) {
+    //                     $parentEvent = EventDetails::find($eventData['parent_event_id']);
+    //                     if ($parentEvent) {
+    //                         $newEventDetails->parent_event()->associate($parentEvent);
+    //                     }
+    //                 }
+    //                 $newEventDetails->save();
+
+    //                 if (is_array($request->video_link) || is_object($request->video_link)) {
+    //                     foreach ($request->video_link as $eachVideo) {
+    //                         $newPresentationVideo = new EventPresentationVideo();
+    //                         $newPresentationVideo->event_id = $newEventDetails->id;
+    //                         $newPresentationVideo->video_link = $eachVideo['video_link'];
+    //                         $newPresentationVideo->save();
+    //                     }
+    //                 }
+    //                 if (is_array($request->event_images) || is_object($request->event_images)) {
+    //                     foreach ($request->event_images as $eachimages) {
+    //                         $newEventImages = new EventImages();
+    //                         $newEventImages->event_id = $newEventDetails->id;
+    //                         if ($eachimages != "") {
+    //                             if (!str_contains($eachimages, "http")) {
+    //                                 $newEventImages->event_images = $this->saveEventImage($eachimages);
+    //                             }
+    //                         }
+    //                         $newEventImages->save();
+    //                     }
+    //                 }
+    //                 if (is_array($request->presentation_pdf) || is_object($request->presentation_pdf)) {
+    //                     foreach ($request->presentation_pdf as $eachPdf) {
+    //                         $newEventPdf = new EventPresentationPdf();
+    //                         $newEventPdf->event_id = $newEventDetails->id;
+    //                         if ($request->presentation_pdf != "") {
+    //                             if (!str_contains($eachPdf, "http")) {
+    //                                 $newEventPdf->presentation_pdf = $this->saveEventPresentationPdf($eachPdf);
+    //                             }
+    //                         }
+    //                         $newEventPdf->save();
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         return $this->sendResponse([], 'Event Details added successfully', true);
+    //     }
+    //     catch (Exception $e) {
+    //         return $this->sendError('Something went wrong', $e->getTrace(), 413);
+    //     }
+    // }
+    public function addEventDetails(Request $request)
     {
         try {
-            $request->merge(['eventsData' => json_decode($request->eventsData, true)]);
+             $request->merge(['eventsData' => json_decode($request->eventsData, true)]);
+
+            // return $this->sendError('Validation Error.', $request->all());
             $validator = Validator::make($request->all(), [
                 'eventsData' => 'nullable|array',
                 'eventsData.*.event_name' => 'required|string|max:255',
@@ -517,174 +627,128 @@ class MetaDataController extends Controller
                 'eventsData.*.event_fee' => 'required',
                 //'price_for_students' => 'required',
                 'eventsData.*.price_for_members' => 'required',
-                'eventsData.*.early_bird_date'=>'nullable|date',
-                'eventsData.*.early_bird_non_member_fees'=>'nullable|numeric',
-                'eventsData.*.early_bird_member_fees'=>'nullable|numeric',
-                'images.*'=>'array',
-                'images.*.event_images'=>'nullable|string',
-                'presentationvedio.*'=>'array',
-                'presentationvedio.*.video_link'=>'string',
-                'presentationpdf.*'=>'array',
-                'presentationpdf.*.presentation_pdf'=>'string',
-                'address_line_1' => 'required|nullable|string|max:255',
+                'eventsData.*.early_bird_date' => 'nullable|date',
+                'eventsData.*.early_bird_non_member_fees' => 'nullable|numeric',
+                'eventsData.*.early_bird_member_fees' => 'nullable|numeric',
+                'eventsData.*.address_line_1' => 'required|nullable|string|max:255',
+                'eventsData.*.pincode' => 'required|nullable|string|max:255',
+                'images.*' => 'array',
+                'images.*.event_images' => 'nullable|string',
+                'presentationvedio.*' => 'array',
+                'presentationvedio.*.video_link' => 'string',
+                'presentationpdf.*' => 'array',
+                'presentationpdf.*.presentation_pdf' => 'string',
 
-                'pincode' => 'required|nullable|string|max:255',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $isFirstEvent = true;
-            $NewLocationDetails = new LocationDetails();
-                $NewLocationDetails->address_line_1=$request->address_line_1;
-                $NewLocationDetails->pincode=$request->pincode;
-                $NewLocationDetails->save();
-                $parentEventId = null;
-                if (is_array($request->eventsData) || is_object($request->eventsData)) {
-            foreach ($request->eventsData as $eventData) {
-            $newEventDetails = new EventDetails();
-            $newEventDetails->location_id=$NewLocationDetails->id;
-            $newEventDetails->event_name=$eventData['event_name'];
-            $newEventDetails->event_description=$eventData['event_description'];
-            $newEventDetails->event_start_date=$eventData['event_start_date'];
-            $newEventDetails->event_end_date=$eventData['event_end_date'];
-            $newEventDetails->event_cut_off_date=$eventData['event_cut_off_date'];
-            $newEventDetails->event_fee=$eventData['event_fee'];
-            $newEventDetails->price_for_members=$eventData['price_for_members'];
-            $newEventDetails->early_bird_date=$eventData['early_bird_date'];
-            $newEventDetails->early_bird_non_member_fees=$eventData['early_bird_non_member_fees'];
-            $newEventDetails->early_bird_member_fees=$eventData['early_bird_member_fees'];
-            if ($parentEventId === null) {
-                $newEventDetails->parent_event_id = null;
-                $newEventDetails->save();
-                $parentEventId = $newEventDetails->id;
-            } else {
-                $newEventDetails->parent_event_id = $parentEventId;
-                $newEventDetails->save();
-            }
-            if (isset($eventData['parent_event_id'])) {
-                $parentEvent = EventDetails::find($eventData['parent_event_id']);
-                if ($parentEvent) {
-                    $newEventDetails->parent_event()->associate($parentEvent);
+
+            $parentEventId = null;
+            if (is_array($request->eventsData) || is_object($request->eventsData)) {
+                foreach ($request->eventsData as $key=>$eventData) {
+                    $NewLocationDetails = new LocationDetails();
+                    $NewLocationDetails->address_line_1 = $eventData['address_line_1'];
+                    $NewLocationDetails->pincode = $eventData['pincode'];
+                    $NewLocationDetails->save();
+                    $newEventDetails = new EventDetails();
+                    $newEventDetails->location_id = $NewLocationDetails->id;
+                    $newEventDetails->event_name = $eventData['event_name'];
+                    $newEventDetails->event_description = $eventData['event_description'];
+                    $newEventDetails->event_start_date = $eventData['event_start_date'];
+                    $newEventDetails->event_end_date = $eventData['event_end_date'];
+                    $newEventDetails->event_cut_off_date = $eventData['event_cut_off_date'];
+                    $newEventDetails->event_fee = $eventData['event_fee'];
+                    $newEventDetails->price_for_members = $eventData['price_for_members'];
+                    $newEventDetails->early_bird_date = $eventData['early_bird_date'];
+                    $newEventDetails->early_bird_non_member_fees = $eventData['early_bird_non_member_fees'];
+                    $newEventDetails->early_bird_member_fees = $eventData['early_bird_member_fees'];
+                    if ($parentEventId === null) {
+                        $newEventDetails->parent_event_id = null;
+                        $newEventDetails->save();
+                        $parentEventId = $newEventDetails->id;
+                    } else {
+                        $newEventDetails->parent_event_id = $parentEventId;
+                        $newEventDetails->save();
+                    }
+                    if (isset($eventData['parent_event_id'])) {
+                        $parentEvent = EventDetails::find($eventData['parent_event_id']);
+                        if ($parentEvent) {
+                            $newEventDetails->parent_event()->associate($parentEvent);
+                        }
+                    }
+                    $newEventDetails->save();
+                    if($request->has("eventImages".$key."Data")){
+                        foreach ($request->all()["eventImages".$key."Data"] as $eachimages) {
+                            $newEventImages = new EventImages();
+                            $newEventImages->event_id = $newEventDetails->id;
+                            if ($eachimages != "") {
+                                if (!str_contains($eachimages, "http")) {
+                                    $newEventImages->event_images = $this->saveEventImage($eachimages);
+                                }
+                            }
+                            $newEventImages->save();
+                        }
+                    }
+                    if($request->has("eventPDF".$key."Data")){
+
+                        foreach ($request->all()["eventPDF".$key."Data"] as $eachPdf) {
+
+                            $newEventPdf = new EventPresentationPdf();
+                            $newEventPdf->event_id = $newEventDetails->id;
+                            $newEventPdf->presentation_pdf = $this->saveEventPresentationPdf($eachPdf);
+                            // return $this->saveEventPresentationPdf($eachPdf);
+                            // if ($eachPdf != "") {
+                            //     if (!str_contains($eachPdf, "http")) {
+
+                            //     }
+                            // }
+                            $newEventPdf->save();
+                        }
+                    }
+                    if(array_key_exists('video_link',$eventData)){
+                         if (is_array($eventData['video_link']) || is_object($eventData['video_link'])) {
+                        foreach ($eventData['video_link'] as $eachVideo) {
+                            $newPresentationVideo = new EventPresentationVideo();
+                            $newPresentationVideo->event_id = $newEventDetails->id;
+                            $newPresentationVideo->video_link = $eachVideo;
+                            $newPresentationVideo->save();
+                        }
+                    }
+                    }
+                    if (is_array($request->event_images) || is_object($request->event_images)) {
+                        foreach ($request->event_images as $eachimages) {
+                            $newEventImages = new EventImages();
+                            $newEventImages->event_id = $newEventDetails->id;
+                            if ($eachimages != "") {
+                                if (!str_contains($eachimages, "http")) {
+                                    $newEventImages->event_images = $this->saveEventImage($eachimages);
+                                }
+                            }
+                            $newEventImages->save();
+                        }
+                    }
+                    if (is_array($request->presentation_pdf) || is_object($request->presentation_pdf)) {
+                        foreach ($request->presentation_pdf as $eachPdf) {
+                            $newEventPdf = new EventPresentationPdf();
+                            $newEventPdf->event_id = $newEventDetails->id;
+                            if ($request->presentation_pdf != "") {
+                                if (!str_contains($eachPdf, "http")) {
+                                    $newEventPdf->presentation_pdf = $this->saveEventPresentationPdf($eachPdf);
+                                }
+                            }
+                            $newEventPdf->save();
+                        }
+                    }
                 }
             }
-            $newEventDetails->save();
-            }
-            if (is_array($request->video_link) || is_object($request->video_link)) {
-            foreach($request->video_link as $eachVideo){
-                $newPresentationVideo = new EventPresentationVideo();
-                $newPresentationVideo->event_id = $newEventDetails->id;
-                $newPresentationVideo->video_link = $eachVideo['video_link'];
-                $newPresentationVideo->save();
-            }
-        }
-        if (is_array($request->event_images) || is_object($request->event_images)) {
-        foreach($request->event_images as $eachimages){
-            $newEventImages = new EventImages();
-            $newEventImages->event_id=$newEventDetails->id;
-            if ($eachimages != "") {
-                if (!str_contains($eachimages, "http")) {
-                    $newEventImages->event_images = $this->saveEventImage($eachimages);
-                }
-            }
-            $newEventImages->save();
-        }
-    }
-    if (is_array($request->presentation_pdf) || is_object($request->presentation_pdf)) {
-        foreach($request->presentation_pdf as $eachPdf){
-            $newEventPdf=new EventPresentationPdf();
-            $newEventPdf->event_id=$newEventDetails->id;
-            if($request->presentation_pdf!=""){
-                if(!str_contains($eachPdf,"http"))
-                {
-                    $newEventPdf->presentation_pdf=$this->saveEventPresentationPdf($eachPdf);
-                }
-            }
-            $newEventPdf->save();
-        }
-    }
-                }
             return $this->sendResponse([], 'Event Details added successfully', true);
         }
         catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-    // public function getAllEventDetails(Request $request)
-    // {
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'pageNo' => 'numeric',
-    //             'limit' => 'numeric',
-    //             'filter' => 'in:upcoming,past',
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors(), 400);
-    //         }
-    //         $query = EventDetails::query()->with(['location_details']);
-    //         if ($request->has('filter')) {
-    //             $filter = $request->filter;
-    //             if ($filter === 'upcoming') {
-    //                 $query = $query->where('event_end_date', '>', date('Y-m-d'));
-    //             } elseif ($filter === 'past') {
-    //                 $query = $query->where('event_end_date', '<', date('Y-m-d'));
-    //             }
-    //         }
-    //         $count = $query->count();
-    //         if ($request->has('event_name')) {
-    //             $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
-    //         }
-    //         if ($request->has('event_start_date')) {
-    //             $query = $query->where('event_start_date', 'like', '%' . $request->event_start_date . '%');
-    //         }
-    //         if ($request->has('event_fee')) {
-    //             $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
-    //         }
-    //         if ($request->has('start_date') && $request->has('end_date')) {
-    //         $query = $query->whereBetween('event_start_date', [$request->start_date, $request->end_date]);
-    //     }
-    //         if ($request->has('pageNo') && $request->has('limit')) {
-    //             $limit = $request->limit;
-    //             $pageNo = $request->pageNo;
-    //             $skip = $limit * $pageNo;
-    //             $query = $query->skip($skip)->limit($limit);
-    //         }
-    //         $data = $query->orderBy('id', 'DESC')->get();
-    //         foreach ($data as $user) {
-    //             if ($user['id'] != null) {
-    //                 $product = EventPresentationVideo::query()->where('event_id', $user['id'])->get();
-    //                 $user['event_presentation_video'] = $product;
-    //             }
-    //         }
-    //         // foreach ($data as $user) {
-    //         //     if ($user['id'] != null) {
-    //         //         $product = EventImages::query()->where('event_id', $user['id'])->get();
-    //         //         $user['event_images'] = $product;
-    //         //     }
-    //         // }
-    //         foreach ($data as $user) {
-    //             if ($user['id'] != null) {
-    //                 $product = EventPresentationPdf::query()->where('event_id', $user['id'])->get();
-    //                 $user['event_presentation_pdf'] = $product;
-    //             }
-    //         }
-    //         foreach($data as $user){
-    //             if($user['id']!=null){
-    //                 $product=EventImages::query()->where('event_id',$user['id'])->get();
-    //                 $user['event_images']=$product;
-    //             }
-    //         }
-    //         if (count($data) > 0) {
-    //             $response['event_details'] = $data;
-    //             // $response['LocationDetails']=$data;
-    //             $response['count'] = $count;
-    //             return $this->sendResponse($response, 'Data Fetched Successfully', true);
-    //         } else {
-    //             return $this->sendResponse('No Data Available', [], false);
-    //         }
-    //     } catch (Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
-    //     }
-    // }
   public function getAllEventDetails(Request $request)
 {
     try {
@@ -699,17 +763,23 @@ class MetaDataController extends Controller
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
-        $query = EventDetails::query()->with(['location_details']);
+        $currentDate = carbon::now('Asia/Kolkata');
+            $now = carbon::now();
+        $query = EventDetails::query()->with(['location_details','event_images','event_video','event_presntation']);
         if ($request->has('filter')) {
             $filter = $request->filter;
             if ($filter === 'upcoming') {
-                $query = $query->where('event_end_date', '>', date('Y-m-d'));
-            } elseif ($filter === 'past') {
-                $query = $query->where('event_end_date', '<', date('Y-m-d'));
+                $query = $query->where('event_start_date', '>', $now);
             }
+            if ($filter === 'past') {
+                $query = $query->where('event_end_date', '<', $now);
+            }
+            if ($filter === 'ongoing') {
+                    $query->where('event_start_date', '<=', $currentDate)
+                        ->where('event_end_date', '>=', $currentDate);
+                }
         }
         $count = $query->count();
-
         if ($request->has('event_name')) {
             $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
         }
@@ -725,38 +795,14 @@ class MetaDataController extends Controller
             $skip = $limit * $pageNo;
             $query = $query->skip($skip)->limit($limit);
         }
-        $data = $query->orderBy('id', 'DESC')->get();
-            foreach ($data as $user){
-                if($user['id']!=null){
-                    $product=EventPresentationVideo::query()->where('event_id',$user['id'])
-                    ->get();
-                    $user['event_video']=$product;
-                }
-            }
-            foreach ($data as $user){
-                if($user['id']!=null){
-                    $product=EventImages::query()->where('event_id',$user['id'])
-                    ->get();
-                    $user['event_images']=$product;
-                }
-            }
-            foreach ($data as $user){
-                if($user['id']!=null){
-                    $product=EventPresentationPdf::query()->where('event_id',$user['id'])
-                    ->get();
-                    $user['event_presntation']=$product;
-                }
-            }
-    // Create an associative array to hold parent events and their child events
-    $eventsData = [];
+         $data = $query->orderBy('id', 'DESC')->get();
+         $eventsData = [];
 
     foreach ($data as $event) {
         if ($event->parent_event_id === null) {
-            // If it's a parent event, add it to the eventsData array
             $event->children = [];
             $eventsData[] = $event;
         } else {
-            // If it's a child event, find its parent and add it as a child
             foreach ($eventsData as &$parentEvent) {
                 if ($parentEvent->id === $event->parent_event_id) {
                     $parentEvent->children[] = $event;
@@ -1021,7 +1067,7 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = AssociationDetails::query()->with(['location_details']);
+            $query = AssociationDetails::query()->with(['location_details','offers_of_association']);
             $count = $query->count();
 
             if ($request->has('company_email')) {
@@ -1038,12 +1084,12 @@ class MetaDataController extends Controller
             }
             $data = $query->orderBy('id', 'DESC')->get();
 
-            foreach ($data as $user) {
-                if ($user['id'] != null) {
-                    $product = OffersAssociation::query()->where('association_id', $user['id'])->get();
-                    $user['offers_of_association'] = $product;
-                }
-            }
+            // foreach ($data as $user) {
+            //     if ($user['id'] != null) {
+            //         $product = OffersAssociation::query()->where('association_id', $user['id'])->get();
+            //         $user['offers_of_association'] = $product;
+            //     }
+            // }
             if (count($data) > 0) {
                 $response['association_details'] = $data;
                 $response['count'] = $count;
@@ -1618,7 +1664,7 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = PaymentMode::query(); // Replace "ModelName" with your actual model name
+            $query = PaymentMode::query();
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -1694,7 +1740,7 @@ class MetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'ca_firm_name' => 'required',
-                'position'=>'required',
+                // 'position'=>'required',
                 'position' => [ Rule::in(['Semi Qualified','Article Assistant','Industrial Trainee','Qualified'])],
                 'comments' => 'required',
                 'company_email' => 'required',
@@ -1703,10 +1749,11 @@ class MetaDataController extends Controller
                 // 'location_id' => 'required',
                 // 'created_by_vacancy_user_id' => 'required',
                 // 'created_by' => 'required',
-                'expiry_date' => 'required|date',
-                'address_line_1' => 'required|nullable|string|max:255',
-
+                'expiry_date' => 'nullable|date',
+                'address_line_1' => 'required|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
+
+
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -1718,15 +1765,15 @@ class MetaDataController extends Controller
             $NewLocationDetails->save();
             $newVacancy = new VacancyDetails();
             $newVacancy->location_id=$NewLocationDetails->id;
-            $newVacancy->ca_firm_name=$request->ca_firm_name;
+           // $newVacancy->ca_firm_name=$request->ca_firm_name;
             $newVacancy->position=$request->position;
             $newVacancy->comments=$request->comments;
-            $newVacancy->company_email=$request->company_email;
-            $newVacancy->company_contact_no=$request->company_contact_no;
+            // $newVacancy->company_email=$request->company_email;
+            // $newVacancy->company_contact_no=$request->company_contact_no;
             $newVacancy->experience=$request->experience;
-             $newVacancy->location_id=$request->location_id;
+            $newVacancy->location_id=$request->location_id;
             // $newVacancy->created_by_vacancy_user_id=$user;
-            $newVacancy->location_id = $request->location_id;
+            $newVacancy->company_id = $request->Company_id;
             $newVacancy->created_by = $request->created_by;
 		    $newVacancy->expiry_date = $request->expiry_date;
             $newVacancy->save();
@@ -1859,7 +1906,7 @@ class MetaDataController extends Controller
             // echo $editVacancy;
             $editLocation = LocationDetails::query()->where('id', $editVacancy->location_id)->first();
             // echo $editLocation;
-                        if ($request->has('address_line_1')) {
+                if ($request->has('address_line_1')) {
                 $editLocation->address_line_1=$request->address_line_1;
             }
 
@@ -1888,7 +1935,6 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-
     public function getAllEventRegistration(Request $request)
     {
         try {
@@ -1899,7 +1945,8 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = EventRegistration::query()->with(['event_details','user_details','paymentmode_details','voluntary_contribution_details']); // Replace "ModelName" with your actual model name
+            $query = EventRegistration::query()->with(['event_details','user_details',
+            'paymentmode_details','voluntary_contribution_details']);
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -1958,27 +2005,22 @@ public function getAllUserAttendTheEvent(Request $request)
             'pageNo' => 'numeric',
             'limit' => 'numeric',
         ]);
-
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
-
         $query = EventRegistration::query()
             ->where('event_id', $request->event_id)
-            ->where('attendance_status', 1) // Change '==' to '=' here
+            ->where('attendance_status', 1)
             ->with(['event_details', 'user_details', 'voluntary_contribution_details']);
 
         $count = $query->count();
-
         if ($request->has('pageNo') && $request->has('limit')) {
             $limit = $request->limit;
             $pageNo = $request->pageNo;
             $skip = $limit * $pageNo;
             $query = $query->skip($skip)->limit($limit);
         }
-
         $data = $query->orderBy('id', 'DESC')->get();
-
         if (count($data) > 0) {
             $response['event_registration'] = $data;
             $response['count'] = $count;
@@ -1990,7 +2032,6 @@ public function getAllUserAttendTheEvent(Request $request)
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
 }
-
     public function getEventRegistrationById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -2171,7 +2212,8 @@ public function getAllUserAttendTheEvent(Request $request)
 		if ($validator->fails()) {
 			return $this->sendError('Validation Error.', $validator->errors(),400);
 		}
-		$query = RegisterToAssocitationDetails::query()->with(['user_details','association_details','created_by_user_details','offers_association_details']);;
+		$query = RegisterToAssocitationDetails::query()->with(['user_details','association_details',
+        'created_by_user_details','offers_association_details']);;
 		$count=$query->count();
 		if($request->has('pageNo') && $request->has('limit')){
 			$limit = $request->limit;
@@ -2268,9 +2310,9 @@ public function getAllUserAttendTheEvent(Request $request)
               return $this->sendError('Validation Error.', $validator->errors());
           }
           $newDetails = new ApplyForJob;
-      $newDetails->user_id = $request->user_id;
-      $newDetails->vacancy_id = $request->vacancy_id;
-      if ($request->resume_pdf != "") {
+          $newDetails->user_id = $request->user_id;
+          $newDetails->vacancy_id = $request->vacancy_id;
+        if ($request->resume_pdf != "") {
         if (!str_contains($request->resume_pdf, "http")) {
             $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf,$request->user_id);
         }
@@ -2389,7 +2431,6 @@ public function getAllUserAttendTheEvent(Request $request)
               return $this->sendError('Validation Error.', $validator->errors(), 400);
           }
           $query = ApplyForJob::query()->where('vacancy_id', $request->vacancy_id)->with(['user_details']);
-          // $query = RegisterToAssocitationDetails::query()->where('vacancy_id', $request->vacancy_id)->get();
           $count = $query->count();
           if ($request->has('pageNo') && $request->has('limit')) {
               $limit = $request->limit;
@@ -2418,6 +2459,7 @@ public function getAllUserAttendTheEvent(Request $request)
           'association_id' => 'required|nullable',
           'is_active' => 'required|nullable',
           ]);
+
           if ($validator->fails()) {
               return $this->sendError('Validation Error.', $validator->errors());
           }
@@ -2430,9 +2472,8 @@ public function getAllUserAttendTheEvent(Request $request)
             $newOffers->start_date = $request->start_date;
             $newOffers->end_date=$request->end_date;
             $newOffers->limits=$request->limits;
-
-      $newOffers->save();
-                  return $this->sendResponse([],' Offers To Association Successfully.', true);
+            $newOffers->save();
+            return $this->sendResponse([],' Offers To Association Successfully.', true);
         }
       catch (Exception $e) {
           return $this->sendError('Something went wrong', $e->getTrace(), 413);
@@ -2680,7 +2721,7 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
-        $getitems = StudentNoticeBoard::query()->first();
+        $getitems = StudentNoticeBoard::query()->where('id',$request->id)->first();
         return $this->sendResponse(["student_notice_board" => $getitems], 'Data fetch successfully', true);
     } catch (Exception $e) {
         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
@@ -2833,21 +2874,19 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             $query->where('address_line_1', 'like', '%' . $searchTerm . '%');
             });
         }
-        if ($request->has('filter')) {
-            $filter = $request->filter;
-            if ($filter === 'upcoming') {
-                $query = $query->where('end_date', '>', $now);
-            }
-            if ($filter === 'past') {
-                $query = $query->where('end_date', '<', $now);
-            }
-            if ($filter === 'ongoing') {
+            if ($request->has('filter')) {
+                $filter = $request->filter;
+                if ($filter === 'upcoming') {
+                    $query = $query->where('end_date', '>', $now);
+                }
+                if ($filter === 'past') {
+                    $query = $query->where('end_date', '<', $now);
+                }
+                if ($filter === 'ongoing') {
                     $query->where('start_date', '<=', $currentDate)
                         ->where('end_date', '>=', $currentDate);
                 }
-
-
-        }
+            }
 		$count=$query->count();
 		if($request->has('pageNo') && $request->has('limit')){
 			$limit = $request->limit;
@@ -2993,7 +3032,6 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-
       public function getAllUpcomingBatches(Request $request)
     {
         try {
@@ -3025,7 +3063,6 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-
      public function getAllOngoingBatches(Request $request)
 {
     try {
@@ -3129,5 +3166,178 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
 }
+  public function addComapny(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'firm_name' => 'required',
+                'contact_person_name' => 'nullable',
+                'contact_person_number'=>'required',
+                'address' => 'required',
+                'pincode' => 'nullable',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+
+            $newOffers = new Company();
+            $newOffers->firm_name = $request->firm_name;
+            $newOffers->contact_person_name = $request->contact_person_name;
+            $newOffers->contact_person_number = $request->contact_person_number;
+            $newOffers->address = $request->address;
+            $newOffers->pincode = $request->pincode;
+            $newOffers->save();
+            return $this->sendResponse([], 'Company added Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
+        }
+    }
+      public function editCompany(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:company,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $editCompany = Company::query()->where('id', $request->id)->first();
+            if ($request->has('firm_name')) {
+                $editCompany->firm_name = $request->firm_name;
+            }
+             if ($request->has('contact_person_name')) {
+                $editCompany->contact_person_name = $request->contact_person_name;
+            }
+             if ($request->has('contact_person_number')) {
+                $editCompany->contact_person_number = $request->contact_person_number;
+            }
+             if ($request->has('address')) {
+                $editCompany->address = $request->address;
+            }
+             if ($request->has('pincode')) {
+                $editCompany->pincode = $request->pincode;
+            }
+            $editCompany->save();
+            return $this->sendResponse([], 'Company updated successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+        public function getAllCompany(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $query = Company::query();
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $getCompany = $query->orderBy('id', 'DESC')->get();
+            if (count($getCompany) > 0) {
+                return $this->sendResponse(["company" => $getCompany, 'count' => $count], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No client are available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+    public function deleteCompanyById(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:company,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $deleteCompany = Company::query()
+            ->where('id', $request->id)->first();
+            $deleteCompany->delete();
+            return $this->sendResponse([],'Company deleted successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
+    }
+    public function getCompanyById(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:company,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getCompany = Company::query()->where('id', $request->id)->first();
+            return $this->sendResponse(['company'=>$getCompany], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+     public function getAllStudent(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $query = User::role('student');
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $getUser = $query->orderBy('id', 'DESC')->get();
+            if (count($getUser) > 0) {
+                return $this->sendResponse(["student" => $getUser, 'count' => $count], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No client are available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+    public function getAllMember(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $query = User::role('member');
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $getUser = $query->orderBy('id', 'DESC')->get();
+            if (count($getUser) > 0) {
+                return $this->sendResponse(["member" => $getUser, 'count' => $count], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No client are available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
 
 }

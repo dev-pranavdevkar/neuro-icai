@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Auth;
-use App\Http\Controllers\V1\Admin\Role;
-
+//use App\Http\Controllers\V1\Admin\Role;
+use Spatie\Permission\Models\Role;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
@@ -40,6 +40,7 @@ class AuthController extends Controller
                     $token = JWTAuth::fromUser($user);
                     $response = ['token' => $token];
                     $response['userData'] = $user;
+                    $response['permissions'] = $user->getAllPermissions();
                     return $this->sendResponse($response, 'Login Success', true);
                 } else {
                     return $this->sendError('Password mismatch', [], 422);
@@ -68,7 +69,6 @@ class AuthController extends Controller
             if ($request->role == 'SuperAdmin') {
                 return $this->sendResponse([], 'Sorry you can\'t be super admin.It\'s our property', true);
             }
-
             $newUser = new User();
             $newUser->password = Hash::make($request['password']);
             $newUser->name = $request->name;
@@ -79,7 +79,7 @@ class AuthController extends Controller
             $newUser->otp = $request->otp;
             // $newUser->last_login_at = Carbon::now();
             $role = Role::where('name', $request->role)->first();
-            $user = User::find(1);
+           // $user = User::find(1);
             $newUser->assignRole($role);
             $newUser->save();
             $token = JWTAuth::fromUser($newUser);
@@ -90,8 +90,6 @@ class AuthController extends Controller
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
-
-
         public function forgetPassword(Request $request)
         {
             try{
@@ -116,16 +114,12 @@ class AuthController extends Controller
                 $to_email = $user->email;
 
                 $data = array('otp' => $otp,'to_name' => $to_name);
-
                 Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
-
                     $message->to($to_email, $to_name)
                         ->subject('Otp For New Password');
                     $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
-
                 });
                  return $this->sendResponse([], 'Otp Send Successfully', true);
-
             }catch(Exception $e){
                 return $this->sendError("Something went wrong",[$e->getMessage(),$e->getTrace()],500);
             }
