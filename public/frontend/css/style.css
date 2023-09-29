@@ -3606,6 +3606,92 @@ ol {
 	top: 4px;
 }
 
+.digitalIDCard{
+	border-radius: 10px;
+	border: none;
+	color: #fff;
+	position: relative;
+	top: 0;
+}
+.digitalIDCard .card-body{
+	
+	padding: 0;
+}
+.digitalIDCard .institute-section{
+	border-radius: 10px 10px 0 0;
+	background: #3e4c6f;
+	padding: 1rem;
+	
+}
+.digitalIDCard .scanner-section{
+	margin: 2px 0;
+	background: #27395f;
+}
+.digitalIDCard .info-section{
+	background: #3e4c6f;
+	border-radius: 0 0  10px 10px;
+}
+.digitalIDCard .logo-icai {
+	height: 50px;
+	width: 50px;
+	object-fit: cover;
+	border-radius: 100%;
+}
+.digitalIDCard .profile-img {
+	height: 100px;
+	width: 100px;
+	object-fit: cover;
+	border-radius: 100%;
+}
+.digitalIDCard ul{
+	list-style: none;
+
+}
+.digitalIDCard ul li i{
+	margin-right: 5px;
+
+}
+.scanner-img{
+	width: 150px;
+	object-fit: contain;
+}
+
+.DashboardTabView {
+	height: 100% !important;
+	padding: 0;
+}
+
+.dashboard-tab-section{
+	margin: 2px 0;
+	background: #27395f;
+}
+.dashboard-tab-section button{
+	border: none;
+	margin: 10px 0;
+	border-radius: 0;
+	background: none;
+	color: #fff;
+	font-weight: 600;
+	text-align: start;
+}
+.dashboard-tab-section .nav-pills .nav-link {
+    /* border-radius: 0; */
+}
+
+
+.profile-dropdown ul li .dropdown{
+	width: fit-content;
+	text-wrap: nowrap;
+	overflow: hidden !important;
+	top: 40px;
+	
+}
+
+.profile-dropdown ul li .dropdown li a {
+
+    padding: 5px 10px;
+}
+.
 /*--------------------------------- Responsive Media Quaries -----------------------------*/
 
 @media only screen and (min-width: 1200px) {

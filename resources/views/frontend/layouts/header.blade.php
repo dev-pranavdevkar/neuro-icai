@@ -41,7 +41,7 @@
         </div>
         <nav class="offcanvas__menu mobile-menu">
             <ul>
-                <li class="active"><a href="{{ url('/') }}">Home</a></li>
+                <li class="{{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
                 <li><a href="{{ url('/') }}">About Us</a>
                     <ul class="dropdown">
                         <li><a href="{{ url('/about/aboutPuneBranch') }}"> About Pune Branch </a></li>
@@ -142,15 +142,45 @@
 
                                 <li id="user-dropdown" class="dropdown">
                                     @if (Auth::user())
-                                        <i class="fa fa-user"></i>{{ Auth::user()->name }}
-                                        {{ Auth::user()->last_name }}
+                                    
 
-                                        <ul id="profile-dropdown-menu" class="dropdown-menu">
-                                            <li>Digital ID Card</li>
-                                            <li>Personal Details</li>
-                                            <li>Change Password</li>
-                                            <li>Logout</li>
-                                        </ul>
+                                       {{-- ------------------- --}}
+                                       <div class="header__nav ">
+                                        <div class="header__menu profile-dropdown">
+                                            <ul>
+                                               
+                                                <li class="p-0">  <i class="fa fa-user"></i>{{ Auth::user()->name }}
+                                                    {{ Auth::user()->last_name }} 
+                                                    <ul class="dropdown">
+
+                                                     
+                                                        <li><a href="{{ url('/dashboard#IDCard') }}"> Digital ID Card </a></li>
+                                                        <li><a href="{{ url('/dashboard#editProfile') }}"> Personal Details </a>
+                                                        </li>
+                                                        <li><a href="{{ url('/dashboard#changePassword') }}"> Change Password </a>
+                                                        </li>
+                                                        <li><a href="{{ route('logout') }}"> Logout </a></li>
+                                                  
+                                                    </ul>
+                                                </li>
+                
+                                         
+                
+                                    
+                
+                
+                
+                                          
+                                           
+                
+                                              
+                                            </ul>
+                                        </div>
+                           
+                
+                
+                                    </div>
+                                       {{-- ==================== --}}
                                     @else
                                         <i class="fa fa-user"></i><a class="text-white"
                                             href="{{ url('/login') }}">Login</a> / <a class="text-white"

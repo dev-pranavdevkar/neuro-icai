@@ -215,7 +215,9 @@
 </div>
 <!-- Search End -->
 {{-- Fixed Side Social Media Apps --}}
-<div class="side-social-media-apps">
+
+
+<div class="side-social-media-apps {{ request()->is('dashboard') ? 'd-none' : '' }}">
     <ul class="">
 
         <li id="side-facebook">
@@ -251,6 +253,7 @@
         </li>
     </ul>
 </div>
+
 {{-- End Fixed Side Social Media Apps --}}
 <!-- Js Plugins -->
 <script src="{{ url('frontend/js/jquery-3.3.1.min.js') }}"></script>

@@ -115,6 +115,8 @@ Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verify
 Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPassword'])->name('changeForgetPassword');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('dashboard',[WebAuthController::class,'dashboard'])->name('dashboard')->middleware('auth');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
 
 
