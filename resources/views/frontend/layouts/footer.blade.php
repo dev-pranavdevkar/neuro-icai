@@ -36,12 +36,12 @@
                     <div class="footer__widget">
                         <ul>
                             <li><a href="https://www.cpeicai.org/">Check CPE Hours</a></li>
-                            <li><a href="{{ url('/') }}">Business Loans</a></li>
-                            <li><a href="{{ url('/') }}">Exposure DRAFTS</a></li>
-                            <li><a href="{{ url('/') }}">Members SMS Alerts</a></li>
-                            <li><a href="{{ url('/') }}">Post Qualification Courses</a></li>
-                            <li><a href="{{ url('/') }}">Notice Board</a></li>
-                            <li><a href="{{ url('/') }}">FAQ's</a></li>
+                            <li><a href="{{ url('/members/CPEStudyCircles') }}">CPE Study Circles</a></li>
+                            <li><a href="{{ url('/members/exposureDrafts') }}">Exposure DRAFTS</a></li>
+                            <li><a href="{{ url('/members/subscribeForSMSAlerts') }}">Members SMS Alerts</a></li>
+                            <li><a href="https://pqc.icai.org/">Post Qualification Courses</a></li>
+                            <li><a href="{{ url('/members/updatesForMembers') }}">Notice Board</a></li>
+                            <li><a href="{{ url('/members/membersFAQ') }}">FAQ's</a></li>
                         </ul>
                     </div>
                 </div>
@@ -60,16 +60,16 @@
                     <div class="footer__widget">
                         <ul>
 
-                            <li><a href="{{ url('/') }}">WICASA</a></li>
-                            <li><a href="{{ url('/') }}">WICASA Managing Committee</a></li>
-                            <li><a href="{{ url('/') }}">ICITSS</a></li>
-                            <li><a href="{{ url('/') }}">AICITSS</a></li>
-                            <li><a href="{{ url('/') }}">ICITSS - Orientation Course</a></li>
-                            <li><a href="{{ url('/') }}">Advanced (ICITSS) MCS Course</a></li>
-                            <li><a href="{{ url('/') }}">Library /Reading Rooms</a></li>
-                            <li><a href="{{ url('/') }}">Student Noticeboard</a></li>
-                            <li><a href="{{ url('/') }}">Student FAQs</a></li>
-                            <li><a href="{{ url('/') }}">Student's SMS Alerts</a></li>
+                            <li><a href="{{ url('/students/aboutPuneWICASA') }}">WICASA</a></li>
+                            <li><a href="{{ url('/WICASAManagingCommittee') }}">WICASA Managing Committee</a></li>
+                            <li><a href="{{ url('/students/ICITSS') }}">ICITSS</a></li>
+                            <li><a href="{{ url('/students/AICITSS') }}">AICITSS</a></li>
+                            <li><a href="{{ url('/students/ICITSSOrientationCourse') }}">ICITSS - Orientation Course</a></li>
+                            <li><a href="{{ url('/students/advancedICITSSMCSCourse') }}">Advanced (ICITSS) MCS Course</a></li>
+                            <li><a href="{{ url('/students/libraryReadingRooms') }}">Library /Reading Rooms</a></li>
+                            <li><a href="{{ url('/students/studentNoticeboard') }}">Student Noticeboard</a></li>
+                            <li><a href="{{ url('/students/studentFAQs') }}">Student FAQs</a></li>
+                            <li><a href="{{ url('/students/subscribeForSMSAlerts') }}">Student's SMS Alerts</a></li>
                         </ul>
                     </div>
                 </div>
@@ -83,8 +83,8 @@
                             <li><a href="{{ url('/') }}">Privacy Policy</a></li>
                             <li><a href="{{ url('/') }}">Terms Of Use</a></li>
                             <li><a href="{{ url('/') }}">At Sales Counter</a></li>
-                            <li><a href="{{ url('/') }}">Exposure DRAFTS</a></li>
-                            <li><a href="{{ url('/') }}">MC MINUTES</a></li>
+                            <li><a href="{{ url('/members/exposureDrafts') }}">Exposure DRAFTS</a></li>
+                            <li><a href="{{ url('/members/MCMinutes') }}">MC MINUTES</a></li>
                             <li><a href="{{ url('/') }}">Useful Links</a></li>
                             <li><a href="{{ url('/') }}">Article Vacancy</a></li>
                             <li><a href="{{ url('/') }}">Tenders</a></li>

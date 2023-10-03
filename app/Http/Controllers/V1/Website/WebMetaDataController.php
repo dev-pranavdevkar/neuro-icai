@@ -21,53 +21,6 @@ use Spatie\Permission\Models\Role;
 
 class WebMetaDataController extends Controller
 {
-
-    // public function getLatestUpdate(Request $request)
-    // {
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'limit' => 'numeric',
-    //             'pageNo' => 'numeric',
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors());
-    //         }
-
-    //         // Create queries for each table and select all columns
-    //         $eventQuery = EventDetails::select('*')->addSelect(DB::raw("'Event' AS source"));
-    //         $associationQuery = AssociationDetails::select('*')->addSelect(DB::raw("'Association' AS source"));
-    //         $newsletterQuery = NewsLetterDetails::select('*')->addSelect(DB::raw("'Newsletter' AS source"));
-    //         $noticeBoardQuery = StudentNoticeBoard::select('*')->addSelect(DB::raw("'NoticeBoard' AS source"));
-
-    //         // Combine the queries using union
-    //         $combinedQuery = $eventQuery
-    //             ->union($associationQuery)
-    //             ->union($newsletterQuery)
-    //             ->union($noticeBoardQuery);
-
-    //         // Apply sorting and pagination
-    //         $combinedQuery = $combinedQuery->orderBy('created_at', 'desc');
-
-    //         if ($request->has('pageNo') && $request->has('limit')) {
-    //             $limit = $request->limit;
-    //             $pageNo = $request->pageNo;
-    //             $skip = $limit * ($pageNo - 1);
-    //             $combinedQuery = $combinedQuery->skip($skip)->take($limit);
-    //         }
-
-    //         // Execute the combined query
-    //         $results = $combinedQuery->get();
-
-    //         if ($results->count() > 0) {
-    //             return $this->sendResponse(["member" => $results], 'Data fetch successfully');
-    //         } else {
-    //             return $this->sendResponse([], 'No data available', false);
-    //         }
-    //     } catch (Exception $e) {
-    //         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
-    //     }
-    // }
-
     public function getLatestUpdate(Request $request)
     {
         try {

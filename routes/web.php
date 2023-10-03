@@ -61,6 +61,9 @@ Route::get('/members/puneMembersNewsletter',[MembersController::class, 'puneMemb
 Route::get('/members/updatesForMembers',[MembersController::class, 'updatesForMembers']);
 Route::get('/members/updatesForMembers/updatesDetails',[MembersController::class, 'updatesForMembers']);
 Route::get('/members/subscribeForSMSAlerts',[MembersController::class, 'subscribeForSMSAlerts']);
+Route::get('/members/membersFAQ',[MembersController::class, 'membersFAQ']);
+Route::get('/members/CPEStudyCircles',[MembersController::class, 'CPEStudyCircles']);
+Route::get('/members/MCMinutes',[MembersController::class, 'MCMinutes']);
 
 
 // Students Dropdown Pages
@@ -70,6 +73,13 @@ Route::get('/students/puneWICASANewsletter',[StudentsController::class, 'puneWIC
 Route::get('/students/studentsNoticeboard',[StudentsController::class, 'studentsNoticeboard']);
 Route::get('/students/subscribeForSMSAlerts',[StudentsController::class, 'subscribeForSMSAlerts']);
 Route::get('/students/WICASAManagingCommittee',[StudentsController::class, 'WICASAManagingCommittee']);
+Route::get('/students/ICITSS',[StudentsController::class, 'ICITSS']);
+Route::get('/students/AICITSS',[StudentsController::class, 'AICITSS']);
+Route::get('/students/ICITSSOrientationCourse',[StudentsController::class, 'ICITSSOrientationCourse']);
+Route::get('/students/advancedICITSSMCSCourse',[StudentsController::class, 'advancedICITSSMCSCourse']);
+Route::get('/students/libraryReadingRooms',[StudentsController::class, 'libraryReadingRooms']);
+Route::get('/students/studentNoticeboard',[StudentsController::class, 'studentNoticeboard']);
+Route::get('/students/studentFAQs',[StudentsController::class, 'studentFAQs']);
 
 
 // Events Dropdown Pages

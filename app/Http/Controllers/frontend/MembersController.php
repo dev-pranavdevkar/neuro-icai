@@ -35,5 +35,19 @@ class MembersController extends Controller
         return view('frontend.members.updates.updatesDetails');
     }
 
+    public function membersFAQ()
+    {
+        return view('frontend.members.membersFAQ');
+    }
+
+    public function CPEStudyCircles()
+    {
+        return view('frontend.members.CPEStudyCircles');
+    }
+    public function MCMinutes()
+    {
+        return view('frontend.members.MCMinutes');
+    }
+
   
 }

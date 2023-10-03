@@ -8,6 +8,7 @@ use App\Models\AssociationDetails;
 use App\Models\StudentNoticeBoard;
 use App\Models\NewsLetterDetails;
 use App\Models\VacancyDetails;
+
 use Illuminate\Http\Request;
 
 
@@ -20,6 +21,7 @@ class HomeController extends Controller
         $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
         $newsLetterDetails = NewsLetterDetails::with([])->paginate(3);
         $vacancyDetails = VacancyDetails::with([])->paginate(3);
+       
         return view('frontend.index', compact('eventDetails', 'associationDetails', 'studentNoticeBoard', 'newsLetterDetails', 'vacancyDetails'));
     }
     public function contact()
@@ -29,6 +31,30 @@ class HomeController extends Controller
     public function help()
     {
         return view('frontend.help');
+    }
+    public function TermsAndConditions()
+    {
+        return view('frontend.TermsAndConditions');
+    }
+    public function privacyPolicy()
+    {
+        return view('frontend.privacyPolicy');
+    }
+    public function termsOfUse()
+    {
+        return view('frontend.termsOfUse');
+    }
+    public function atSalesCounter()
+    {
+        return view('frontend.atSalesCounter');
+    }
+    public function usefulLinks()
+    {
+        return view('frontend.usefulLinks');
+    }
+    public function tenders()
+    {
+        return view('frontend.tenders');
     }
 
 }

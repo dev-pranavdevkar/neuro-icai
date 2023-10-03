@@ -37,4 +37,33 @@ class StudentsController extends Controller
     {
         return view('frontend.students.WICASAManagingCommittee');
     }
+
+    public function ICITSS()
+    {
+        return view('frontend.students.ICITSS');
+    }
+    public function AICITSS()
+    {
+        return view('frontend.students.AICITSS');
+    }
+    public function ICITSSOrientationCourse()
+    {
+        return view('frontend.students.ICITSSOrientationCourse');
+    }
+    public function advancedICITSSMCSCourse()
+    {
+        return view('frontend.students.advancedICITSSMCSCourse');
+    }
+    public function libraryReadingRooms()
+    {
+        return view('frontend.students.libraryReadingRooms');
+    }
+    public function studentNoticeboard()
+    {
+        return view('frontend.students.studentNoticeboard');
+    }
+    public function studentFAQs()
+    {
+        return view('frontend.students.studentFAQs');
+    }
 }
