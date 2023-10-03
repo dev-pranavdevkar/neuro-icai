@@ -207,7 +207,7 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function ()
 Route::post('userLogin', [AppAuthController::class, 'userLogin']);
 Route::post('registerUser', [AppAuthController::class,'registerUser']);
 Route::post('verifyOtp', [AppAuthController::class,'verifyOtp']);
-
+Route::post('editProfile', [AppAuthController::class, 'editProfile']);
 Route::post('forgetPassword', [AppAuthController::class, 'forgetPassword']);
 Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPassword']);
 

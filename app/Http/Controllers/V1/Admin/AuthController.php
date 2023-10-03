@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\LocationDetails;
 use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -157,6 +158,7 @@ class AuthController extends Controller
             return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
         }
     }
+
     public function UpdateProfile(Request $request)
     {
         try {

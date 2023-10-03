@@ -10,6 +10,9 @@ class EventDetails extends Model
     use HasFactory;
     protected $table='event_details';
 
+    protected $attributes = [
+        'children' => [],
+    ];
     public function location_details(){
         return $this->belongsTo(LocationDetails::class,'location_id');
     }

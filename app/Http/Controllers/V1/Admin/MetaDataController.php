@@ -646,6 +646,7 @@ class MetaDataController extends Controller
             $isFirstEvent = true;
 
             $parentEventId = null;
+            $eventCounter=0;
             if (is_array($request->eventsData) || is_object($request->eventsData)) {
                 foreach ($request->eventsData as $key=>$eventData) {
                     $NewLocationDetails = new LocationDetails();
@@ -679,6 +680,7 @@ class MetaDataController extends Controller
                         }
                     }
                     $newEventDetails->save();
+                    $eventCounter+=1;
                     if($request->has("eventImages".$key."Data")){
                         foreach ($request->all()["eventImages".$key."Data"] as $eachimages) {
                             $newEventImages = new EventImages();
@@ -717,6 +719,7 @@ class MetaDataController extends Controller
                         }
                     }
                     }
+
                     if (is_array($request->event_images) || is_object($request->event_images)) {
                         foreach ($request->event_images as $eachimages) {
                             $newEventImages = new EventImages();
@@ -743,7 +746,12 @@ class MetaDataController extends Controller
                     }
                 }
             }
-            return $this->sendResponse([], 'Event Details added successfully', true);
+            if($eventCounter>0){
+                return $this->sendResponse([$eventCounter], 'Event details added successfully', true);
+            }else{
+                return $this->sendResponse([], 'Event Not Added.', false);
+            }
+
         }
         catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
@@ -795,28 +803,73 @@ class MetaDataController extends Controller
             $skip = $limit * $pageNo;
             $query = $query->skip($skip)->limit($limit);
         }
-         $data = $query->orderBy('id', 'DESC')->get();
-         $eventsData = [];
+            $data = $query->orderBy('id', 'DESC')->get();
+            $eventMap = [];
 
-    foreach ($data as $event) {
-        if ($event->parent_event_id === null) {
-            $event->children = [];
-            $eventsData[] = $event;
-        } else {
-            foreach ($eventsData as &$parentEvent) {
-                if ($parentEvent->id === $event->parent_event_id) {
-                    $parentEvent->children[] = $event;
+            foreach ($data as $event) {
+                $eventId = $event->id;
+
+                // Initialize the 'children' property for each event
+                $event->children = [];
+
+                // Add the event to the event map using its ID as the key
+                $eventMap[$eventId] = $event;
+            }
+
+            $data = $query->orderBy('id', 'DESC')->get();
+
+            // Create an associative array to map events by their IDs
+            $eventMap = [];
+
+            foreach ($data as $event) {
+                $eventId = $event->id;
+
+                // Initialize the 'children' property for each event
+                $eventMap[$eventId] = [
+                    'event' => $event,
+                    'children' => [],
+                ];
+            }
+
+            // Create an array to hold the top-level events (events with null parent_event_id)
+            $eventsData = [];
+
+            foreach ($data as $event) {
+                $eventId = $event->id;
+                $parentEventId = $event->parent_event_id;
+
+                if ($parentEventId === null) {
+                    // This is a top-level event, add it directly to the $eventsData array
+                    $eventsData[] = $event;
+                } else {
+                    // This is a child event, add it to its parent's 'children' property
+                    if (isset($eventMap[$parentEventId])) {
+                        $eventMap[$parentEventId]['children'][] = $event;
+                    }
                 }
             }
-        }
-    }
-        if (count($eventsData) > 0) {
-            $response['event_details'] = $eventsData;
-            $response['count'] = $count;
-            return $this->sendResponse($response, 'Data Fetched Successfully', true);
-        } else {
-            return $this->sendResponse('No Data Available', [], false);
-        }
+
+            // Manually create a new array with the desired structure
+            $transformedEventsData = [];
+
+            foreach ($eventsData as $event) {
+                $eventId = $event->id;
+
+                // If it has children, include them in the structure
+                if (!empty($eventMap[$eventId]['children'])) {
+                    $event->children = $eventMap[$eventId]['children'];
+                }
+
+                $transformedEventsData[] = $event;
+            }
+
+            if (count($transformedEventsData) > 0) {
+                $response['event_details'] = $transformedEventsData;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
     } catch (Exception $e) {
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
@@ -1739,12 +1792,14 @@ class MetaDataController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'ca_firm_name' => 'required',
+                // 'ca_firm_name' => 'required',
                 // 'position'=>'required',
                 'position' => [ Rule::in(['Semi Qualified','Article Assistant','Industrial Trainee','Qualified'])],
-                'comments' => 'required',
-                'company_email' => 'required',
-                'company_contact_no' => 'required',
+                'comments' => 'nullable',
+
+                'company_id' => 'required|integer|exists:company,id',
+                // 'company_email' => 'required',
+                // 'company_contact_no' => 'required',
                 'experience' => 'required',
                 // 'location_id' => 'required',
                 // 'created_by_vacancy_user_id' => 'required',
@@ -1752,7 +1807,7 @@ class MetaDataController extends Controller
                 'expiry_date' => 'nullable|date',
                 'address_line_1' => 'required|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
-
+                 'job_type' => [ Rule::in(['internship', 'full_time'])],
 
             ]);
             if ($validator->fails()) {
@@ -1773,9 +1828,10 @@ class MetaDataController extends Controller
             $newVacancy->experience=$request->experience;
             $newVacancy->location_id=$request->location_id;
             // $newVacancy->created_by_vacancy_user_id=$user;
-            $newVacancy->company_id = $request->Company_id;
+            $newVacancy->company_id = $request->company_id;
             $newVacancy->created_by = $request->created_by;
 		    $newVacancy->expiry_date = $request->expiry_date;
+            $newVacancy->job_type = $request->job_type;
             $newVacancy->save();
             return $this->sendResponse([], 'Vacancy details added successfully', true);
         }
@@ -1793,35 +1849,40 @@ class MetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = VacancyDetails::query()->with(['location_details','user_details']);
+            $query = VacancyDetails::query()->with(['location_details','user_details','companyDetails']);
 
-            if ($request->has('ca_firm_name')) {
-                $caFirmName = $request->input('ca_firm_name');
-                $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
-            }
+        if ($request->has('firm_name')) {
+            $firmName = $request->input('firm_name');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($firmName) {
+                $companyQuery->where('firm_name', 'LIKE', "%{$firmName}%");
+            });
+        }
+        if ($request->has('pincode')) {
+            $pincode = $request->input('pincode');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($pincode) {
+                $companyQuery->where('pincode', 'LIKE', "%{$pincode}%");
+            });
+        }
+        if ($request->has('address')) {
+            $address = $request->input('address');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($address) {
+                $companyQuery->where('address', 'LIKE', "%{$address}%");
+            });
+        }
             if ($request->has('position')) {
                 $Position = $request->input('position');
                 $query->where('position', 'LIKE', "%{$Position}%");
             }
-            if ($request->has('pincode')) {
-                $locationId = $request->input('pincode');
 
-                $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-                    $locationQuery->where(function ($query) use ($locationId) {
-                        $query->where('pincode', 'LIKE', "%{$locationId}%");
-                            // ->orWhere('city', 'LIKE', "%{$locationId}%");
-                    });
-                });
-            }
-            if ($request->has('city')) {
-                $locationId = $request->input('city');
-                $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-                    $locationQuery->where(function ($query) use ($locationId) {
-                        $query->where('city', 'LIKE', "%{$locationId}%");
-                            // ->orWhere('city', 'LIKE', "%{$locationId}%");
-                    });
-                });
-            }
+            // if ($request->has('city')) {
+            //     $locationId = $request->input('city');
+            //     $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+            //         $locationQuery->where(function ($query) use ($locationId) {
+            //             $query->where('city', 'LIKE', "%{$locationId}%");
+            //                 // ->orWhere('city', 'LIKE', "%{$locationId}%");
+            //         });
+            //     });
+            // }
             $currentDate = date('Y-m-d');
             $query->where('expiry_date', '>=', $currentDate);
             $count = $query->count();
@@ -1842,8 +1903,7 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-    }
-    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    }    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -3175,6 +3235,7 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
                 'contact_person_number'=>'required',
                 'address' => 'required',
                 'pincode' => 'nullable',
+                'company_email'=>'required|string|email'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -3186,6 +3247,7 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             $newOffers->contact_person_number = $request->contact_person_number;
             $newOffers->address = $request->address;
             $newOffers->pincode = $request->pincode;
+            $newOffers->company_email = $request->company_email;
             $newOffers->save();
             return $this->sendResponse([], 'Company added Successfully', true);
         } catch (Exception $e) {
@@ -3216,6 +3278,9 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             }
              if ($request->has('pincode')) {
                 $editCompany->pincode = $request->pincode;
+            }
+             if ($request->has('company_email')) {
+                $editCompany->company_email = $request->company_email;
             }
             $editCompany->save();
             return $this->sendResponse([], 'Company updated successfully');
