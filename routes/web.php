@@ -39,6 +39,12 @@ Route::get('/', function () {
 });
 Route::get('/contact',[HomeController::class, 'contact']);
 Route::get('/help',[HomeController::class, 'help']);
+Route::get('/tenders',[HomeController::class, 'tenders']);
+Route::get('/usefulLinks',[HomeController::class, 'usefulLinks']);
+Route::get('/atSalesCounter',[HomeController::class, 'atSalesCounter']);
+Route::get('/termsOfUse',[HomeController::class, 'termsOfUse']);
+Route::get('/privacyPolicy',[HomeController::class, 'privacyPolicy']);
+Route::get('/termsAndConditions',[HomeController::class, 'termsAndConditions']);
 
 // About Us Dropdown Pages
 Route::get('/about/aboutPuneBranch',[AboutController::class, 'aboutPuneBranch']);

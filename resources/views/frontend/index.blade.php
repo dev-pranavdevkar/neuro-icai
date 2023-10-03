@@ -389,7 +389,7 @@
             {!! $eventDetails->links() !!}
         </div> --}}
                 @else
-                    <h1>No  Event details available.</h1>
+                    <h1>No Event details available.</h1>
                 @endif
             </div>
             <div class="py-4 text-center ">
@@ -468,18 +468,69 @@
                     </div>
                 </div>
             </div>
+
+
             <div class="row">
-                
-                <div class="col-lg-6 col-12 mb-5">
-                    <div class="choose__item ">
-                        <div class="d-flex justify-content-center">
-                            <div class="circle-box">
-                                <img src="{{ url('frontend/img/member.png') }}" alt="">
+
+                @if (
+                    !Auth::user() ||
+                        (Auth::user() &&
+                            in_array(
+                                'members',
+                                Auth::user()->roles->pluck('name')->toArray())))
+
+                    <div
+                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        <div class="choose__item ">
+                            <div class="d-flex justify-content-center">
+                                <div class="circle-box">
+                                    <img src="{{ url('frontend/img/member.png') }}" alt="">
+                                </div>
+                            </div>
+                            {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
+                            <h5>Member's Noticeboard</h5>
+                            <div class="d-flex align-items-center">
+                                <p>
+                                    @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
+                                        <ul class="text-left  px-lg-5 px-4 fa-list-notice">
+                                            @foreach ($studentNoticeBoard as $studentNotice)
+                                                <li>
+                                                    <a href={{ $studentNotice['notice_board_pdf'] }}>
+                                                        {{ $studentNotice['title'] }}</a>
+
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <h1>No Notice details available.</h1>
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="pt-lg-5 pt-4 text-center ">
+                                <a href="{{ url('/members/updatesForMembers') }}" class="primary-btn">View More</a>
                             </div>
                         </div>
-                        {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
-                        <h5>Member's Noticeboard</h5>
-                        <div class="d-flex align-items-center">
+                    </div>
+                @endif
+
+
+                @if (
+                    !Auth::user() ||
+                        (Auth::user() &&
+                            in_array(
+                                'student',
+                                Auth::user()->roles->pluck('name')->toArray())))
+
+                    <div
+                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        <div class="choose__item ">
+                            <div class="d-flex justify-content-center">
+                                <div class="circle-box">
+                                    <img src="{{ url('frontend/img/student.png') }}" alt="">
+                                </div>
+                            </div>
+                            {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
+                            <h5>Student's Noticeboard</h5>
                             <p>
                                 @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
                                     <ul class="text-left  px-lg-5 px-4 fa-list-notice">
@@ -495,42 +546,12 @@
                                     <h1>No Notice details available.</h1>
                                 @endif
                             </p>
-                        </div>
-                        <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="{{ url('/members/updatesForMembers') }}" class="primary-btn">View More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-12 mb-5">
-                    <div class="choose__item ">
-                        <div class="d-flex justify-content-center">
-                            <div class="circle-box">
-                                <img src="{{ url('frontend/img/student.png') }}" alt="">
+                            <div class="pt-lg-5 pt-4 text-center ">
+                                <a href="{{ url('/students/studentsNoticeboard') }}" class="primary-btn">View More</a>
                             </div>
                         </div>
-                        {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
-                        <h5>Student's Noticeboard</h5>
-                        <p>
-                            @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
-                                <ul class="text-left  px-lg-5 px-4 fa-list-notice">
-                                    @foreach ($studentNoticeBoard as $studentNotice)
-                                        <li>
-                                            <a href={{ $studentNotice['notice_board_pdf'] }}>
-                                                {{ $studentNotice['title'] }}</a>
-
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <h1>No Notice details available.</h1>
-                            @endif
-                        </p>
-                        <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="{{ url('/students/studentsNoticeboard') }}" class="primary-btn">View More</a>
-                        </div>
                     </div>
-                </div>
-
+                @endif
             </div>
         </div>
     </section>
@@ -550,99 +571,115 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6 col-12 mb-5">
-                    <div class="choose__item ">
-                        <div class="d-flex justify-content-center">
-                            <div class="circle-box">
-                                <img src="{{ url('frontend/img/student.png') }}" alt="">
+                @if (
+                    !Auth::user() ||
+                        (Auth::user() &&
+                            in_array(
+                                'student',
+                                Auth::user()->roles->pluck('name')->toArray())))
+                    <div
+                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        <div class="choose__item ">
+                            <div class="d-flex justify-content-center">
+                                <div class="circle-box">
+                                    <img src="{{ url('frontend/img/student.png') }}" alt="">
+                                </div>
                             </div>
-                        </div>
-                        {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
-                        <h5>Student's Newsletter</h5>
-                        <div class="row px-4 px-lg-0">
-                            @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
-                                @foreach ($newsLetterDetails as $newsLetter)
-                                    <div class="col-lg-6 col-12 py-3">
-                                        <div class="card newsletter-card w-100">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-3 ">
-                                                        <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
-                                                                src="{{ url('frontend/img/download-pdf.png') }}"
-                                                                alt=""></a>
-                                                    </div>
-                                                    <div class="col-9 text-right">
-                                                        <div class="">
-                                                            <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                            {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
+                            <h5>Student's Newsletter</h5>
+                            <div class="row  px-4 px-lg-0 d-flex justify-content-center">
+                                @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
+                                    @foreach ($newsLetterDetails as $newsLetter)
+                                        <div class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '3': '6' }} col-12 py-3">
+                                            <div class="card newsletter-card w-100">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-3 ">
+                                                            <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
+                                                                    src="{{ url('frontend/img/download-pdf.png') }}"
+                                                                    alt=""></a>
                                                         </div>
-                                                        <div>
-                                                            <b> Students </b>
+                                                        <div class="col-9 text-right">
+                                                            <div class="">
+                                                                <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                                                            </div>
+                                                            <div>
+                                                                <b> Students </b>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <h1>No Newsletter available.</h1>
-                            @endif
+                                    @endforeach
+                                @else
+                                    <h1>No Newsletter available.</h1>
+                                @endif
 
 
-                        </div>
-                        <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="{{ url('/students/puneWICASANewsletter') }}" class="primary-btn">View More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-12 mb-5">
-                    <div class="choose__item ">
-                        <div class="d-flex justify-content-center">
-                            <div class="circle-box">
-                                <img src="{{ url('frontend/img/member.png') }}" alt="">
+                            </div>
+                            <div class="pt-lg-5 pt-4 text-center ">
+                                <a href="{{ url('/students/puneWICASANewsletter') }}" class="primary-btn">View More</a>
                             </div>
                         </div>
-                        {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
-                        <h5>Member's Newsletter</h5>
-                        <div class="row px-4 px-lg-0">
-                            @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
-                                @foreach ($newsLetterDetails as $newsLetter)
-                                    <div class="col-lg-6 col-12 py-3">
-                                        <div class="card newsletter-card w-100">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-3 ">
-                                                        <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
-                                                                src="{{ url('frontend/img/download-pdf.png') }}"
-                                                                alt=""></a>
-                                                    </div>
-                                                    <div class="col-9 text-right">
-                                                        <div class="">
-                                                            <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                    </div>
+                @endif
+
+                @if (
+                    !Auth::user() ||
+                        (Auth::user() &&
+                            in_array(
+                                'members',
+                                Auth::user()->roles->pluck('name')->toArray())))
+                    <div
+                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        <div class="choose__item ">
+                            <div class="d-flex justify-content-center">
+                                <div class="circle-box">
+                                    <img src="{{ url('frontend/img/member.png') }}" alt="">
+                                </div>
+                            </div>
+                            {{-- <img src="{{ url('frontend/img/choose/choose-1.png') }}" alt=""> --}}
+                            <h5>Member's Newsletter</h5>
+                            <div class="row px-4 px-lg-0 d-flex justify-content-center">
+                                @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
+                                    @foreach ($newsLetterDetails as $newsLetter)
+                                        <div class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '3': '6' }} col-12 py-3">
+                                            <div class="card newsletter-card w-100">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-3 ">
+                                                            <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
+                                                                    src="{{ url('frontend/img/download-pdf.png') }}"
+                                                                    alt=""></a>
                                                         </div>
-                                                        <div>
-                                                            <b> Members </b>
+                                                        <div class="col-9 text-right">
+                                                            <div class="">
+                                                                <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                                                            </div>
+                                                            <div>
+                                                                <b> Members </b>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <h1>No Newsletter available.</h1>
-                            @endif
+                                    @endforeach
+                                @else
+                                    <h1>No Newsletter available.</h1>
+                                @endif
 
 
 
 
-                        </div>
-                        <div class="pt-lg-5 pt-4 text-center ">
-                            <a href="{{ url('/members/puneMembersNewsletter') }}" class="primary-btn">View More</a>
+                            </div>
+                            <div class="pt-lg-5 pt-4 text-center ">
+                                <a href="{{ url('/members/puneMembersNewsletter') }}" class="primary-btn">View More</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                @endif
             </div>
         </div>
     </section>
@@ -684,7 +721,8 @@
                                             GST, TDS, etc.</p>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary">View Details</a>
+                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary">View
+                                            Details</a>
                                     </div>
 
                                 </div>
@@ -714,7 +752,7 @@
 
 
     <!-- Counter Begin -->
-    {{-- <div class="counter bg-light spad">
+    <div class="counter bg-light spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-6">
@@ -723,7 +761,7 @@
                         <div class="counter__number">
                             <h2 class="counter-add">2100</h2>
                         </div>
-                        <p>Successful Loan Approval</p>
+                        <p>Registered Events in Octomber</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
@@ -733,7 +771,7 @@
                             <h2 class="counter-add">99</h2>
                             <span>%</span>
                         </div>
-                        <p>Customer Satisfection</p>
+                        <p>Attended Events</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
@@ -743,7 +781,7 @@
                             <h2 class="counter-add">90</h2>
                             <span>+</span>
                         </div>
-                        <p>Office National Partners</p>
+                        <p>Registerd Batches</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6">
@@ -753,12 +791,12 @@
                             <h2 class="counter-add">70</h2>
                             <span>+</span>
                         </div>
-                        <p>Award Certificate</p>
+                        <p>Attended Batches</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
     <!-- Counter End -->
 
 

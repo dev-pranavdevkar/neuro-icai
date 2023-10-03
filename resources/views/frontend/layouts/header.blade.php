@@ -56,28 +56,48 @@
                         <li><a href="{{ url('/about/updates') }}"> Updates </a></li>
                     </ul>
                 </li>
-                <li><a href="{{ url('/') }}">Members</a>
-                    <ul class="dropdown">
-                        <li><a href="{{ url('/members/puneMembersNewsletter') }}"> Pune Member's Newsletter </a></li>
-                        <li><a href="{{ url('/members/managingCommitteeMinutes') }}"> Managing Committee Minutes </a>
-                        </li>
-                        <li><a href="{{ url('/members/exposureDrafts') }}"> Exposure Drafts </a></li>
-                        <li><a href="{{ url('/members/subscribeForSMSAlerts') }}"> Subscribe For SMS Alerts </a></li>
-                        <li><a href="{{ url('/members/updatesForMembers') }}"> Updates for Members </a></li>
-                    </ul>
 
-                </li>
-                <li><a href="{{ url('/') }}">Students</a>
-                    <ul class="dropdown">
-                        <li><a href="{{ url('/students/aboutPuneWICASA') }}"> About Pune WICASA </a></li>
-                        <li><a href="{{ url('/students/WICASAManagingCommittee') }}"> WICASA Managing Committee </a>
-                        </li>
-                        <li><a href="{{ url('/students/studentsNoticeboard') }}"> Student's Noticeboard </a></li>
-                        <li><a href="{{ url('/students/puneWICASANewsletter') }}"> Pune WICASA Newsletter </a></li>
-                        <li><a href="{{ url('/students/coachingClasses') }}"> Coaching Classes </a></li>
-                        <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for SMS Alerts </a></li>
-                    </ul>
-                </li>
+                @if (
+                    !Auth::user() ||
+                        (Auth::user() &&
+                            in_array(
+                                'members',
+                                Auth::user()->roles->pluck('name')->toArray())))
+                    <li>
+                        <a href="{{ url('/') }}">Members</a>
+                        <ul class="dropdown">
+                            <li><a href="{{ url('/members/puneMembersNewsletter') }}">Pune Member's Newsletter</a></li>
+                            <li><a href="{{ url('/members/managingCommitteeMinutes') }}">Managing Committee Minutes</a>
+                            </li>
+                            <li><a href="{{ url('/members/exposureDrafts') }}">Exposure Drafts</a></li>
+                            <li><a href="{{ url('/members/subscribeForSMSAlerts') }}">Subscribe For SMS Alerts</a></li>
+                            <li><a href="{{ url('/members/updatesForMembers') }}">Updates for Members</a></li>
+                        </ul>
+                    </li>
+                @endif
+
+
+                @if (
+                    !Auth::user() ||
+                        (Auth::user() &&
+                            in_array(
+                                'student',
+                                Auth::user()->roles->pluck('name')->toArray())))
+                    <li>
+                        <a href="{{ url('/') }}">Students</a>
+                        <ul class="dropdown">
+                            <li><a href="{{ url('/students/aboutPuneWICASA') }}">About Pune WICASA</a></li>
+                            <li><a href="{{ url('/students/WICASAManagingCommittee') }}">WICASA Managing Committee</a>
+                            </li>
+                            <li><a href="{{ url('/students/studentsNoticeboard') }}">Student's Noticeboard</a></li>
+                            <li><a href="{{ url('/students/puneWICASANewsletter') }}">Pune WICASA Newsletter</a></li>
+                            <li><a href="{{ url('/students/coachingClasses') }}">Coaching Classes</a></li>
+                            <li><a href="{{ url('/students/subscribeForSMSAlerts') }}">Subscribe for SMS Alerts</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+
                 <li><a href="{{ url('/') }}">Events</a>
                     <ul class="dropdown">
                         <li><a href="{{ url('/events/upcommingEvents') }}"> Upcomming Events </a></li>
@@ -142,52 +162,54 @@
 
                                 <li id="user-dropdown" class="dropdown">
                                     @if (Auth::user())
-                                    
+                                        {{-- ------------------- --}}
+                                        <div class="header__nav ">
+                                            <div class="header__menu profile-dropdown">
+                                                <ul>
 
-                                       {{-- ------------------- --}}
-                                       <div class="header__nav ">
-                                        <div class="header__menu profile-dropdown">
-                                            <ul>
-                                               
-                                                <li class="p-0">  <i class="fa fa-user"></i>{{ Auth::user()->name }}
-                                                    {{ Auth::user()->last_name }} 
-                                                    <ul class="dropdown">
+                                                    <li class="p-0"> <i
+                                                            class="fa fa-user"></i>{{ Auth::user()->name }}
+                                                        {{ Auth::user()->last_name }}
+                                                        <ul class="dropdown">
 
-                                                     
-                                                        <li><a href="{{ url('/dashboard#IDCard') }}"> Digital ID Card </a></li>
-                                                        <li><a href="{{ url('/dashboard#editProfile') }}"> Personal Details </a>
-                                                        </li>
-                                                        <li><a href="{{ url('/dashboard#changePassword') }}"> Change Password </a>
-                                                        </li>
-                                                        <li><a href="{{ route('logout') }}"> Logout </a></li>
-                                                  
-                                                    </ul>
-                                                </li>
-                
-                                         
-                
-                                    
-                
-                
-                
-                                          
-                                           
-                
-                                              
-                                            </ul>
+                                                            <li><a href="{{ url('/dashboard#IDCard') }}"> Dashboard </a></li>
+                                                            <li><a href="{{ url('/dashboard#IDCard') }}"> Digital ID
+                                                                    Card </a></li>
+                                                            <li><a href="{{ url('/dashboard#editProfile') }}">
+                                                                    Personal Details </a>
+                                                            </li>
+                                                            <li><a href="{{ url('/dashboard#changePassword') }}">
+                                                                    Change Password </a>
+                                                            </li>
+                                                            <li><a href="{{ route('logout') }}"> Logout </a></li>
+
+                                                        </ul>
+                                                    </li>
+
+
+
+
+
+
+
+
+
+
+
+                                                </ul>
+                                            </div>
+
+
+
                                         </div>
-                           
-                
-                
-                                    </div>
-                                       {{-- ==================== --}}
+                                        {{-- ==================== --}}
                                     @else
                                         <i class="fa fa-user"></i><a class="text-white"
                                             href="{{ url('/login') }}">Login</a> / <a class="text-white"
                                             href="{{ url('/signup') }}">Register</a>
                                     @endif
 
-                                    
+
                                     <script>
                                         $(document).ready(function() {
                                             // Show/hide the dropdown menu when clicking on the user name
@@ -243,7 +265,15 @@
                                         <li><a href="{{ url('/about/updates') }}"> Updates </a></li>
                                     </ul>
                                 </li>
+                     
 
+                                @if (
+                                    !Auth::user() ||
+                                        (Auth::user() &&
+                                            in_array(
+                                                'members',
+                                                Auth::user()->roles->pluck('name')->toArray())))
+                                
                                 <li><a href="{{ url('/') }}">Members</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('members/puneMembersNewsletter') }}"> Pune Member's
@@ -259,7 +289,11 @@
                                     </ul>
 
                                 </li>
+                                
+                                @endif
 
+                                @if (!Auth::user() || (Auth::user() && in_array('student', Auth::user()->roles->pluck('name')->toArray())))
+                         
                                 <li><a href="{{ url('/') }}">Students</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/students/aboutPuneWICASA') }}"> About Pune WICASA
@@ -276,6 +310,9 @@
                                                 SMS Alerts </a></li>
                                     </ul>
                                 </li>
+                            @endif
+                            
+
 
 
 

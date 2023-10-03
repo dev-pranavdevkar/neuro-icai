@@ -182,16 +182,17 @@ img {
 	color: #000;
 }
 
-.download-btn{
+.download-btn {
 	color: #fff !important;
-	padding:  0.5rem 1rem !important;
+	padding: 0.5rem 1rem !important;
 	position: absolute !important;
 	bottom: 1rem !important;
 	left: 50%;
-    transform: translateX(-50%);
+	transform: translateX(-50%);
 
 }
-.download-btn i{
+
+.download-btn i {
 	padding-right: 0.5rem;
 }
 
@@ -200,30 +201,36 @@ img {
 .text-nowrap {
 	text-wrap: nowrap;
 }
-.event-page .card{
+
+.event-page .card {
 	border: none;
 	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 	padding: 1.5rem;
 }
-.event-page .card .card-body{
+
+.event-page .card .card-body {
 	border: 1px solid #909090;
 
 }
-.event-page .card .card-title{
+
+.event-page .card .card-title {
 	font-size: 18px;
 	font-weight: 600;
 	text-align: center;
 
 }
-.event-page .card .card-body a{
-	color:#283960 ;
+
+.event-page .card .card-body a {
+	color: #283960;
 	font-weight: 600;
 }
+
 .event-page table tr td,
-.event-page table tr th{
+.event-page table tr th {
 	border: none;
 	padding: 3px 0px;
 }
+
 .border-left-primery {
 	border-left: 1px solid #283960;
 }
@@ -253,7 +260,7 @@ img {
 	font-size: 18px;
 	font-weight: 600;
 	text-align: left;
-	
+
 }
 
 .events-details ul {
@@ -261,7 +268,8 @@ img {
 	display: flex;
 	justify-content: space-between;
 }
-.events-details p{
+
+.events-details p {
 	color: #000;
 	font-size: 16px;
 	padding: 1rem 0;
@@ -290,20 +298,23 @@ img {
 	height: 200px;
 	object-fit: cover;
 }
-.pdfList ul  {
+
+.pdfList ul {
 	display: block;
 }
+
 .pdfList ul li {
 	padding: 25px 0;
-	border-bottom: 1px solid rgba(40, 57, 96, 0.3); 
+	border-bottom: 1px solid rgba(40, 57, 96, 0.3);
 
 }
+
 .pdfList ul li a {
 	margin: 25px 0;
 	font-size: 16px;
 	font-weight: 400;
 }
-	
+
 .pdfList li img {
 	width: 100%;
 	max-width: 32px !important;
@@ -412,48 +423,51 @@ img {
 } */
 .readMoreUnderline {
 	font-size: 12px;
-    color: #283960 !important;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 4px 0;
-	
-    position: relative;
+	color: #283960 !important;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	padding: 4px 0;
+
+	position: relative;
 }
+
 .readMoreUnderline:after {
-    position: absolute;
-    left: 0;
-    bottom: 0px;
-    height: 2px;
-    width: 100%;
-    background: #283960;
-    content: "";
+	position: absolute;
+	left: 0;
+	bottom: 0px;
+	height: 2px;
+	width: 100%;
+	background: #283960;
+	content: "";
 }
 
 .readMoreUnderline:hover {
 	font-size: 12px;
-    color: #000 !important;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 4px 0;
-	
-    position: relative;
-}
-.readMoreUnderline:after:hover {
-    position: absolute;
-    left: 0;
-    bottom: 0px;
-    height: 2px;
-    width: 100%;
-    background: #000;
-    content: "";
+	color: #000 !important;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	padding: 4px 0;
+
+	position: relative;
 }
 
-.notice-board-section ul li a{
+.readMoreUnderline:after:hover {
+	position: absolute;
+	left: 0;
+	bottom: 0px;
+	height: 2px;
+	width: 100%;
+	background: #000;
+	content: "";
+}
+
+.notice-board-section ul li a {
 	color: #000;
 }
-.notice-board-section ul li a:hover{
+
+.notice-board-section ul li a:hover {
 	color: #1AA5CE;
 }
 
@@ -3606,91 +3620,153 @@ ol {
 	top: 4px;
 }
 
-.digitalIDCard{
+.digitalIDCard {
 	border-radius: 10px;
 	border: none;
 	color: #fff;
 	position: relative;
 	top: 0;
 }
-.digitalIDCard .card-body{
-	
+
+.digitalIDCard .card-body {
+
 	padding: 0;
 }
-.digitalIDCard .institute-section{
+
+.digitalIDCard .institute-section {
 	border-radius: 10px 10px 0 0;
 	background: #3e4c6f;
 	padding: 1rem;
-	
+
 }
-.digitalIDCard .scanner-section{
+
+.digitalIDCard .scanner-section {
 	margin: 2px 0;
 	background: #27395f;
 }
-.digitalIDCard .info-section{
+
+.digitalIDCard .info-section {
 	background: #3e4c6f;
-	border-radius: 0 0  10px 10px;
+	border-radius: 0 0 10px 10px;
 }
+
 .digitalIDCard .logo-icai {
 	height: 50px;
 	width: 50px;
 	object-fit: cover;
 	border-radius: 100%;
 }
+
 .digitalIDCard .profile-img {
 	height: 100px;
 	width: 100px;
 	object-fit: cover;
 	border-radius: 100%;
 }
-.digitalIDCard ul{
+
+.digitalIDCard ul {
 	list-style: none;
 
 }
-.digitalIDCard ul li i{
+
+.digitalIDCard ul li i {
 	margin-right: 5px;
 
 }
-.scanner-img{
+
+.scanner-img {
 	width: 150px;
 	object-fit: contain;
 }
-
-.DashboardTabView {
-	height: 100% !important;
+/* ==================================================================== */
+.dashboard-menus-section{
+	border-radius: 10px;
+	border: none;
+	color: #fff;
+	position: relative;
+	top: 0;
+	border: 1px solid #3e4c6f;
+}
+.dashboard-menus{
 	padding: 0;
 }
+.dashboard-menus .profile-section {
+	border-radius: 10px 10px 0 0;
+	background: #3e4c6f;
+	padding:  0.5rem;
+	width: 100%;
 
-.dashboard-tab-section{
-	margin: 2px 0;
-	background: #27395f;
+
 }
-.dashboard-tab-section button{
-	border: none;
-	margin: 10px 0;
-	border-radius: 0;
-	background: none;
-	color: #fff;
+.dashboard-menus .profile-section h5{
 	font-weight: 600;
-	text-align: start;
+	font-size: 18px;
 }
-.dashboard-tab-section .nav-pills .nav-link {
-    /* border-radius: 0; */
+.dashboard-menus .profile-section .profile-pic{
+	height: 50px;
+	width: 50px;
+	border-radius: 100%;
+}
+
+.dashboard-menus {
+	height: 100%;
+	
+}
+
+.dashboard-menus a {
+	margin: 0.5rem 0;
+}
+.bg-dashboard{
+	background: #182143;
+}
+
+.dashboard-menus .nav-link {
+	border: 1px solid #fff;
+	color: #3e4c6f;
+	font-size: 18px;
+	font-weight: 400;
+	background: #fff;
+}
+
+.dashboard-menus .nav-link:hover {
+	border: 1px solid #3e4c6f;
+	color: #fff;
+	font-size: 18px;
+	font-weight: 400;
+	background: #3e4c6f;
+}
+.dashboard-menus{
+	height: 70vh !important;
+	box-shadow: rgba(99, 99, 99, 0.2) 2px 0px 8px 0px;
+
+}
+.dashboard-content .contact__form {
+	padding: 0;
+	margin: 0;
+}
+
+.dashboard-content .contact__form__text{
+	padding: 25px;
+	box-shadow: none;
+	
 }
 
 
-.profile-dropdown ul li .dropdown{
+/* ================================================================== */
+
+.profile-dropdown ul li .dropdown {
 	width: fit-content;
 	text-wrap: nowrap;
 	overflow: hidden !important;
 	top: 40px;
-	
+
 }
 
 .profile-dropdown ul li .dropdown li a {
 
-    padding: 5px 10px;
+	padding: 5px 10px;
 }
+
 .
 /*--------------------------------- Responsive Media Quaries -----------------------------*/
 

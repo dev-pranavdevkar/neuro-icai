@@ -79,16 +79,16 @@
                     <h5>Useful Links</h5>
                     <div class="footer__widget">
                         <ul>
-                            <li><a href="{{ url('/') }}">Terms & Conditions</a></li>
-                            <li><a href="{{ url('/') }}">Privacy Policy</a></li>
-                            <li><a href="{{ url('/') }}">Terms Of Use</a></li>
-                            <li><a href="{{ url('/') }}">At Sales Counter</a></li>
+                            <li><a href="{{ url('/termsAndConditions') }}">Terms & Conditions</a></li>
+                            <li><a href="{{ url('/privacyPolicy') }}">Privacy Policy</a></li>
+                            <li><a href="{{ url('/termsOfUse') }}">Terms Of Use</a></li>
+                            <li><a href="{{ url('/atSalesCounter') }}">At Sales Counter</a></li>
                             <li><a href="{{ url('/members/exposureDrafts') }}">Exposure DRAFTS</a></li>
                             <li><a href="{{ url('/members/MCMinutes') }}">MC MINUTES</a></li>
-                            <li><a href="{{ url('/') }}">Useful Links</a></li>
-                            <li><a href="{{ url('/') }}">Article Vacancy</a></li>
-                            <li><a href="{{ url('/') }}">Tenders</a></li>
-                            <li><a href="{{ url('/') }}">Help</a></li>
+                            <li><a href="{{ url('/usefulLinks') }}">Useful Links</a></li>
+                            <li><a href="{{ url('/vacancies/viewVacancies') }}">Article Vacancy</a></li>
+                            <li><a href="{{ url('/tenders') }}">Tenders</a></li>
+                            <li><a href="{{ url('/help') }}">Help</a></li>
 
                         </ul>
                     </div>
