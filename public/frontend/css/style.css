@@ -1744,7 +1744,7 @@ ol {
 
 .counter__item .counter__number h2 {
 	font-size: 40px;
-	color: #323232;
+	color: #182141;
 	font-weight: 700;
 	display: inline-block;
 }
@@ -3691,12 +3691,15 @@ ol {
 	padding: 0;
 }
 .dashboard-menus .profile-section {
-	border-radius: 10px 10px 0 0;
+
 	background: #3e4c6f;
 	padding:  0.5rem;
 	width: 100%;
 
 
+}
+.dashboard-menus nav ul li{
+	width: 100%;
 }
 .dashboard-menus .profile-section h5{
 	font-weight: 600;
@@ -3751,7 +3754,11 @@ ol {
 	
 }
 
-
+.dashboard-card{
+	margin: 10px 0;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	
+}
 /* ================================================================== */
 
 .profile-dropdown ul li .dropdown {

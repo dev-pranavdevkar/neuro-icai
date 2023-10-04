@@ -13,7 +13,7 @@ use App\Http\Controllers\frontend\StudentsController;
 use App\Http\Controllers\frontend\EventsController;
 use App\Http\Controllers\frontend\VacanciesController;
 use App\Http\Controllers\frontend\DownloadsController;
-
+use App\Http\Controllers\frontend\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,11 +32,12 @@ use App\Http\Controllers\frontend\DownloadsController;
 
 // Pages
 
-Route::get('/', function () {
-    $webAuthController = new WebAuthController();
-    $eventDetails = $webAuthController->getAllEventDetails(request());
-    return app()->call([HomeController::class, 'index'], compact('eventDetails'));
-});
+// Route::get('/', function () {
+//     $webAuthController = new WebAuthController();
+//     $eventDetails = $webAuthController->getAllEventDetails(request());
+//     return app()->call([HomeController::class, 'index'], compact('eventDetails'));
+// });
+Route::get('/',[HomeController::class, 'index']);
 Route::get('/contact',[HomeController::class, 'contact']);
 Route::get('/help',[HomeController::class, 'help']);
 Route::get('/tenders',[HomeController::class, 'tenders']);
@@ -133,7 +134,9 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('dashboard',[WebAuthController::class,'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-
-
+// ===========Profile Routes ====================
+Route::get('/profile/digitalIdCard',[ProfileController::class, 'digitalIdCard']);
+Route::get('/profile/editProfile',[ProfileController::class, 'editProfile']);
+Route::get('/profile/changePassword',[ProfileController::class, 'changePassword']);
 
 

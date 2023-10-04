@@ -97,7 +97,7 @@ class WebAuthController extends Controller
                     $token = JWTAuth::fromUser($user);
                     $response = ['token' => $token, 'userData' => $user];
                     // return $this->sendResponse($response, 'Login Success', true);
-                    return redirect()->route('dashboard');
+                    return redirect('/');
                 } else {
                     return $this->sendError('Password mismatch', [], 422);
                 }
