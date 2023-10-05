@@ -23,70 +23,83 @@
 
         <div class="container">
             @if (isset($eventDetails) && count($eventDetails) > 0)
-            <div class="row">
+                <div class="row">
 
-                @foreach ($eventDetails as $event)
-            <div class="col-lg-6 py-3">
-                {{-- ------------------------------------------------------------------------------------------- --}}
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $event['event_name'] }}</h5>
+                    @foreach ($eventDetails as $event)
+                        <div class="col-lg-6 py-3">
+                            {{-- ------------------------------------------------------------------------------------------- --}}
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $event['event_name'] }}</h5>
 
-                        <table class="table ">
+                                    <table class="table ">
 
 
 
-                            <tbody>
-                                <tr>
+                                        <tbody>
+                                            <tr>
 
-                                    <th scope="col">Event Start Date:</th>
-                                    <td scope="col">{{ $event['event_start_date'] }}</td>
-                                </tr>
-                                <tr>
+                                                <th scope="col">Event Start Date:</th>
+                                                <td scope="col">{{ $event['event_start_date'] }}</td>
+                                            </tr>
+                                            <tr>
 
-                                    <th scope="col">Event End Date:</th>
-                                    <td scope="col"> {{ $event['event_end_date'] }}</td>
-                                </tr>
-                                <tr>
+                                                <th scope="col">Event End Date:</th>
+                                                <td scope="col"> {{ $event['event_end_date'] }}</td>
+                                            </tr>
+                                            <tr>
 
-                                    <th scope="col">Event Time:</th>
-                                    <td scope="col">10:00 AM To 06:00 PM</td>
-                                </tr>
+                                                <th scope="col">Event Time:</th>
+                                                <td scope="col">10:00 AM To 06:00 PM</td>
+                                            </tr>
 
-                                <tr>
+                                            <tr>
 
-                                    <th scope="col">Cut off Date:</th>
-                                    <td scope="col">{{ $event['event_cut_off_date'] }} 10:00 AM</td>
-                                </tr>
-                                <tr>
+                                                <th scope="col">Cut off Date:</th>
+                                                <td scope="col">{{ $event['event_cut_off_date'] }} 10:00 AM</td>
+                                            </tr>
+                                            <tr>
 
-                                    <th scope="col">Event Fee:</th>
-                                    <td scope="col"> ₹ {{ $event['event_fee'] }}</td>
-                                </tr>
-                                <tr>
+                                                <th scope="col">Event Fee:</th>
+                                                <td scope="col"> ₹ {{ $event['event_fee'] }}</td>
+                                            </tr>
+                                            <tr>
 
-                                    <th scope="col">Brochure:</th>
-                                    <td scope="col"> <a href="{{ $event['broacher_pdf'] }}">Click Here To Download </a></td>
-                                </tr>
-   
-                            </tbody>
-                        </table>
-                        <div class="d-flex justify-content-between">
-                            <div><a href=""><button type="button" class="btn btn-secondary">Details</button></a></div>
-                            <div><a href=""><button type="button" class="btn btn-primary">Register</button></a></div>
+                                                <th scope="col">Brochure:</th>
+                                                <td scope="col"> <a href="{{ $event['broacher_pdf'] }}">Click Here To
+                                                        Download </a></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                    <div class="d-flex justify-content-between">
+                                        <div><a href="#">
+                                            <button type="button" class="btn btn-secondary">Details</button>
+                                        </a>
+                                        
+                                        </div>
+
+                                        <div>
+                                            
+                                            <a href="{{ Auth::user() ? 'https://www.google.com/' : url('/login') }}">
+                                                <button type="button" class="btn btn-primary">Register
+
+                                                </button>
+                                            </a>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            {{-- ------------------------------------------------------------------------------------------- --}}
                         </div>
-                     
-                    </div>
-                </div>
-                {{-- ------------------------------------------------------------------------------------------- --}}
-            </div>
-          
-            @endforeach
+                    @endforeach
 
-            </div>
+                </div>
             @else
-            <h1>No event details available.</h1>
-        @endif
+                <h1>No event details available.</h1>
+            @endif
 
 
         </div>
@@ -96,3 +109,56 @@
 
 
 @endsection
+
+
+
+
+{{-- <div class="d-flex justify-content-between">
+    <div><a href=""><button type="button"
+                class="btn btn-secondary">Details</button></a></div>
+    <div><button type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#eventRegister">Register</button></div>
+</div> --}}
+<!------------------- Modal -------------------------------->
+{{-- <div class="modal fade" id="eventRegister" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLabel">
+                    Event Registration
+                </h4>
+                <button type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="contact__form__text p-4" >
+                    <div class="contact__form__title">
+                        <h5>{{ $event['event_name'] }}</h5>
+                       
+                    </div>
+                    <form action="#">
+                        <div class="input-list">
+                            <input type="text" placeholder="Your First name">
+                            <input type="text" placeholder="Your Last name">
+                        </div>
+                        <div class="input-list">
+                            <input type="text" placeholder="Your contact number">
+                            <input type="text" placeholder="Your email Id">
+                        </div>
+
+                        <button type="submit" class="site-btn">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+{{-- ====================================== --}}

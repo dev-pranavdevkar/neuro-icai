@@ -32,9 +32,9 @@ class HomeController extends Controller
     {
         return view('frontend.help');
     }
-    public function TermsAndConditions()
+    public function termsAndConditions()
     {
-        return view('frontend.TermsAndConditions');
+        return view('frontend.termsAndConditions');
     }
     public function privacyPolicy()
     {
