@@ -8,7 +8,6 @@ use App\Models\AssociationDetails;
 use App\Models\StudentNoticeBoard;
 use App\Models\NewsLetterDetails;
 use App\Models\VacancyDetails;
-
 use Illuminate\Http\Request;
 
 
@@ -54,7 +53,9 @@ class HomeController extends Controller
     }
     public function tenders()
     {
-        return view('frontend.tenders');
+         $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
+        
+        return view('frontend.tenders', compact('studentNoticeBoard'));
     }
 
 }

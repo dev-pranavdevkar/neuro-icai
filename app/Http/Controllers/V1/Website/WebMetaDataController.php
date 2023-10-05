@@ -146,7 +146,6 @@ public function addEventRegistration(Request $request): \Illuminate\Http\JsonRes
         try {
             $validator = Validator::make($request->all(), [
                 'event_id' => 'required|integer|exists:event_details,id',
-
                 'gst_no' => 'required',
                 'legal_name' => 'required',
                 'event_price' => 'required|nullable',

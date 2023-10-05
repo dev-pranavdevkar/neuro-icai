@@ -61,7 +61,7 @@
                         <ul>
 
                             <li><a href="{{ url('/students/aboutPuneWICASA') }}">WICASA</a></li>
-                            <li><a href="{{ url('/WICASAManagingCommittee') }}">WICASA Managing Committee</a></li>
+                            <li><a class="text-nowrap" href="{{ url('/students/WICASAManagingCommittee') }}">WICASA Managing Committee</a></li>
                             <li><a href="{{ url('/students/ICITSS') }}">ICITSS</a></li>
                             <li><a href="{{ url('/students/AICITSS') }}">AICITSS</a></li>
                             <li><a href="{{ url('/students/ICITSSOrientationCourse') }}">ICITSS - Orientation Course</a></li>
@@ -84,7 +84,7 @@
                             <li><a href="{{ url('/termsOfUse') }}">Terms Of Use</a></li>
                             <li><a href="{{ url('/atSalesCounter') }}">At Sales Counter</a></li>
                             <li><a href="{{ url('/members/exposureDrafts') }}">Exposure DRAFTS</a></li>
-                            <li><a href="{{ url('/members/MCMinutes') }}">MC MINUTES</a></li>
+                            <li><a href="{{ url('/members/managingCommitteeMinutes') }}">MC MINUTES</a></li>
                             <li><a href="{{ url('/usefulLinks') }}">Useful Links</a></li>
                             <li><a href="{{ url('/vacancies/viewVacancies') }}">Article Vacancy</a></li>
                             <li><a href="{{ url('/tenders') }}">Tenders</a></li>

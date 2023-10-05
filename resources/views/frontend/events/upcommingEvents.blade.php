@@ -8,7 +8,7 @@
                     <div class="breadcrumb__text">
                         <h2>Upcoming Events</h2>
                         <div class="breadcrumb__links">
-                            <a href="./index.html">Events</a>
+                            <a href="#">Events</a>
                             <span>Upcoming Events</span>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
 
                                         <div>
                                             
-                                            <a href="{{ Auth::user() ? 'https://www.google.com/' : url('/login') }}">
+                                            <a href="{{ Auth::user() ? url('/razorpay-payment') : url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 
                                                 </button>

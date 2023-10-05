@@ -246,6 +246,7 @@
                     <div class="header__nav ">
                         <nav class="header__menu ml-auto">
                             <ul>
+                                <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li>
                                 <li class="active"><a href="{{ url('/') }}">Home</a></li>
                                 <li><a href="{{ url('/') }}">About Us </a>
                                     <ul class="dropdown">
