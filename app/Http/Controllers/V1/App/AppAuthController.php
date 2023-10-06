@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\V1\App;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
@@ -150,8 +151,16 @@ class AppAuthController extends Controller
             if ($request->role != 'student' && $request->role != 'members') {
                 return $this->sendError('Invalid role.', [], 400);
             }
+            $newCompany = new Company();
+            $newCompany->firm_name = $request->firm_name;
+            $newCompany->contact_person_name = $request->contact_person_name;
+            $newCompany->contact_person_number = $request->contact_person_number;
+            $newCompany->address = $request->address;
+            $newCompany->pincode = $request->pincode;
+            $newCompany->save();
             $newUser = new User();
             $newUser->password = Hash::make($request['password']);
+            $newUser->company_id = $newCompany->id;
             $newUser->name = $request->name;
             $newUser->email = $request->email;
             $newUser->last_name = $request->last_name;

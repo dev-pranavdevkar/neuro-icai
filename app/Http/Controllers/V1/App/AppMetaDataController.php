@@ -17,7 +17,10 @@ use App\Models\NewsLetterDetails;
 use App\Models\VacancyDetails;
 use App\Models\ApplyForJob;
 use App\Models\StudentNoticeBoard;
+use App\Models\LocationDetails;
 use App\Models\StudentBatches;
+use Illuminate\Validation\Rule;
+use Auth;
 use Razorpay\Api\Api;
 use Carbon\Carbon;
 class AppMetaDataController extends Controller
@@ -572,12 +575,8 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             $validator = Validator::make($request->all(), [
                 'event_id' => 'required|integer|exists:event_details,id',
                 'user_id'=>'required|integer|exists:users,id',
-                // 'payment_mode_id' => 'required|integer|exists:payment_mode,id',
-              //  'voluntary_contribution_id' => 'nullable|integer|exists:voluntary_contribution,id',
-              //  'payment_status' => 'required',
                 'gst_no' => 'required',
                 'legal_name' => 'required',
-               // 'voluntary_donation_amount' => 'required|nullable',
                 'event_price' => 'required|nullable',
                 'total_amount' => 'required|nullable',
             ]);
@@ -587,13 +586,9 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             $newEventRegistration = new EventRegistration();
             $newEventRegistration->event_id=$request->event_id;
             $newEventRegistration->user_id=$request->user_id;
-            // $newEventRegistration->payment_mode_id=$request->payment_mode_id;
-           // $newEventRegistration->voluntary_contribution_id=$request->voluntary_contribution_id;
-            //$newEventRegistration->payment_status=$request->payment_status;
             $newEventRegistration->gst_no=$request->gst_no;
             $newEventRegistration->legal_name=$request->legal_name;
             $newEventRegistration->attendance_status = $request->attendance_status;
-           // $newEventRegistration->voluntary_donation_amount = $request->voluntary_donation_amount;
             $newEventRegistration->event_price = $request->event_price;
             $newEventRegistration->total_amount = $request->total_amount;
             $newEventRegistration->save();
@@ -714,11 +709,10 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
         }
 
         $id = $request->id;
-        $limit = $request->limit; // Get the limit value from the request, if provided
+        $limit = $request->limit;
 
         // Calculate the count of registered associations
         $countRegisteredAssociations = RegisterToAssocitationDetails::where('association_id', $id)->count();
-
         // Prepare the query to retrieve the specific association details
         $query = AssociationDetails::query()->where('id', $id)->with(['location_details',]);
         $data = $query->orderBy('id', 'DESC')->get();
@@ -738,7 +732,6 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
 
         return $this->sendResponse([
             "association_details" => $getitems,
-
             "offers_Of_association"=>$product,
             "total_registered_associations" => $countRegisteredAssociations,
         ], 'Data fetch successfully', true);
@@ -756,7 +749,7 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = NewsLetterDetails::query();
+            $query = NewsLetterDetails::query()->where('for_newsletter',$request->type);
 
             $count = $query->count();
 
@@ -796,7 +789,6 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
     }
     public function getAllNewLetterDetailsForStudent(Request $request)
     {
-
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
@@ -1096,5 +1088,34 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
 }
+    public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'position' => [ Rule::in(['Semi Qualified','Article Assistant','Industrial Trainee','Qualified'])],
+                'comments' => 'nullable',
+                'experience' => 'required',
+                'expiry_date' => 'nullable|date',
+                'job_type' => [ Rule::in(['internship', 'full_time'])],
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $user = Auth::user()->id;
+            $newVacancy = new VacancyDetails();
+            $newVacancy->position=$request->position;
+            $newVacancy->comments=$request->comments;
+            $newVacancy->experience=$request->experience;
+            $newVacancy->company_id = auth::user()->company_id;
+            $newVacancy->created_by =$user;
+		    $newVacancy->expiry_date = $request->expiry_date;
+            $newVacancy->job_type = $request->job_type;
+            $newVacancy->save();
+            return $this->sendResponse([], 'Vacancy details added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
 
 }

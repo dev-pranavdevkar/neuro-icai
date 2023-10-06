@@ -21,10 +21,10 @@ class EventDetails extends Model
     return $this->belongsTo(EventDetails::class, 'parent_event_id');
 }
 
-public function child_events()
-{
-    return $this->hasMany(EventDetails::class, 'parent_event_id');
-}
+  public function children()
+    {
+        return $this->hasMany(EventDetails::class, 'parent_event_id', 'id');
+    }
     public function event_images(){
         return $this->hasMany(EventImages::class,'event_id');
     }

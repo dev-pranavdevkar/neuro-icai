@@ -242,7 +242,8 @@ Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPass
         Route::get('getAssociationDetailsById', [AppMetaDataController::class, 'getAssociationDetailsById']);
         Route::post('addAssociationDetails', [AppMetaDataController::class, 'addAssociationDetails']);
 
-
+        //vaccancy
+         Route::post('addVacancyDetails', [AppMetaDataController::class, 'addVacancyDetails']);
         //NewsLetters
         Route::get('getAllNewsLetters', [AppMetaDataController::class, 'getAllNewsLetters']);
         Route::get('getNewsLetterDetailsById', [AppMetaDataController::class, 'getNewsLetterDetailsById']);
@@ -283,9 +284,12 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function ()
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
     Route::get('open', 'WebAuthController@open');
 
+
     Route::group(['middleware' => [ 'jwt.verify']], function () {
-   Route::post('user', [WebAuthController::class, 'getAuthenticatedUser']);
-        Route::post('closed', [WebAuthController::class, 'closed']);
+    //EventRegistration
+    Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
+    //payment verification
+    Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
     }
 
 );
