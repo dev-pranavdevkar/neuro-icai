@@ -76,12 +76,12 @@
                                         <div><a href="#">
                                             <button type="button" class="btn btn-secondary">Details</button>
                                         </a>
-                                        
+
                                         </div>
 
                                         <div>
-                                            
-                                            <a href="{{ Auth::user() ? url('/razorpay-payment') : url('/login') }}">
+
+                                            <a href="{{ Auth::user() ? route('eventDetails',$event['id']): url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 
                                                 </button>
@@ -137,7 +137,7 @@
                 <div class="contact__form__text p-4" >
                     <div class="contact__form__title">
                         <h5>{{ $event['event_name'] }}</h5>
-                       
+
                     </div>
                     <form action="#">
                         <div class="input-list">

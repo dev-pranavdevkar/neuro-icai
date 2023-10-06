@@ -141,80 +141,80 @@ public function getMembersNoticeBoard(Request $request)
        }
 }
 
-public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'event_id' => 'required|integer|exists:event_details,id',
-                'gst_no' => 'required',
-                'legal_name' => 'required',
-                'event_price' => 'required|nullable',
-                'total_amount' => 'required|nullable',
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
-            }
-            $newEventRegistration = new EventRegistration();
-            $newEventRegistration->event_id=$request->event_id;
-            $newEventRegistration->user_id=Auth::user()->id;
-            $newEventRegistration->gst_no=$request->gst_no;
-            $newEventRegistration->legal_name=$request->legal_name;
-            $newEventRegistration->attendance_status = $request->attendance_status;
-            $newEventRegistration->event_price = $request->event_price;
-            $newEventRegistration->total_amount = $request->total_amount;
-            $newEventRegistration->save();
-            if($newEventRegistration->save()){
-                $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
-                'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
-                $newEventRegistration->razorpay_id = $orderDetails->id;
-                $newEventRegistration->save();
-                $response = [];
-                $response['system_order_id']=$newEventRegistration->id;
-                $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
-                $response['razorpay_api_key']=env('R_API_KEY');
-                return $this->sendResponse($response, 'Payment Initiated Successfully',true);
-            }else{
-                return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
-            }
-
-        }
-        catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
-        }
-    }
-            public function paymentVerification(Request $request)
+    public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
         {
-        try{
-            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-                'system_order_id'=>'required|numeric',
-                'razorpay_order_id'=>'required|string',
-            ]);
-            if($validator->fails()){
-                return $this->sendError('Validation Error.', $validator->errors());
+            try {
+                $validator = Validator::make($request->all(), [
+                    'event_id' => 'required|integer|exists:event_details,id',
+                    'gst_no' => 'required',
+                    'legal_name' => 'required',
+                    'event_price' => 'required|nullable',
+                    'total_amount' => 'required|nullable',
+                ]);
+                if ($validator->fails()) {
+                    return $this->sendError('Validation Error.', $validator->errors());
+                }
+                $newEventRegistration = new EventRegistration();
+                $newEventRegistration->event_id=$request->event_id;
+                $newEventRegistration->user_id=Auth::user()->id;
+                $newEventRegistration->gst_no=$request->gst_no;
+                $newEventRegistration->legal_name=$request->legal_name;
+                $newEventRegistration->attendance_status = $request->attendance_status;
+                $newEventRegistration->event_price = $request->event_price;
+                $newEventRegistration->total_amount = $request->total_amount;
+                $newEventRegistration->save();
+                if($newEventRegistration->save()){
+                    $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+                    $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
+                    $newEventRegistration->razorpay_id = $orderDetails->id;
+                    $newEventRegistration->save();
+                    $response = [];
+                    $response['system_order_id']=$newEventRegistration->id;
+                    $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
+                    $response['razorpay_api_key']=env('R_API_KEY');
+                    return $this->sendResponse($response, 'Payment Initiated Successfully',true);
+                }else{
+                    return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
+                }
+
             }
-            $payment = EventRegistration::where('razorpay_id',$request->razorpay_order_id)->find($request->system_order_id);
-            if(is_null($payment)){
-                return $this->sendResponse([], 'Wrong Payment Id',false);
+            catch (\Exception $e) {
+                return $this->sendError('Something went wrong', $e->getTrace(), 413);
             }
-            if($payment->payment_status=="paid"){
-                return $this->sendResponse([], 'Payment Already Done',false);
-            }
-            $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-            $razorpay_order = $api->order->fetch($request->razorpay_order_id);
-            if($razorpay_order->status == 'paid' || true){
-                $payment->payment_status="paid";
-                $payment->save();
-            }else {
-                $payment->payment_status="unpaid";
-                $payment->save();
-                return $this->sendResponse([], 'Payment Pending',false);
-            }
-            return $this->sendResponse([], 'Event registration successfully',false);
-        }catch (\Exception $e){
-            return $this->sendError( $e->getMessage(),$e->getTrace(),413);
         }
-    }
+    public function paymentVerification(Request $request)
+            {
+            try{
+                $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                    'system_order_id'=>'required|numeric',
+                    'razorpay_order_id'=>'required|string',
+                ]);
+                if($validator->fails()){
+                    return $this->sendError('Validation Error.', $validator->errors());
+                }
+                $payment = EventRegistration::where('razorpay_id',$request->razorpay_order_id)->find($request->system_order_id);
+                if(is_null($payment)){
+                    return $this->sendResponse([], 'Wrong Payment Id',false);
+                }
+                if($payment->payment_status=="paid"){
+                    return $this->sendResponse([], 'Payment Already Done',false);
+                }
+                $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+                $razorpay_order = $api->order->fetch($request->razorpay_order_id);
+                if($razorpay_order->status == 'paid' || true){
+                    $payment->payment_status="paid";
+                    $payment->save();
+                }else {
+                    $payment->payment_status="unpaid";
+                    $payment->save();
+                    return $this->sendResponse([], 'Payment Pending',false);
+                }
+                return $this->sendResponse([], 'Event registration successfully',false);
+            }catch (\Exception $e){
+                return $this->sendError( $e->getMessage(),$e->getTrace(),413);
+            }
+        }
 
 
 
