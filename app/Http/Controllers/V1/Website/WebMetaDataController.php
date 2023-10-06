@@ -9,6 +9,8 @@ use App\Models\NewsLetterDetails;
 use App\Models\StudentNoticeBoard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\StudentBatches;
+use App\Models\LocationDetails;
 use DB;
 use Auth;
 use JWTAuth;
@@ -218,6 +220,123 @@ public function addEventRegistration(Request $request): \Illuminate\Http\JsonRes
 
 
 
-
+    public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+            'batch_name' => 'required|nullable',
+            'fees' => 'required|nullable',
+          //   'location_id' => 'required|nullable',
+            'end_date' => 'required|nullable',
+            'address_line_1' => 'required|nullable|string|max:255',
+            'pincode' => 'required|nullable|string|max:255',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $NewLocationDetails = new LocationDetails();
+            $NewLocationDetails->address_line_1=$request->address_line_1;
+            $NewLocationDetails->pincode=$request->pincode;
+            $NewLocationDetails->save();
+            $newDetails = new StudentBatches;
+            $newDetails->location_id=$NewLocationDetails->id;
+            $newDetails->batch_name = $request->batch_name;
+            $newDetails->fees = $request->fees;
+            $newDetails->start_date=$request->start_date;
+            $newDetails->end_date=$request->end_date;
+            $newDetails->batch_discription = $request->batch_discription;
+            $newDetails->batch_cut_off_date = $request->batch_cut_off_date;
+            $newDetails->batch_address = $request->batch_address;
+            $newDetails->early_bird_date=$request->early_bird_date;
+            $newDetails->early_bird_fees = $request->early_bird_fees;
+            $newDetails->save();
+            return $this->sendResponse([],' Student batches added successfully.', true);
+          }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
+  public function getStudentBatches(Request $request)
+   {
+      try{
+          $validator = Validator::make($request->all(), [
+              'pageNo'=>'numeric',
+              'limit'=>'numeric',
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors(),400);
+          }
+          $currentDate = carbon::now('Asia/Kolkata');
+              $now = carbon::now();
+          $query = StudentBatches::query()->with('location_details');
+          if ($request->has('batch_name')) {
+                  $query = $query->where('batch_name', 'like', '%' . $request->batch_name. '%');
+          }
+          if ($request->has('start_date')) {
+                  $query = $query->where('start_date', 'like', '%' . $request->start_date. '%');
+          }
+          if ($request->has('end_date')) {
+                  $query = $query->where('end_date', 'like', '%' . $request->end_date. '%');
+          }
+          if ($request->has('fees')) {
+                  $query = $query->where('fees', 'like', '%' . $request->fees. '%');
+          }
+          if ($request->has('address_line_1')) {
+              $searchTerm = $request->input('address_line_1');
+              $query = $query->whereHas('location_details', function ($query) use ($searchTerm) {
+              $query->where('address_line_1', 'like', '%' . $searchTerm . '%');
+              });
+          }
+              if ($request->has('filter')) {
+                  $filter = $request->filter;
+                  if ($filter === 'upcoming') {
+                      $query = $query->where('end_date', '>', $now);
+                  }
+                  if ($filter === 'past') {
+                      $query = $query->where('end_date', '<', $now);
+                  }
+                  if ($filter === 'ongoing') {
+                      $query->where('start_date', '<=', $currentDate)
+                          ->where('end_date', '>=', $currentDate);
+                  }
+              }
+          $count=$query->count();
+          if($request->has('pageNo') && $request->has('limit')){
+              $limit = $request->limit;
+              $pageNo = $request->pageNo;
+              $skip = $limit*$pageNo;
+              $query= $query->skip($skip)->limit($limit);
+          }
+          $data = $query->get();
+          if(count($data)>0){
+              $response['data'] =  $data;
+              $response['count']=$count;
+              return $this->sendResponse($response,'Data Fetched Successfully', true);
+          }else{
+              return $this->sendResponse([],'No Data Available',false);
+          }
+      }catch (\Exception $e){
+              return $this->sendError($e->getMessage(), $e->getTrace(),500);
+          }
+  }
+  public function getStudentBatchesById(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:student_batches,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getitems = StudentBatches::query()->with('location_details')->where('id', $request->id)->first();
+  
+            return $this->sendResponse(["student_batch" => $getitems], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+  
 
 }
+
+

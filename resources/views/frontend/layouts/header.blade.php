@@ -246,9 +246,9 @@
                     <div class="header__nav ">
                         <nav class="header__menu ml-auto">
                             <ul>
-                                <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li>
-                                <li class="active"><a href="{{ url('/') }}">Home</a></li>
-                                <li><a href="{{ url('/') }}">About Us </a>
+                                {{-- <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li> --}}
+                                <li class="{{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
+                                <li class="{{ request()->is('about*') ? 'active' : '' }}"><a href="{{ url('/') }}">About Us </a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/about/aboutPuneBranch') }}"> About Pune Branch </a></li>
                                         <li><a href="{{ url('/about/chairmanCommunique') }}"> Chairman Communique </a>
@@ -275,7 +275,7 @@
                                                 'members',
                                                 Auth::user()->roles->pluck('name')->toArray())))
                                 
-                                <li><a href="{{ url('/') }}">Members</a>
+                                <li class="{{ request()->is('members*') ? 'active' : '' }}"><a href="{{ url('/') }}">Members</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('members/puneMembersNewsletter') }}"> Pune Member's
                                                 Newsletter </a></li>
@@ -295,7 +295,7 @@
 
                                 @if (!Auth::user() || (Auth::user() && in_array('student', Auth::user()->roles->pluck('name')->toArray())))
                          
-                                <li><a href="{{ url('/') }}">Students</a>
+                                <li class="{{ request()->is('students*') ? 'active' : '' }}"><a href="{{ url('/') }}">Students</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/students/aboutPuneWICASA') }}"> About Pune WICASA
                                             </a></li>
@@ -317,14 +317,14 @@
 
 
 
-                                <li><a href="{{ url('/') }}">Events</a>
+                                <li class="{{ request()->is('events*') ? 'active' : '' }}"><a href="{{ url('/') }}">Events</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/events/upcommingEvents') }}"> Upcomming Events </a></li>
                                         <li><a href="{{ url('/events/pastEvents') }}"> Past Events </a></li>
 
                                     </ul>
                                 </li>
-                                <li><a href="{{ url('/vacancies/viewVacancies') }}">Vacancies</a>
+                                <li class="{{ request()->is('vacancies*') ? 'active' : '' }}"><a href="{{ url('/vacancies/viewVacancies') }}">Vacancies</a>
                                     @if (Auth::user())
                                         <ul class="dropdown">
                                             <li><a href="{{ url('/vacancies/viewVacancies') }}"> View Vacancies </a>
@@ -335,16 +335,16 @@
                                         </ul>
                                     @endif
                                 </li>
-                                <li><a href="{{ url('/') }}">Downloads</a>
+                                <li class="{{ request()->is('downloads*') ? 'active' : '' }}"><a href="{{ url('/') }}">Downloads</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/presentations') }}"> Presentations </a></li>
+                                        <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
 
                                     </ul>
                                 </li>
 
-                                <li><a href="{{ url('/contact') }}">Contact Us</a></li>
-                                <li><a href="{{ url('/help') }}">Help</a></li>
+                                <li class="{{ request()->is('contact') ? 'active' : '' }}"><a href="{{ url('/contact') }}">Contact Us</a></li>
+                                <li class="{{ request()->is('help') ? 'active' : '' }}"><a href="{{ url('/help') }}">Help</a></li>
                             </ul>
                         </nav>
                         <div class="header__search">

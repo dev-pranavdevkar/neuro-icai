@@ -61,7 +61,19 @@
                                             <tr>
 
                                                 <th scope="col">Event Fee:</th>
-                                                <td scope="col"> ₹ {{ $event['event_fee'] }}</td>
+                                                <td scope="col">
+                                                    ₹ @if (auth()->check())
+                                                        @if (auth()->user()->role == 'members')
+                                                            {{ $event['price_for_members'] }}
+                                                        @elseif(auth()->user()->role == 'student')
+                                                            {{ $event['price_for_students'] }}
+                                                        @endif
+                                                    @else
+                                                        {{ $event['event_fee'] }}
+                                                    @endif
+
+
+                                                </td>
                                             </tr>
                                             <tr>
 
@@ -74,13 +86,13 @@
                                     </table>
                                     <div class="d-flex justify-content-between">
                                         <div><a href="#">
-                                            <button type="button" class="btn btn-secondary">Details</button>
-                                        </a>
-                                        
+                                                <button type="button" class="btn btn-secondary">Details</button>
+                                            </a>
+
                                         </div>
 
                                         <div>
-                                            
+
                                             <a href="{{ Auth::user() ? url('/razorpay-payment') : url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 

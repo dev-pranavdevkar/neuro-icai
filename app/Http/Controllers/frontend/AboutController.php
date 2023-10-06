@@ -1,16 +1,27 @@
 <?php
 
 namespace App\Http\Controllers\frontend;
-
+use App\Http\Controllers\V1\Website\WebMetaDataController; 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class AboutController extends Controller
 {
-    public function aboutPuneBranch()
+    public function aboutPuneBranch(Request $request)
     {
-        return view('frontend.about.aboutPuneBranch');
+        // Create an instance of WebMetaDataController
+        $webMetaDataController = new WebMetaDataController();
+        
+        // Call the getLatestUpdate method to get the JsonResponse
+        $jsonResponse = $webMetaDataController->getLatestUpdate($request);
+    
+        // Extract the data from the JsonResponse
+        $latestUpdate = $jsonResponse->getData();
+    
+        // Pass the data to the view
+        return view('frontend.about.aboutPuneBranch', compact('latestUpdate'));
     }
+    
     
     public function annualReports()
     {

@@ -289,18 +289,14 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
     Route::get('open', 'WebAuthController@open');
 
-    Route::group(['middleware' => [ 'jwt.verify']], function () {
+    Route::group(['middleware' => ['jwt.verify']], function () {
         //EventRegistration
-    Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
-    //payment verification
-    Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
+        Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
+        //payment verification
+        Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
+        // Student Batches
+        Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
+        Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
+        Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
     });
-
-        
-
-    });
-
-    
-
-    
-
+});

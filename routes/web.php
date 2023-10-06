@@ -98,7 +98,7 @@ Route::get('/vacancies/submitVacancies',[VacanciesController::class, 'submitVaca
 Route::get('/vacancies/viewVacancies',[VacanciesController::class, 'viewVacancies']);
 
 // Downloads Dropdown Pages
-Route::get('/downloadsdownloads',[DownloadsController::class, 'downloads']);
+Route::get('/downloads/presentations',[DownloadsController::class, 'presentations']);
 
 
 
