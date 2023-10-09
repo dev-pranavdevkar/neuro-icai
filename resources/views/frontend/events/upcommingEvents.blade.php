@@ -83,15 +83,13 @@
                                         </tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
-                                        <div><a href="#">
-                                                <button type="button" class="btn btn-secondary">Details</button>
-                                            </a>
-
+                                        <div>
+                                            <a href="{{route('eventDetails',['id'=>$event->id])}}"  class="btn btn-secondary">Details</a>
                                         </div>
 
                                         <div>
 
-                                            <a href="{{ Auth::user() ? url('/razorpay-payment') : url('/login') }}">
+                                            <a href="{{ Auth::user() ? route('eventDetails',['id'=>$event->id]) : url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 
                                                 </button>

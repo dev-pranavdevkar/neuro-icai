@@ -195,20 +195,7 @@
                                                                  href="{{ url('/login') }}">Login</a> / <a class="text-white"
                                                                                                            href="{{ url('/signup') }}">Register</a>
                                 @endif
-                                <script>
-                                    $(document).ready(function() {
-                                        // Show/hide the dropdown menu when clicking on the user name
-                                        $('#profile-dropdown').click(function(e) {
-                                            e.stopPropagation(); // Prevent the document click event from closing the menu
-                                            $('#profile-dropdown-menu').toggle();
-                                        });
 
-                                        // Close the dropdown menu when clicking anywhere outside of it
-                                        $(document).click(function() {
-                                            $('#profile-dropdown-menu').hide();
-                                        });
-                                    });
-                                </script>
 
                             </li>
 
@@ -345,7 +332,6 @@
         </div>
     </div>
 </header>
-@include('frontend.layouts.header')
 
 @yield('main-container')
 <!-- Footer Section Begin -->
@@ -617,6 +603,20 @@
 <script src="{{ url('frontend/js/main.js') }}"></script>
 <script src="{{ url('frontend/js/eyeicon.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Show/hide the dropdown menu when clicking on the user name
+        $('#profile-dropdown').click(function(e) {
+            e.stopPropagation(); // Prevent the document click event from closing the menu
+            $('#profile-dropdown-menu').toggle();
+        });
+
+        // Close the dropdown menu when clicking anywhere outside of it
+        $(document).click(function() {
+            $('#profile-dropdown-menu').hide();
+        });
+    });
+</script>
 @yield('js')
 
 </body>

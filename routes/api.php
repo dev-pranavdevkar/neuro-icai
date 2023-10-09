@@ -10,7 +10,7 @@ use App\Http\Controllers\V1\App\AppMetaDataController;
 use App\Http\Controllers\V1\Admin\DashboardController;
 use App\Http\Controllers\V1\Website\WebAuthController;
 use App\Http\Controllers\V1\Website\WebMetaDataController;
-use Auth;
+//use Auth;
 /*
 |--------------------------------------------------------------------------
 | API Routes

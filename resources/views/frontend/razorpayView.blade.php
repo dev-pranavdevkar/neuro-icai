@@ -10,7 +10,12 @@
                      <span>Location: {{ $eventDetails['location_details']['city'] }}</span>,
                      <span>{{ $eventDetails['location_details']['state'] }}</span>
                  </div>
+                @if(Auth::user())
                 <button id="payNow" class="btn btn-primary" data-event="{{$eventDetails->id}}">Pay Now</button>
+                @else
+                    <a href="{{route('login')}}" class="btn btn-primary" >Login To Register</a>
+
+                @endif
             </div>
 
 
