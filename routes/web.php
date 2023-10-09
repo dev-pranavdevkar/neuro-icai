@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\frontend\HomeController;
-
 use App\Http\Controllers\frontend\LoginController;
 use  App\Http\Controllers\frontend\SignupController;
 use App\Http\Controllers\frontend\ForgetPasswordController;
@@ -14,6 +13,7 @@ use App\Http\Controllers\frontend\EventsController;
 use App\Http\Controllers\frontend\VacanciesController;
 use App\Http\Controllers\frontend\DownloadsController;
 use App\Http\Controllers\frontend\ProfileController;
+use App\Http\Controllers\frontend\RazorpayPaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ Route::get('/members/updatesForMembers/updatesDetails',[MembersController::class
 Route::get('/members/subscribeForSMSAlerts',[MembersController::class, 'subscribeForSMSAlerts']);
 Route::get('/members/membersFAQ',[MembersController::class, 'membersFAQ']);
 Route::get('/members/CPEStudyCircles',[MembersController::class, 'CPEStudyCircles']);
-Route::get('/members/MCMinutes',[MembersController::class, 'MCMinutes']);
+
 
 
 // Students Dropdown Pages
@@ -101,27 +101,6 @@ Route::get('/vacancies/viewVacancies',[VacanciesController::class, 'viewVacancie
 Route::get('/downloadsdownloads',[DownloadsController::class, 'downloads']);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Route::get('/login',[LoginController::class, 'index']);
 Route::get('/signup',[SignupController::class, 'index']);
 Route::get('/forgetPassword',[ForgetPasswordController::class, 'index']);
@@ -133,6 +112,9 @@ Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPas
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('dashboard',[WebAuthController::class,'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/event-details/{id}',[HomeController::class,'eventDetails'])->name('eventDetails');
+Route::post('/eventRegister',[HomeController::class,'eventRegister'])->name('eventRegister')->middleware(['auth']);
+Route::post('/checkOrderRazorpayPaymentStatus',[HomeController::class,'checkOrderRazorpayPaymentStatus'])->name('checkOrderRazorpayPaymentStatus');
 
 // ===========Profile Routes ====================
 Route::get('/profile/digitalIdCard',[ProfileController::class, 'digitalIdCard']);
@@ -140,3 +122,6 @@ Route::get('/profile/editProfile',[ProfileController::class, 'editProfile']);
 Route::get('/profile/changePassword',[ProfileController::class, 'changePassword']);
 
 
+// =============Rozerpay ==============
+Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'index']);
+Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'store'])->name('razorpay.payment.store');

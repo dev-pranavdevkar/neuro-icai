@@ -568,6 +568,17 @@ td {
 	color: #283960;
 
 }
+.atSalesCounter .card{
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	border: none;
+	padding: 2rem;
+}
+.atSalesCounter .card .card-title{
+	margin-bottom:0;
+
+}
+
+
 
 .jobcard {
 	box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
@@ -584,6 +595,38 @@ td {
 	font-size: 16px;
 	font-weight: 400;
 	color: #283960;
+}
+
+ul.fa-list-tender {
+	list-style: none;
+	padding-left: 1.5rem;
+	
+}
+
+ul.fa-list-tender li {
+	padding-bottom: 10px;
+	margin-bottom: 15px;
+	border-bottom: 1px solid rgba(18, 21, 41, 0.2);
+}
+ul.fa-list-tender li a {
+	color: #323232;
+}
+
+/* Style for list items */
+ul.fa-list-tender li::before {
+	content: "\f15c ";
+	/* Unicode character for the check icon in Font Awesome v4 */
+	font-family: "FontAwesome";
+	/* Font Awesome v4 font family */
+	font-weight: normal;
+	/* Font weight for the icon */
+	margin-right: 10px;
+	/* Space between icon and list item */
+	font-size: 18px;
+	color: #283960;
+	
+	font-weight: 300;
+
 }
 
 .loan__services__item__text .readMore:after {

@@ -305,6 +305,7 @@ class MetaDataController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
+                'event_id'=>'required|numeric|exists:event_details,id'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -353,7 +354,7 @@ class MetaDataController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id' => 'required|integer|exists:table_banner,id',
+                'id' => 'required|numeric|exists:table_banner,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -773,7 +774,8 @@ class MetaDataController extends Controller
         }
         $currentDate = carbon::now('Asia/Kolkata');
             $now = carbon::now();
-        $query = EventDetails::query()->with(['location_details','event_images','event_video','event_presntation']);
+        $query = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation']);
         if ($request->has('filter')) {
             $filter = $request->filter;
             if ($filter === 'upcoming') {
@@ -804,67 +806,13 @@ class MetaDataController extends Controller
             $query = $query->skip($skip)->limit($limit);
         }
             $data = $query->orderBy('id', 'DESC')->get();
-            $eventMap = [];
 
+             if (count($data) > 0) {
             foreach ($data as $event) {
-                $eventId = $event->id;
-
-                // Initialize the 'children' property for each event
-                $event->children = [];
-
-                // Add the event to the event map using its ID as the key
-                $eventMap[$eventId] = $event;
+                $event->is_series_event = count($event->children) > 0;
+                $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
             }
-
-            $data = $query->orderBy('id', 'DESC')->get();
-
-            // Create an associative array to map events by their IDs
-            $eventMap = [];
-
-            foreach ($data as $event) {
-                $eventId = $event->id;
-
-                // Initialize the 'children' property for each event
-                $eventMap[$eventId] = [
-                    'event' => $event,
-                    'children' => [],
-                ];
-            }
-
-            // Create an array to hold the top-level events (events with null parent_event_id)
-            $eventsData = [];
-
-            foreach ($data as $event) {
-                $eventId = $event->id;
-                $parentEventId = $event->parent_event_id;
-
-                if ($parentEventId === null) {
-                    // This is a top-level event, add it directly to the $eventsData array
-                    $eventsData[] = $event;
-                } else {
-                    // This is a child event, add it to its parent's 'children' property
-                    if (isset($eventMap[$parentEventId])) {
-                        $eventMap[$parentEventId]['children'][] = $event;
-                    }
-                }
-            }
-
-            // Manually create a new array with the desired structure
-            $transformedEventsData = [];
-
-            foreach ($eventsData as $event) {
-                $eventId = $event->id;
-
-                // If it has children, include them in the structure
-                if (!empty($eventMap[$eventId]['children'])) {
-                    $event->children = $eventMap[$eventId]['children'];
-                }
-
-                $transformedEventsData[] = $event;
-            }
-
-            if (count($transformedEventsData) > 0) {
-                $response['event_details'] = $transformedEventsData;
+                $response['event_details'] = $data;
                 $response['count'] = $count;
                 return $this->sendResponse($response, 'Data Fetched Successfully', true);
             } else {
@@ -1792,18 +1740,11 @@ class MetaDataController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                // 'ca_firm_name' => 'required',
-                // 'position'=>'required',
+
                 'position' => [ Rule::in(['Semi Qualified','Article Assistant','Industrial Trainee','Qualified'])],
                 'comments' => 'nullable',
-
                 'company_id' => 'required|integer|exists:company,id',
-                // 'company_email' => 'required',
-                // 'company_contact_no' => 'required',
                 'experience' => 'required',
-                // 'location_id' => 'required',
-                // 'created_by_vacancy_user_id' => 'required',
-                // 'created_by' => 'required',
                 'expiry_date' => 'nullable|date',
                 'address_line_1' => 'required|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
@@ -1820,14 +1761,10 @@ class MetaDataController extends Controller
             $NewLocationDetails->save();
             $newVacancy = new VacancyDetails();
             $newVacancy->location_id=$NewLocationDetails->id;
-           // $newVacancy->ca_firm_name=$request->ca_firm_name;
             $newVacancy->position=$request->position;
             $newVacancy->comments=$request->comments;
-            // $newVacancy->company_email=$request->company_email;
-            // $newVacancy->company_contact_no=$request->company_contact_no;
             $newVacancy->experience=$request->experience;
             $newVacancy->location_id=$request->location_id;
-            // $newVacancy->created_by_vacancy_user_id=$user;
             $newVacancy->company_id = $request->company_id;
             $newVacancy->created_by = $request->created_by;
 		    $newVacancy->expiry_date = $request->expiry_date;
@@ -1873,16 +1810,18 @@ class MetaDataController extends Controller
                 $Position = $request->input('position');
                 $query->where('position', 'LIKE', "%{$Position}%");
             }
+            if ($request->has('experience')) {
+                $Experience = $request->input('experience');
+                $query->where('experience', 'LIKE', "%{$Experience}%");
+            }
+        if ($request->has('company_email')) {
+            $email = $request->input('company_email');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($email) {
+                $companyQuery->where('company_email', 'LIKE', "%{$email}%");
+            });
+        }
 
-            // if ($request->has('city')) {
-            //     $locationId = $request->input('city');
-            //     $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-            //         $locationQuery->where(function ($query) use ($locationId) {
-            //             $query->where('city', 'LIKE', "%{$locationId}%");
-            //                 // ->orWhere('city', 'LIKE', "%{$locationId}%");
-            //         });
-            //     });
-            // }
+
             $currentDate = date('Y-m-d');
             $query->where('expiry_date', '>=', $currentDate);
             $count = $query->count();
@@ -1913,7 +1852,7 @@ class MetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
 
-            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details','user_details'])->first();
+            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details','user_details','companyDetails'])->first();
             return $this->sendResponse(["vacancy_details" => $getitems], 'Data fetch successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
@@ -1929,51 +1868,22 @@ class MetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $editVacancy = VacancyDetails::query()->where('id', $request->id)->first();
-
-            if ($request->has('ca_firm_name')) {
-                $editVacancy->ca_firm_name=$request->ca_firm_name;
-            }
-              if ($request->has('position')) {
+            if ($request->has('position')) {
             $editVacancy->position = $request->position;
             }
             if ($request->has('comments')) {
                 $editVacancy->comments=$request->comments;
             }
-            if ($request->has('company_email')) {
-                $editVacancy->company_email=$request->company_email;
-            }
-            if ($request->has('company_contact_no')) {
-                $editVacancy->company_contact_no=$request->company_contact_no;
-            }
             if ($request->has('experience')) {
                 $editVacancy->experience=$request->experience;
             }
-            if ($request->has('location_id')) {
-                $editVacancy->location_id=$request->location_id;
+            if ($request->has('job_type')) {
+                $editVacancy->job_type=$request->job_type;
             }
-            // if ($request->has('created_by_vacancy_user_id')) {
-            //     $editVacancy->created_by_vacancy_user_id=$request->created_by_vacancy_user_id;
-            // }
-            // if($request->has('created_by')){
-			// 	$editVacancy->created_by = $request->created_by;
-			// }
 			if($request->has('expiry_date')){
 				$editVacancy->expiry_date = $request->expiry_date;
 			}
-            // echo $editVacancy;
-
             $editVacancy->save();
-            // echo $editVacancy;
-            $editLocation = LocationDetails::query()->where('id', $editVacancy->location_id)->first();
-            // echo $editLocation;
-                if ($request->has('address_line_1')) {
-                $editLocation->address_line_1=$request->address_line_1;
-            }
-
-            if ($request->has('pincode')) {
-                $editLocation->pincode=$request->pincode;
-            }
-            $editLocation->save();
             return $this->sendResponse([], 'Vacancy Details updated successfully');
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
@@ -3300,6 +3210,30 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             }
             $query = Company::query();
             $count = $query->count();
+            if ($request->has('firm_name')) {
+                $firmName = $request->input('firm_name');
+                $query->where('firm_name', 'LIKE', "%{$firmName}%");
+            }
+            if ($request->has('contact_person_name')) {
+                $contactPersonName = $request->input('contact_person_name');
+                $query->where('contact_person_name', 'LIKE', "%{$contactPersonName}%");
+            }
+            if ($request->has('contact_person_number')) {
+                $contactPersonNumber = $request->input('contact_person_number');
+                $query->where('contact_person_number', 'LIKE', "%{$contactPersonNumber}%");
+            }
+            if ($request->has('address')) {
+                $Address = $request->input('address');
+                $query->where('address', 'LIKE', "%{$Address}%");
+            }
+            if ($request->has('pincode')) {
+                $Pincode = $request->input('pincode');
+                $query->where('pincode', 'LIKE', "%{$Pincode}%");
+            }
+            if ($request->has('company_email')) {
+                $companyEmail = $request->input('company_email');
+                $query->where('company_email', 'LIKE', "%{$companyEmail}%");
+            }
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -3359,6 +3293,22 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $query = User::role('student');
+            if ($request->has('name')) {
+                $FirstName = $request->input('name');
+                $query->where('name', 'LIKE', "%{$FirstName}%");
+            }
+            if ($request->has('email')) {
+                $Firstemail = $request->input('email');
+                $query->where('email', 'LIKE', "%{$Firstemail}%");
+            }
+            if ($request->has('last_name')) {
+                $lastName = $request->input('last_name');
+                $query->where('last_name', 'LIKE', "%{$lastName}%");
+            }
+            if ($request->has('mobile_no')) {
+                $FirstName = $request->input('mobile_no');
+                $query->where('mobile_no', 'LIKE', "%{$FirstName}%");
+            }
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -3386,7 +3336,23 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $query = User::role('member');
+            $query = User::role('members');
+            if ($request->has('name')) {
+                $FirstName = $request->input('name');
+                $query->where('name', 'LIKE', "%{$FirstName}%");
+            }
+            if ($request->has('email')) {
+                $Firstemail = $request->input('email');
+                $query->where('email', 'LIKE', "%{$Firstemail}%");
+            }
+            if ($request->has('last_name')) {
+                $lastName = $request->input('last_name');
+                $query->where('last_name', 'LIKE', "%{$lastName}%");
+            }
+            if ($request->has('mobile_no')) {
+                $FirstName = $request->input('mobile_no');
+                $query->where('mobile_no', 'LIKE', "%{$FirstName}%");
+            }
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;

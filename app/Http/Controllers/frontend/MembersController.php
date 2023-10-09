@@ -44,10 +44,7 @@ class MembersController extends Controller
     {
         return view('frontend.members.CPEStudyCircles');
     }
-    public function MCMinutes()
-    {
-        return view('frontend.members.MCMinutes');
-    }
+
 
   
 }

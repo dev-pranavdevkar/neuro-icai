@@ -71,7 +71,7 @@ class WebAuthController extends Controller
             // $response['userRoles'] = $userRoles;
             $response['assignedRoles'] = $assignedRoles;
             // To keep on signUp Page
-            return redirect()->route('login.index');
+            return redirect()->route('login');
             // return $this->sendResponse($response, 'Registered Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
@@ -99,13 +99,19 @@ class WebAuthController extends Controller
                     // return $this->sendResponse($response, 'Login Success', true);
                     return redirect('/');
                 } else {
-                    return $this->sendError('Password mismatch', [], 422);
+                    return redirect()->route('login')
+                        ->withErrors(['error' => 'Password mismatch. Please try again.']);
+
                 }
             } else {
-                return $this->sendError('User does not exist or user doesn\'t have access', [], true);
+                return redirect()->route('login')
+                    ->withErrors(['error' => 'User does not exist or user doesn\'t have access']);
+
             }
-        } catch (Exception $e) {
-            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        } catch (\Exception $e) {
+            return redirect()->route('login')
+                ->withErrors(['error' => 'Something Went Wrong'.$e->getMessage()]);
+
         }
     }
     public function forgetPassword(Request $request)
@@ -335,6 +341,6 @@ public function getAllNewLetterDetailsForStudent(Request $request)
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
 }
-  
+
 }
 
