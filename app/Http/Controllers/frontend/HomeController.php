@@ -77,6 +77,11 @@ class HomeController extends Controller
             }
             $eventDetails = EventDetails::find($request->event_id);
             $user = Auth::user();
+            $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
+                ->where('payment_status','like',"paid")->first();
+            if(!is_null($eventRegistration)){
+                return $this->sendResponse([],'You are already registered to this event',false);
+            }
             $isMember = false;
             if(in_array('members',Auth::user()->roles->pluck('name')->toArray())){
                 $isMember = true;
@@ -97,7 +102,7 @@ class HomeController extends Controller
             if($newEventRegistration->save()){
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
                 $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
-                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
+                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
@@ -114,7 +119,7 @@ class HomeController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-    public function paymentVerification(Request $request)
+    public function checkOrderRazorpayPaymentStatus(Request $request)
     {
         try{
             $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [

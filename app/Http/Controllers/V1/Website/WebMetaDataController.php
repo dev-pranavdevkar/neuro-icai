@@ -154,9 +154,15 @@ public function getMembersNoticeBoard(Request $request)
                 if ($validator->fails()) {
                     return $this->sendError('Validation Error.', $validator->errors());
                 }
+                $user = Auth::user();
+                $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
+                    ->where('payment_status','like',"paid")->first();
+                if(!is_null($eventRegistration)){
+                    return $this->sendResponse([],'You are already registered to this event',false);
+                }
                 $newEventRegistration = new EventRegistration();
                 $newEventRegistration->event_id=$request->event_id;
-                $newEventRegistration->user_id=Auth::user()->id;
+                $newEventRegistration->user_id=$user->id;
                 $newEventRegistration->gst_no=$request->gst_no;
                 $newEventRegistration->legal_name=$request->legal_name;
                 $newEventRegistration->attendance_status = $request->attendance_status;
@@ -166,7 +172,7 @@ public function getMembersNoticeBoard(Request $request)
                 if($newEventRegistration->save()){
                     $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
                     $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
-                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
+                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
                     $newEventRegistration->razorpay_id = $orderDetails->id;
                     $newEventRegistration->save();
                     $response = [];

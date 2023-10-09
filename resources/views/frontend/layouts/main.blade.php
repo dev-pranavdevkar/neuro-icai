@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ url('frontend/css/owl.carousel.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url('frontend/css/slicknav.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url('frontend/css/style.css') }}" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body>
@@ -615,6 +616,7 @@
 <script src="{{ url('frontend/js/owl.carousel.min.js') }}"></script>
 <script src="{{ url('frontend/js/main.js') }}"></script>
 <script src="{{ url('frontend/js/eyeicon.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 @yield('js')
 
 </body>

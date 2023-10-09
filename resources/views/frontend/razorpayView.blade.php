@@ -32,6 +32,10 @@
                 data: JSON.stringify(body),
                 success: function(data) {
                     console.log(data);
+                    if(!data['success']){
+                        toastr.error(data.message)
+                        return
+                    }
                     let options = {
                         "key": data.data.razorpay_api_key,
                         "name": "ICAI Pune",
@@ -81,8 +85,8 @@
             dataToSend.url="{!! route("checkOrderRazorpayPaymentStatus") !!}";
             dataToSend.requestType='POST';
             dataToSend.data={
-                payment_gateway_order_id,
-                system_id,
+                razorpay_order_id:payment_gateway_order_id,
+                system_order_id:system_id,
                 "_token":csrf_token
             };
             $.ajax({
@@ -92,13 +96,19 @@
                 data: JSON.stringify(dataToSend.data),
                 success: function(data) {
                     console.log(data);
+                    if(data['success']){
+                        toastr.success('You have registered successfully. Please go to my events section.');
+                    }
+                    toastr.error(data.message)
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    toastr.error(data.message)
                     // Handle errors here
                 }
 
 
         }
+            )}
     </script>
 @endsection

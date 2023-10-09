@@ -113,7 +113,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('dashboard',[WebAuthController::class,'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/event-details/{id}',[HomeController::class,'eventDetails'])->name('eventDetails');
-Route::post('/eventRegister',[HomeController::class,'eventRegister'])->name('eventRegister');
+Route::post('/eventRegister',[HomeController::class,'eventRegister'])->name('eventRegister')->middleware(['auth']);
 Route::post('/checkOrderRazorpayPaymentStatus',[HomeController::class,'checkOrderRazorpayPaymentStatus'])->name('checkOrderRazorpayPaymentStatus');
 
 // ===========Profile Routes ====================
