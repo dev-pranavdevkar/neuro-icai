@@ -1,1 +1,3 @@
-<h1>Hello Its Event Details</h1>
+<h1>
+    Hello Its Event Details
+</h1>
