@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\StudentBatches;
 use App\Models\LocationDetails;
+use App\Models\EventPresentationVideo;
+use App\Models\EventImages;
+use App\Models\EventPresentationPdf;
+
 use DB;
 use Auth;
 use JWTAuth;
@@ -342,7 +346,42 @@ public function getMembersNoticeBoard(Request $request)
         }
     }
   
+    public function getEventDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:event_details,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
 
+            $getEvent = EventDetails::query()->where('id', $request->id)->with(['location_details'])->first();
+            if($getEvent['id']!=null){
+                    $product=EventPresentationVideo::query()->where('event_id',$getEvent['id'])
+                    ->get();
+                    $getEvent['event_video']=$product;
+            }
+            if($getEvent['id']!=null){
+                    $product=EventImages::query()->where('event_id',$getEvent['id'])
+                    ->get();
+                    $getEvent['event_images']=$product;
+            }
+            if($getEvent['id']!=null){
+                    $product=EventPresentationPdf::query()->where('event_id',$getEvent['id'])
+                    ->get();
+                    $getEvent['event_prsentation']=$product;
+                }
+
+            return $this->sendResponse([
+                 "event_details" => $getEvent,
+                ], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
 }
+
+
 
 

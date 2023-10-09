@@ -92,6 +92,7 @@ Route::get('/students/studentFAQs',[StudentsController::class, 'studentFAQs']);
 // Events Dropdown Pages
 Route::get('/events/pastEvents',[EventsController::class, 'pastEvents']);
 Route::get('/events/upcommingEvents',[EventsController::class, 'upcommingEvents']);
+Route::get('/eventsDetails/{id}', [EventsController::class, 'eventDetails']);
 
 // Vacancies Dropdown Pages
 Route::get('/vacancies/submitVacancies',[VacanciesController::class, 'submitVacancies']);
