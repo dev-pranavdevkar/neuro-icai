@@ -5,6 +5,7 @@ namespace App\Http\Controllers\frontend;
 use App\Http\Controllers\Controller;
 use App\Models\NewsLetterDetails;
 use Illuminate\Http\Request;
+use App\Models\StudentNoticeBoard;
 
 class StudentsController extends Controller
 {
@@ -25,7 +26,8 @@ class StudentsController extends Controller
 
     public function studentsNoticeboard()
     {
-        return view('frontend.students.studentsNoticeboard');
+        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
+        return view('frontend.students.studentsNoticeboard' , compact('studentNoticeBoard'));
     }
 
     public function subscribeForSMSAlerts()

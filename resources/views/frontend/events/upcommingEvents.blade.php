@@ -40,48 +40,58 @@
                                             <tr>
 
                                                 <th scope="col">Event Start Date:</th>
-                                                <td scope="col">{{ $event['event_start_date'] }}</td>
+                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-M-Y') }}</td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event End Date:</th>
-                                                <td scope="col"> {{ $event['event_end_date'] }}</td>
+                                                <td scope="col"> {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-M-Y') }}</td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event Time:</th>
-                                                <td scope="col">10:00 AM To 06:00 PM</td>
+                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }} To 06:00 PM</td>
                                             </tr>
 
                                             <tr>
 
                                                 <th scope="col">Cut off Date:</th>
-                                                <td scope="col">{{ $event['event_cut_off_date'] }} 10:00 AM</td>
+                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_cut_off_date'])->format('d-M-Y h:i A') }}</td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event Fee:</th>
-                                                <td scope="col"> ₹ {{ $event['event_fee'] }}</td>
+                                                <td scope="col">
+
+                                                    <span>For Members: ₹ {{ $event['price_for_members'] }}</span><br>
+
+                                                    <span>For Students: ₹ {{ $event['price_for_students'] }} </span><br>
+                                                    <span>For Others: ₹ {{ $event['event_fee'] }} </span><br>
+
+                                                </td>
+
+
+
                                             </tr>
-                                            <tr>
+                                            {{-- <tr>
 
                                                 <th scope="col">Brochure:</th>
                                                 <td scope="col"> <a href="{{ $event['broacher_pdf'] }}">Click Here To
                                                         Download </a></td>
-                                            </tr>
+                                            </tr> --}}
 
                                         </tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
                                         <div><a href="#">
-                                            <button type="button" class="btn btn-secondary">Details</button>
-                                        </a>
+                                                <button type="button" class="btn btn-secondary">Details</button>
+                                            </a>
 
                                         </div>
 
                                         <div>
 
-                                            <a href="{{ Auth::user() ? route('eventDetails',$event['id']): url('/login') }}">
+                                            <a href="{{ Auth::user() ? url('/razorpay-payment') : url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 
                                                 </button>
@@ -106,8 +116,6 @@
 
     </section>
     <!-- Upcomming Events Section End -->
-
-
 @endsection
 
 

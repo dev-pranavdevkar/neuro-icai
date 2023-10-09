@@ -10,7 +10,7 @@ use App\Http\Controllers\V1\App\AppMetaDataController;
 use App\Http\Controllers\V1\Admin\DashboardController;
 use App\Http\Controllers\V1\Website\WebAuthController;
 use App\Http\Controllers\V1\Website\WebMetaDataController;
-use App\Http\Controllers\Auth;
+use Auth;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -284,18 +284,23 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
     Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
     Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
 
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
     Route::get('open', 'WebAuthController@open');
 
-
-    Route::group(['middleware' => [ 'jwt.verify']], function () {
+    Route::group(['middleware' => ['jwt.verify']], function () {
         //EventRegistration
-    Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
-    //payment verification
-    Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
+        Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
+        //payment verification
+        Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
+        // Student Batches
+        Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
+        Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
+        Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+
     });
 });
 

@@ -1,7 +1,7 @@
 @extends('frontend.layouts.main')
 @section('main-container')
-     <!-- Breadcrumb Section Begin -->
-     <div class="breadcrumb-option set-bg" data-setbg="{{ url('frontend/img/breadcrumb/breadcrumb-bg.jpg') }}">
+    <!-- Breadcrumb Section Begin -->
+    <div class="breadcrumb-option set-bg" data-setbg="{{ url('frontend/img/breadcrumb/breadcrumb-bg.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="col-lg-5">
                         <div class="about__img">
-                            <img src="{{url('frontend/img/about/i-love-icai.jpg') }}" alt="">
+                            <img src="{{ url('frontend/img/about/i-love-icai.jpg') }}" alt="">
                             {{-- <a href="https://www.youtube.com/watch?v=RpvAmG1NNN0"
                                 class="play-btn video-popup"><img src="{{url('frontend/img/about/video-play.png') }}" alt="">
                             </a> --}}
@@ -75,4 +75,27 @@
         </div>
     </section>
     <!-- About End -->
- @endsection
+
+    @if (!empty($latestUpdates['data']['latest_update']))
+
+    <div class="latest-updates">
+        <h2>Latest Updates:</h2>
+        <ul>
+            {{-- Loop through the 'latest_update' data --}}
+            @foreach ($latestUpdates['data']['latest_update'] as $update)
+                <li>
+                    {{-- Display relevant update information --}}
+                    Type: {{ $update['type'] }}
+                    Title: {{ $update['title'] }}
+                    {{-- Add other properties based on your data structure --}}
+                </li>
+            @endforeach
+        </ul>
+    </div>
+
+@else
+    {{-- If no 'latest_update' available --}}
+    <h1>No latest updates available.</h1>
+@endif
+
+@endsection

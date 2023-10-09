@@ -933,6 +933,10 @@
     </div> --}}
 
     {{-- ---------------------- --}}
+{{-- Check if eventDetails is set and has data --}}
+
+
+{{-- Repeat similar blocks for other sections (associationDetails, studentNoticeBoard, etc.) --}}
 
 
 @endsection
