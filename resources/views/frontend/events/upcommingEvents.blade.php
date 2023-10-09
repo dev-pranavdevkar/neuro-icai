@@ -62,16 +62,11 @@
 
                                                 <th scope="col">Event Fee:</th>
                                                 <td scope="col">
-                                                    ₹ @if (auth()->check())
-                                                        @if (auth()->user()->role == 'members')
-                                                            {{ $event['price_for_members'] }}
-                                                        @elseif(auth()->user()->role == 'student')
-                                                            {{ $event['price_for_students'] }}
-                                                        @endif
-                                                    @else
-                                                        {{ $event['event_fee'] }}
-                                                    @endif
 
+                                                    <span>For Members: ₹ {{ $event['price_for_members'] }}</span><br>
+
+                                                    <span>For Students: ₹ {{ $event['price_for_students'] }} </span><br>
+                                                    <span>For Others: ₹ {{ $event['event_fee'] }} </span><br>
 
                                                 </td>
                                             </tr>
@@ -86,14 +81,14 @@
                                     </table>
                                     <div class="d-flex justify-content-between">
                                         <div><a href="#">
-                                                <button type="button" class="btn btn-secondary">Details</button>
-                                            </a>
+                                            <button type="button" class="btn btn-secondary">Details</button>
+                                        </a>
 
                                         </div>
 
                                         <div>
 
-                                            <a href="{{ Auth::user() ? url('/razorpay-payment') : url('/login') }}">
+                                            <a href="{{ Auth::user() ? route('eventDetails',$event['id']): url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 
                                                 </button>
@@ -149,7 +144,7 @@
                 <div class="contact__form__text p-4" >
                     <div class="contact__form__title">
                         <h5>{{ $event['event_name'] }}</h5>
-                       
+
                     </div>
                     <form action="#">
                         <div class="input-list">

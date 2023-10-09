@@ -7,11 +7,19 @@
                 <div class="col-lg-5">
                     <div class="hero__form">
                         <h3>Login</h3>
-
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <form id="loginForm" action="{{ route('userLogin') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf <!-- CSRF token -->
-                          
+
                             <div class="input-full-width">
                                 <p>Username/Email Id</p>
                                 <input name="email" type="text">
@@ -34,19 +42,19 @@
                                 <p> Don't have an account? <a class="text-primery" href="/signup">Sign Up</a></p>
                                 <p><a class="text-primery" href="/forgetPassword">Forgot Password</a></p>
                             </div>
-                        
+
                         </form>
-                  
+
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-2">
-                
+
                 </div>
             </div>
         </div>
     </section>
-   
 
 
-    
+
+
     @endsection
