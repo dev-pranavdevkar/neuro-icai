@@ -456,101 +456,101 @@
         </div>
     </section>
     <!-- Association Section End -->
-        <!-- Counter Begin -->
-        <div class="counter spad">
-            <div class="container">
-                @if (
-                    !Auth::user() ||
-                        (Auth::user() &&
-                            in_array(
-                                'members',
-                                Auth::user()->roles->pluck('name')->toArray())))
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-12">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/register.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">2100</h2>
-                                </div>
-                                <p>Registered Events</p>
+    <!-- Counter Begin -->
+    <div class="counter spad">
+        <div class="container">
+            @if (
+                Auth::user() ||
+                    (Auth::user() &&
+                        in_array(
+                            'members',
+                            Auth::user()->roles->pluck('name')->toArray())))
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-12">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/register.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">2100</h2>
                             </div>
-                        </div>
-                        <div class="ccol-lg-4 col-md-4 col-12">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/attended.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">99</h2>
-                                    {{-- <span>%</span> --}}
-                                </div>
-                                <p>Attended Events</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-12">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/offers.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">90</h2>
-                                    {{-- <span>+</span> --}}
-                                </div>
-                                <p>Applied Offers</p>
-                            </div>
-                        </div>
-    
-                    </div>
-                @endif
-    
-    
-                @if (
-                    !Auth::user() ||
-                        (Auth::user() &&
-                            in_array(
-                                'student',
-                                Auth::user()->roles->pluck('name')->toArray())))
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/register.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">2100</h2>
-                                </div>
-                                <p>Registered Events</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/attended.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">99</h2>
-                                    {{-- <span>%</span> --}}
-                                </div>
-                                <p>Attended Events</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/batch.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">90</h2>
-                                    {{-- <span>+</span> --}}
-                                </div>
-                                <p>Registered Batches</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-6">
-                            <div class="counter__item">
-                                <img src="{{ url('frontend/img/counter/attend.png') }}" alt="">
-                                <div class="counter__number">
-                                    <h2 class="counter-add">70</h2>
-                                    {{-- <span>+</span> --}}
-                                </div>
-                                <p>Attended Batches</p>
-                            </div>
+                            <p>Registered Events</p>
                         </div>
                     </div>
-                @endif
-            </div>
+                    <div class="ccol-lg-4 col-md-4 col-12">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/attended.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">99</h2>
+                                {{-- <span>%</span> --}}
+                            </div>
+                            <p>Attended Events</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-12">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/offers.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">90</h2>
+                                {{-- <span>+</span> --}}
+                            </div>
+                            <p>Applied Offers</p>
+                        </div>
+                    </div>
+
+                </div>
+            @endif
+
+
+            @if (
+                Auth::user() ||
+                    (Auth::user() &&
+                        in_array(
+                            'student',
+                            Auth::user()->roles->pluck('name')->toArray())))
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/register.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">2100</h2>
+                            </div>
+                            <p>Registered Events</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/attended.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">99</h2>
+                                {{-- <span>%</span> --}}
+                            </div>
+                            <p>Attended Events</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/batch.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">90</h2>
+                                {{-- <span>+</span> --}}
+                            </div>
+                            <p>Registered Batches</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-6">
+                        <div class="counter__item">
+                            <img src="{{ url('frontend/img/counter/attend.png') }}" alt="">
+                            <div class="counter__number">
+                                <h2 class="counter-add">70</h2>
+                                {{-- <span>+</span> --}}
+                            </div>
+                            <p>Attended Batches</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
-        <!-- Counter End -->
+    </div>
+    <!-- Counter End -->
 
     <!-- Choose Section Begin -->
     <section class="notice-board-section choose spad bg-light">
@@ -575,7 +575,7 @@
                                 Auth::user()->roles->pluck('name')->toArray())))
 
                     <div
-                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
                         <div class="choose__item ">
                             <div class="d-flex justify-content-center">
                                 <div class="circle-box">
@@ -617,7 +617,7 @@
                                 Auth::user()->roles->pluck('name')->toArray())))
 
                     <div
-                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
                         <div class="choose__item ">
                             <div class="d-flex justify-content-center">
                                 <div class="circle-box">
@@ -672,8 +672,7 @@
                             in_array(
                                 'student',
                                 Auth::user()->roles->pluck('name')->toArray())))
-                    <div
-                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                    <div class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
                         <div class="choose__item ">
                             <div class="d-flex justify-content-center">
                                 <div class="circle-box">
@@ -686,7 +685,7 @@
                                 @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
                                     @foreach ($newsLetterDetails as $newsLetter)
                                         <div
-                                            class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '3': '6' }} col-12 py-3">
+                                            class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '3': '6' }} col-12 py-3">
                                             <div class="card newsletter-card w-100">
                                                 <div class="card-body">
                                                     <div class="row">
@@ -728,7 +727,7 @@
                                 'members',
                                 Auth::user()->roles->pluck('name')->toArray())))
                     <div
-                        class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                        class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
                         <div class="choose__item ">
                             <div class="d-flex justify-content-center">
                                 <div class="circle-box">
@@ -741,7 +740,7 @@
                                 @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
                                     @foreach ($newsLetterDetails as $newsLetter)
                                         <div
-                                            class="col-lg-{{ !Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '3': '6' }} col-12 py-3">
+                                            class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('members',Auth::user()->roles->pluck('name')->toArray()))? '3': '6' }} col-12 py-3">
                                             <div class="card newsletter-card w-100">
                                                 <div class="card-body">
                                                     <div class="row">
@@ -933,10 +932,10 @@
     </div> --}}
 
     {{-- ---------------------- --}}
-{{-- Check if eventDetails is set and has data --}}
+    {{-- Check if eventDetails is set and has data --}}
 
 
-{{-- Repeat similar blocks for other sections (associationDetails, studentNoticeBoard, etc.) --}}
+    {{-- Repeat similar blocks for other sections (associationDetails, studentNoticeBoard, etc.) --}}
 
 
 @endsection

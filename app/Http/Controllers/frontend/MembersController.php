@@ -18,7 +18,7 @@ class MembersController extends Controller
     }
     public function puneMembersNewsletter()
     {
-        $newsLetterDetails = NewsLetterDetails::with([])->paginate(12);
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(4);
         return view('frontend.members.puneMembersNewsletter', compact( 'newsLetterDetails'));
     }
 

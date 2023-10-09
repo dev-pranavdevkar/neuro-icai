@@ -159,12 +159,6 @@
     </section>
 
     <div class="container">
-
-
-
-
-
-
         {{-- <div>
             <span>Event Name: {{ $eventDetails['event_name'] }}</span>
             <span>Event Start Date: {{ $eventDetails['event_start_date'] }}</span>

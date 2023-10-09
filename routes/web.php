@@ -97,6 +97,7 @@ Route::get('/eventsDetails/{id}', [EventsController::class, 'eventDetails']);
 // Vacancies Dropdown Pages
 Route::get('/vacancies/submitVacancies',[VacanciesController::class, 'submitVacancies']);
 Route::get('/vacancies/viewVacancies',[VacanciesController::class, 'viewVacancies']);
+Route::get('/vacancy-details/{id}',[VacanciesController::class,'vacancyDetails'])->name('vacancyDetails');
 
 // Downloads Dropdown Pages
 Route::get('/downloads/presentations',[DownloadsController::class, 'presentations']);

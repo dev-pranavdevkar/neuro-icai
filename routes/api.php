@@ -285,7 +285,8 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
     Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
-
+    Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
+    
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);

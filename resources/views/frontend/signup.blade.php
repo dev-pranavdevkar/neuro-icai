@@ -37,15 +37,9 @@
                                     <div class="input-list-item">
                                         <p>First Name</p>
                                         <input type="text" name="name" autocomplete="off">
-                                        @if ($errors->has('first_name'))
-                                            <div class="alert-vsa text-danger ">
-                                                <ul>
-                                                    @foreach ($errors->get('first_name') as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        @endif
+                                        @error('name')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
                                     </div>
                                     <div class="input-list-item">
                                         <p>Last Name</p>

@@ -136,7 +136,7 @@
                 </li>
                 <li><a href="{{ url('/') }}">Downloads</a>
                     <ul class="dropdown">
-                        <li><a href="{{ url('/presentations') }}"> Presentations </a></li>
+                        <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
 
                     </ul>
@@ -330,7 +330,7 @@
                                 </li>
                                 <li><a href="{{ url('/') }}">Downloads</a>
                                     <ul class="dropdown">
-                                        <li><a href="{{ url('/presentations') }}"> Presentations </a></li>
+                                        <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
 
                                     </ul>
