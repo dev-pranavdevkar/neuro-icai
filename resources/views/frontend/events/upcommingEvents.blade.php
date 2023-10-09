@@ -40,52 +40,53 @@
                                             <tr>
 
                                                 <th scope="col">Event Start Date:</th>
-                                                <td scope="col">{{ $event['event_start_date'] }}</td>
+                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-M-Y') }}</td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event End Date:</th>
-                                                <td scope="col"> {{ $event['event_end_date'] }}</td>
+                                                <td scope="col"> {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-M-Y') }}</td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event Time:</th>
-                                                <td scope="col">10:00 AM To 06:00 PM</td>
+                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }} To 06:00 PM</td>
                                             </tr>
 
                                             <tr>
 
                                                 <th scope="col">Cut off Date:</th>
-                                                <td scope="col">{{ $event['event_cut_off_date'] }} 10:00 AM</td>
+                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_cut_off_date'])->format('d-M-Y h:i A') }}</td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event Fee:</th>
                                                 <td scope="col">
-                                                    ₹ @if (auth()->check())
-                                                        @if (auth()->user()->role == 'members')
-                                                            {{ $event['price_for_members'] }}
-                                                        @elseif(auth()->user()->role == 'student')
-                                                            {{ $event['price_for_students'] }}
-                                                        @endif
-                                                    @else
-                                                        {{ $event['event_fee'] }}
+                                                    @if (Auth::user() && in_array('members', Auth::user()->roles->pluck('name')->toArray()))
+                                                        {{ $event['price_for_members'] }} <br />
+                                                    
+                                                        @elseif (Auth::user() && in_array('student', Auth::user()->roles->pluck('name')->toArray()))
+                                                            {{ $event['price_for_students'] }} <br />
+                                                    
+                                                        @else
+                                                            {{ $event['event_fee'] }}
                                                     @endif
-
-
                                                 </td>
+                                                
+                                                
+
                                             </tr>
-                                            <tr>
+                                            {{-- <tr>
 
                                                 <th scope="col">Brochure:</th>
                                                 <td scope="col"> <a href="{{ $event['broacher_pdf'] }}">Click Here To
                                                         Download </a></td>
-                                            </tr>
+                                            </tr> --}}
 
                                         </tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
-                                        <div><a href="#">
+                                        <div><a href="/eventsDetails/{{ $event['id'] }}">
                                                 <button type="button" class="btn btn-secondary">Details</button>
                                             </a>
 
@@ -118,8 +119,6 @@
 
     </section>
     <!-- Upcomming Events Section End -->
-
-
 @endsection
 
 

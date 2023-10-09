@@ -283,6 +283,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
     Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
     Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
 
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
@@ -298,5 +299,6 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
         Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
         Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+
     });
 });
