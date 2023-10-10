@@ -83,6 +83,7 @@
                                     SMS Alerts </a></li>
                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
                                 </a></li>
+
                         </ul>
 
                     </li>
@@ -108,6 +109,7 @@
                                 </a></li>
                             <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for
                                     SMS Alerts </a></li>
+                            <li><a href="{{ url('/students/batch') }}"> Batch </a></li>
                         </ul>
                     </li>
                 @endif
@@ -302,7 +304,8 @@
                                                 </a></li>
                                             <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for
                                                     SMS Alerts </a></li>
-                                        </ul>
+                                                    <li><a href="{{ url('/students/batch') }}"> Batch </a></li>
+                                                </ul>
                                     </li>
                                 @endif
 
@@ -433,6 +436,7 @@
                                 <li><a href="{{ url('/students/studentFAQs') }}">Student FAQs</a></li>
                                 <li><a href="{{ url('/students/subscribeForSMSAlerts') }}">Student's SMS Alerts</a>
                                 </li>
+                                
                             </ul>
                         </div>
                     </div>

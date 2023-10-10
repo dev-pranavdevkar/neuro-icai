@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\NewsLetterDetails;
 use Illuminate\Http\Request;
 use App\Models\StudentNoticeBoard;
+use App\Models\StudentBatches;
+use App\Models\LocationDetails;
 
 class StudentsController extends Controller
 {
@@ -13,7 +15,7 @@ class StudentsController extends Controller
     {
         return view('frontend.students.aboutPuneWICASA');
     }
-    
+
     public function coachingClasses()
     {
         return view('frontend.students.coachingClasses');
@@ -21,13 +23,13 @@ class StudentsController extends Controller
     public function puneWICASANewsletter()
     {
         $newsLetterDetails = NewsLetterDetails::with([])->paginate(12);
-        return view('frontend.students.puneWICASANewsletter', compact( 'newsLetterDetails'));
+        return view('frontend.students.puneWICASANewsletter', compact('newsLetterDetails'));
     }
 
     public function studentsNoticeboard()
     {
         $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
-        return view('frontend.students.studentsNoticeboard' , compact('studentNoticeBoard'));
+        return view('frontend.students.studentsNoticeboard', compact('studentNoticeBoard'));
     }
 
     public function subscribeForSMSAlerts()
@@ -68,4 +70,18 @@ class StudentsController extends Controller
     {
         return view('frontend.students.studentFAQs');
     }
+
+    public function batch()
+    {
+        $batchs = StudentBatches::with([])->paginate(3);
+        return view('frontend.students.batch', compact('batchs'));
+    }
+
+    public function batchDetails(Request $request, $id)
+    {
+        $batchDetails = StudentBatches::with(['location_details'])->find($id);
+        return view('frontend.students.batchDetails', compact('batchDetails'));
+    }
+
+    
 }

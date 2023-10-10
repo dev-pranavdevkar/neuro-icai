@@ -24,6 +24,7 @@ use App\Models\StudentNoticeBoard;
 use App\Models\StudentBatches;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\MembersMeeting;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManagerStatic as Image;
 use Carbon\Carbon;
@@ -97,6 +98,16 @@ class MetaDataController extends Controller
                 }
         $image->move($destinationPath, $image_name);
         return '/studentnoticeboard/' . $image_name;
+    }
+    public function saveMemberMeetingPdf($image): string
+    {
+        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('membersMeetingPdf/');
+        if (env('APP_ENV') == 'prod') {
+                    $destinationPath = public_path('membersMeetingPdf/' . $imageName);
+                }
+        $image->move($destinationPath, $image_name);
+        return '/membersMeetingPdf/' . $image_name;
     }
     public function saveStudentNoticeBoardLogo($image): string
     {
@@ -3368,6 +3379,33 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             }
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+
+    public function addMemberMeetings(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required',
+                'meeting_pdf' => 'required',
+                'meeting_datemeeting_date'=>'required|date'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $newItem = new MembersMeeting();
+            $newItem->meeting_datemeeting_date=$request->meeting_date;
+            $newItem->title =$request->title;
+            if ($request->meeting_pdf != "") {
+                if (!str_contains($request->meeting_pdf, "http")) {
+                    $newItem->meeting_pdf = $this->saveMemberMeetingPdf($request->meeting_pdf,$request->title);
+                }
+            }
+            $newItem->save();
+            return $this->sendResponse([], 'Member meeting added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
 

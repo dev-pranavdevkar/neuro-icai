@@ -126,10 +126,7 @@
 
     </section>
     <!-- Letest Updates Section End -->
-@endsection
-
-
-
+    
 <div class="container">
 
     {{-- Event Data --}}
@@ -193,3 +190,7 @@
         <h1>No data available.</h1>
     @endif
 </div>
+@endsection
+
+
+

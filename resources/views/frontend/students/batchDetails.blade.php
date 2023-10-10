@@ -6,10 +6,10 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="breadcrumb__text">
-                        <h2>{{ $eventDetails['event_name'] }}</h2>
+                        <h2>{{ $batchDetails['batch_name'] }}</h2>
                         <div class="breadcrumb__links">
-                            <a href="#">Events</a>
-                            <span>{{ $eventDetails['event_name'] }}</span>
+                            <a href="#">Batchs</a>
+                            <span>{{ $batchDetails['batch_name'] }}</span>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     {{-- ------------------------------------------------------------------------------------------- --}}
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ $eventDetails['event_name'] }}</h5>
+                            <h5 class="card-title">{{ $batchDetails['batch_name'] }}</h5>
 
                             <table class="table ">
 
@@ -39,31 +39,31 @@
                                 <tbody>
                                     <tr>
 
-                                        <th scope="col">Event Start Date:</th>
+                                        <th scope="col">Batch Start Date:</th>
                                         <td scope="col">
-                                            {{ \Carbon\Carbon::parse($eventDetails['event_start_date'])->format('d-M-Y') }}
+                                            {{ \Carbon\Carbon::parse($batchDetails['start_date'])->format('d-M-Y') }}
                                         </td>
 
 
                                     </tr>
                                     <tr>
-                                        <th scope="col">Event End Date:</th>
+                                        <th scope="col">Batch End Date:</th>
                                         <td scope="col">
-                                            {{ \Carbon\Carbon::parse($eventDetails['event_end_date'])->format('d-M-Y') }}
+                                            {{ \Carbon\Carbon::parse($batchDetails['end_date'])->format('d-M-Y') }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th scope="col">Cut off Date:</th>
                                         <td scope="col">
-                                            {{ \Carbon\Carbon::parse($eventDetails['event_cut_off_date'])->format('d-M-Y h:i A') }}
+                                            {{ \Carbon\Carbon::parse($batchDetails['batch_cut_off_date'])->format('d-M-Y h:i A') }}
                                         </td>
                                     </tr>
                                     <tr>
 
-                                        <th scope="col">Event Time:</th>
+                                        <th scope="col">Batch Time:</th>
                                         <td scope="col">
-                                            {{ \Carbon\Carbon::parse($eventDetails['event_end_date'])->format('h:i A') }} To
-                                            {{ \Carbon\Carbon::parse($eventDetails['event_start_date'])->format('h:i A') }}
+                                            {{ \Carbon\Carbon::parse($batchDetails['start_date'])->format('h:i A') }} To
+                                            {{ \Carbon\Carbon::parse($batchDetails['end_date'])->format('h:i A') }}
                                         </td>
 
 
@@ -71,12 +71,12 @@
 
                                     <tr>
 
-                                        <th scope="col">Event Fee:</th>
+                                        <th scope="col">Batch Fee:</th>
                                         <td scope="col">
 
-                                            <span>For Members: ₹ {{ $eventDetails['price_for_members'] }}</span><br>
-                                            <span>For Students: ₹ {{ $eventDetails['price_for_students'] }} </span><br>
-                                            <span>For Others: ₹ {{ $eventDetails['event_fee'] }} </span><br>
+                                            <span> ₹ {{ $batchDetails['fees'] }}</span><br>
+                                            {{-- <span>For Students: ₹ {{ $batchDetails['price_for_students'] }} </span><br>
+                                            <span>For Others: ₹ {{ $batchDetails['event_fee'] }} </span><br> --}}
 
                                         </td>
 
@@ -88,41 +88,38 @@
                                     <tr>
                                         <th scope="col">Location:</th>
                                         <td scope="col">
-                                            {{ $eventDetails['location_details']['address_line_1'] }}
-                                            {{ $eventDetails['location_details']['address_line_2'] }}
-                                            {{ $eventDetails['location_details']['city'] }}
-                                            {{ $eventDetails['location_details']['state'] }}
-                                            {{ $eventDetails['location_details']['country'] }}-{{ $eventDetails['location_details']['pincode'] }}
+                                            {{ $batchDetails['location_details']['address_line_1'] }}
+                                            {{ $batchDetails['location_details']['address_line_2'] }}
+                                            {{ $batchDetails['location_details']['city'] }}
+                                            {{ $batchDetails['location_details']['state'] }}
+                                            {{ $batchDetails['location_details']['country'] }}-{{ $batchDetails['location_details']['pincode'] }}
+
                                         </td>
                                     </tr>
+                                    <th scope="col">Offer:</th>
+                                    <td scope="col">
 
-                                    <tr>
-                                        <th scope="col">Event Videos</th>
-                                        <td>
-                                            <div class="row">
+                                        <b class="blink">If you Paid Before
+                                            {{ \Carbon\Carbon::parse($batchDetails['end_date'])->format('d-M-Y') }}: ₹
+                                            {{ $batchDetails['early_bird_fees'] }} </b><br>
 
-                                                @foreach ($eventDetails['event_video'] as $video)
-                                                    <div class="col-lg-3">
-                                                        <a href="{{ $video['video_link'] }}"
-                                                            alt="">{{ $video['video_link'] }}</a>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="col">Event Images</th>
-                                        <td>
-                                            <div class="row">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Batch Description:</th>
+                                    <td scope="col">
 
-                                                @foreach ($eventDetails['event_images'] as $img)
-                                                    <div class="col-lg-3">
-                                                        <img src="{{ $img['event_images'] }}" alt="">
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        <p> ₹ {{ $batchDetails['batch_discription'] }}</p><br>
+                                        {{-- <span>For Students: ₹ {{ $batchDetails['price_for_students'] }} </span><br>
+                                        <span>For Others: ₹ {{ $batchDetails['event_fee'] }} </span><br> --}}
+
+                                    </td>
+
+
+
+
+
+
 
 
 
@@ -136,12 +133,8 @@
                                 <div>
 
                                     @if (Auth::user())
-                                        @if ($eventDetails->event_end_date > now())
-                                            <button id="payNow" class="btn btn-primary"
-                                                data-event="{{ $eventDetails->id }}">Pay Now</button>
-                                        @else
-                                            <p class="text-danger">Event has ended. Registration is closed.</p>
-                                        @endif
+                                        <button id="payNow" class="btn btn-primary"
+                                            data-batch="{{ $batchDetails->id }}">Pay Now</button>
                                     @else
                                         <a href="{{ route('login') }}" class="btn btn-primary">Login To Register</a>
                                     @endif
@@ -162,35 +155,21 @@
         </div>
 
     </section>
-
-    <div class="container">
-        {{-- <div>
-            <span>Event Name: {{ $eventDetails['event_name'] }}</span>
-            <span>Event Start Date: {{ $eventDetails['event_start_date'] }}</span>
-            <span>Event End Date: {{ $eventDetails['event_end_date'] }}</span>
-            <span>Location: {{ $eventDetails['location_details']['city'] }}</span>,
-            <span>{{ $eventDetails['location_details']['state'] }}</span>
-        </div>
-        @if (Auth::user())
-            <button id="payNow" class="btn btn-primary" data-event="{{ $eventDetails->id }}">Pay Now</button>
-        @else
-            <a href="{{ route('login') }}" class="btn btn-primary">Login To Register</a>
-        @endif --}}
-    </div>
 @endsection
-{{-- @section('js')
+
+@section('js')
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         $(document).ready(function() {
             console.log("ready!");
         });
         $('#payNow').click(function() {
-            console.log('clicked', $(this).data('event'));
+            console.log('clicked', $(this).data('batch'));
             let body = {
-                event_id: $(this).data('event')
+                batch_id: $(this).data('batch')
             }
             $.ajax({
-                url: `${window.location.protocol}//${window.location.host}/eventRegister`, // Replace with your API endpoint URL
+                url: `${window.location.protocol}//${window.location.host}/batchRegister`, // Replace with your API endpoint URL
                 type: 'post', // or 'POST', 'PUT', etc. depending on your API
                 contentType: 'application/json',
                 data: JSON.stringify(body),
@@ -266,7 +245,7 @@
                 success: function(data) {
                     console.log(data);
                     if (data['success']) {
-                        toastr.success('You have registered successfully. Please go to my events section.');
+                        toastr.success('You have registered successfully. Please go to my Batch section.');
                     }
                     toastr.error(data.message)
                 },
@@ -280,4 +259,4 @@
             })
         }
     </script>
-@endsection --}}
+@endsection

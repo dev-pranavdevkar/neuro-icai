@@ -36,6 +36,7 @@ body {
 	height: 100%;
 	font-family: "Lato", sans-serif;
 	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden !important;
 }
 
 h1,
@@ -86,7 +87,16 @@ p {
 img {
 	max-width: 100%;
 }
+.blink {
+	animation: blinker 1.5s linear infinite;
+	color: red;
+  }
 
+  @keyframes blinker {
+	50% {
+	  opacity: 0;
+	}
+  }
 .member-card {
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	height: 100%;

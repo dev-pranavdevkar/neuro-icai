@@ -206,6 +206,8 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         Route::post('addEventImage', [MetaDataController::class, 'addEventImage']);
         //event video
         Route::post('addEventVideoLink', [MetaDataController::class, 'addEventVideoLink']);
+
+        Route::post('addMemberMeetings',[MetaDataController::class,'addMemberMeetings']);
     });
 });
 Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
@@ -286,7 +288,9 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
     Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
-    
+    Route::get('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
+        Route::get('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
@@ -299,9 +303,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
         // Student Batches
         Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
-        Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
-        Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
-
+        
     });
 });
 

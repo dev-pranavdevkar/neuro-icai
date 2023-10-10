@@ -87,6 +87,8 @@ Route::get('/students/advancedICITSSMCSCourse',[StudentsController::class, 'adva
 Route::get('/students/libraryReadingRooms',[StudentsController::class, 'libraryReadingRooms']);
 Route::get('/students/studentNoticeboard',[StudentsController::class, 'studentNoticeboard']);
 Route::get('/students/studentFAQs',[StudentsController::class, 'studentFAQs']);
+Route::get('/students/batch',[StudentsController::class, 'batch']);
+Route::get('/batch-details/{id}',[StudentsController::class,'batchDetails'])->name('batchDetails');
 
 
 // Events Dropdown Pages
@@ -127,3 +129,5 @@ Route::get('/profile/changePassword',[ProfileController::class, 'changePassword'
 // =============Rozerpay ==============
 Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'index']);
 Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'store'])->name('razorpay.payment.store');
+Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'batchindex']);
+Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'batchstore'])->name('razorpay.payment.store');
