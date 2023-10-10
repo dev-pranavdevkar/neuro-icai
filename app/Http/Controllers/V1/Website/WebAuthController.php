@@ -34,13 +34,14 @@ class WebAuthController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:6|confirmed',
                 // Add other validation rules as needed
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
+                return redirect()->back()->withErrors($validator)->withInput();
             }
 
             if ($request->role == 'SuperAdmin') {

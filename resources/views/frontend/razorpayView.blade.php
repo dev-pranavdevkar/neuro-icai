@@ -103,7 +103,8 @@
 
                                                 @foreach ($eventDetails['event_video'] as $video)
                                                     <div class="col-lg-3">
-                                                        <a href="{{ $video['video_link'] }}" alt="">{{ $video['video_link'] }}</a>
+                                                        <a href="{{ $video['video_link'] }}"
+                                                            alt="">{{ $video['video_link'] }}</a>
                                                     </div>
                                                 @endforeach
                                             </div>
@@ -122,10 +123,10 @@
                                             </div>
                                         </td>
                                     </tr>
-                                 
-                                    
 
-                       
+
+
+
 
 
                                 </tbody>
@@ -135,8 +136,12 @@
                                 <div>
 
                                     @if (Auth::user())
-                                        <button id="payNow" class="btn btn-primary"
-                                            data-event="{{ $eventDetails->id }}">Pay Now</button>
+                                        @if ($eventDetails->event_end_date > now())
+                                            <button id="payNow" class="btn btn-primary"
+                                                data-event="{{ $eventDetails->id }}">Pay Now</button>
+                                        @else
+                                            <p class="text-danger">Event has ended. Registration is closed.</p>
+                                        @endif
                                     @else
                                         <a href="{{ route('login') }}" class="btn btn-primary">Login To Register</a>
                                     @endif

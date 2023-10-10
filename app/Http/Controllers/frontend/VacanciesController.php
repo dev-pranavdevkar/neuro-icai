@@ -19,9 +19,9 @@ class VacanciesController extends Controller
         return view('frontend.vacancies.viewVacancies', compact('vacancyDetails'));
     }
 
-    // public function vacancyDetails(Request $request, $id)
-    // {
-    //     $vacancyDetails = VacancyDetails::with([''])->find($id);
-    //     return view('frontend.vacancies.applyJob', compact('vacancyDetails'));
-    // }
+    public function vacancyDetails(Request $request, $id)
+    {
+        $vacancyDetails = VacancyDetails::with([''])->find($id);
+        return view('frontend.vacancies.applyJob', compact('vacancyDetails'));
+    }
 }
