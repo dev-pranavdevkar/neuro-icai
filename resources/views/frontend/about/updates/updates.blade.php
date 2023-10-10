@@ -127,3 +127,69 @@
     </section>
     <!-- Letest Updates Section End -->
 @endsection
+
+
+
+<div class="container">
+
+    {{-- Event Data --}}
+    @if (isset($eventData) && count($eventData) > 0)
+        <div class="">
+            <h2>Event Details:</h2>
+            <ul>
+                @foreach ($eventData as $event)
+                    <li>
+                        Event Name: {{ $event['event_name'] }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {{-- Association Data --}}
+    @if (isset($associationData) && count($associationData) > 0)
+        <div class="">
+            <h2>Association Details:</h2>
+            <ul>
+                @foreach ($associationData as $association)
+                    <li>
+                        Association Name: {{ $association['company_name'] }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {{-- NewsletterData Data --}}
+    @if (isset($newsletterData) && count($newsletterData) > 0)
+        <div class="">
+            <h2>NewsletterData Details:</h2>
+            <ul>
+                @foreach ($newsletterData as $newsletter)
+                    <li>
+                        Newsletter Title: {{ $newsletter['title'] }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {{-- NoticeBoardData Data --}}
+    @if (isset($noticeBoardData) && count($noticeBoardData) > 0)
+        <div class="">
+            <h2>NoticeBoardData Details:</h2>
+            <ul>
+                @foreach ($noticeBoardData as $noticeBoard)
+                    <li>
+                        NoticeBoard Title: {{ $noticeBoard['title'] }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {{-- If No Data Available --}}
+    @if (!isset($eventData) && !isset($associationData) && !isset($newsletterData) && !isset($noticeBoardData))
+        <h1>No data available.</h1>
+    @endif
+</div>

@@ -4,6 +4,10 @@ namespace App\Http\Controllers\frontend;
 use App\Http\Controllers\V1\Website\WebMetaDataController; 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\EventDetails;
+use App\Models\AssociationDetails;
+use App\Models\NewsLetterDetails;
+use App\Models\StudentNoticeBoard;
 
 class AboutController extends Controller
 {
@@ -64,7 +68,11 @@ class AboutController extends Controller
 
     public function updates()
     {
-        return view('frontend.about.updates.updates');
+        $eventData = EventDetails::with([])->paginate(4);
+        $associationData = AssociationDetails::with([])->paginate(4);
+        $newsletterData = NewsLetterDetails::with([])->paginate(4);
+        $noticeBoardData = StudentNoticeBoard::with([])->paginate(4);
+        return view('frontend.about.updates.updates', compact('eventData','associationData','newsletterData','noticeBoardData'));
     }
     public function updatesDetails()
     {
