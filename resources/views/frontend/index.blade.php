@@ -459,8 +459,7 @@
     <!-- Counter Begin -->
     <div class="counter spad">
         <div class="container">
-            @if (
-                Auth::user() ||
+            @if (Auth::user() ||
                     (Auth::user() &&
                         in_array(
                             'members',
@@ -500,8 +499,7 @@
             @endif
 
 
-            @if (
-                Auth::user() ||
+            @if (Auth::user() ||
                     (Auth::user() &&
                         in_array(
                             'student',
@@ -672,7 +670,8 @@
                             in_array(
                                 'student',
                                 Auth::user()->roles->pluck('name')->toArray())))
-                    <div class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
+                    <div
+                        class="col-lg-{{ Auth::user() ||(Auth::user() &&in_array('student',Auth::user()->roles->pluck('name')->toArray()))? '12': '6' }} col-12 mb-5">
                         <div class="choose__item ">
                             <div class="d-flex justify-content-center">
                                 <div class="circle-box">

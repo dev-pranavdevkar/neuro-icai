@@ -79,8 +79,8 @@
                                     Committee Minutes </a></li>
                             <li><a href="{{ url('members/exposureDrafts') }}"> Exposure Drafts </a>
                             </li>
-                            <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
-                                    SMS Alerts </a></li>
+                            {{-- <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
+                                    SMS Alerts </a></li> --}}
                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
                                 </a></li>
 
@@ -107,9 +107,9 @@
                                     Newsletter </a></li>
                             <li><a href="{{ url('/students/coachingClasses') }}"> Coaching Classes
                                 </a></li>
-                            <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for
-                                    SMS Alerts </a></li>
-                            <li><a href="{{ url('/students/batch') }}"> Batch </a></li>
+                            {{-- <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for
+                                    SMS Alerts </a></li> --}}
+                            <li><a href="{{ url('/students/batch') }}"> Batches </a></li>
                         </ul>
                     </li>
                 @endif
@@ -275,8 +275,8 @@
                                                     Committee Minutes </a></li>
                                             <li><a href="{{ url('members/exposureDrafts') }}"> Exposure Drafts </a>
                                             </li>
-                                            <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
-                                                    SMS Alerts </a></li>
+                                            {{-- <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
+                                                    SMS Alerts </a></li> --}}
                                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
                                                 </a></li>
                                         </ul>
@@ -302,9 +302,9 @@
                                                     Newsletter </a></li>
                                             <li><a href="{{ url('/students/coachingClasses') }}"> Coaching Classes
                                                 </a></li>
-                                            <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for
-                                                    SMS Alerts </a></li>
-                                                    <li><a href="{{ url('/students/batch') }}"> Batch </a></li>
+                                            {{-- <li><a href="{{ url('/students/subscribeForSMSAlerts') }}"> Subscribe for
+                                                    SMS Alerts </a></li> --}}
+                                                    <li><a href="{{ url('/students/batch') }}"> Batches </a></li>
                                                 </ul>
                                     </li>
                                 @endif
@@ -398,7 +398,7 @@
                                 <li><a href="https://www.cpeicai.org/">Check CPE Hours</a></li>
                                 <li><a href="{{ url('/members/CPEStudyCircles') }}">CPE Study Circles</a></li>
                                 <li><a href="{{ url('/members/exposureDrafts') }}">Exposure DRAFTS</a></li>
-                                <li><a href="{{ url('/members/subscribeForSMSAlerts') }}">Members SMS Alerts</a></li>
+                                {{-- <li><a href="{{ url('/members/subscribeForSMSAlerts') }}">Members SMS Alerts</a></li> --}}
                                 <li><a href="https://pqc.icai.org/">Post Qualification Courses</a></li>
                                 <li><a href="{{ url('/members/updatesForMembers') }}">Notice Board</a></li>
                                 <li><a href="{{ url('/members/membersFAQ') }}">FAQ's</a></li>
@@ -434,8 +434,8 @@
                                 </li>
                                 <li><a href="{{ url('/students/studentNoticeboard') }}">Student Noticeboard</a></li>
                                 <li><a href="{{ url('/students/studentFAQs') }}">Student FAQs</a></li>
-                                <li><a href="{{ url('/students/subscribeForSMSAlerts') }}">Student's SMS Alerts</a>
-                                </li>
+                                {{-- <li><a href="{{ url('/students/subscribeForSMSAlerts') }}">Student's SMS Alerts</a>
+                                </li> --}}
                                 
                             </ul>
                         </div>

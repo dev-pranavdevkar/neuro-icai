@@ -207,7 +207,14 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         //event video
         Route::post('addEventVideoLink', [MetaDataController::class, 'addEventVideoLink']);
 
-        Route::post('addMemberMeetings',[MetaDataController::class,'addMemberMeetings']);
+
+
+        //Member Meetings
+        Route::post('addMemberMeetings', [MetaDataController::class, 'addMemberMeetings']);
+        Route::post('editMembersMeeting', [MetaDataController::class, 'editMembersMeeting']);
+        Route::get('getAllMemmbersMeeting', [MetaDataController::class, 'getAllMemmbersMeeting']);
+        Route::get('getMembersMeetingById', [MetaDataController::class, 'getMembersMeetingById']);
+        Route::delete('deleteMemmberMeetings', [MetaDataController::class, 'deleteMemmberMeetings']);
     });
 });
 Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
@@ -251,13 +258,13 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
             Route::get('getAssociationDetailsById', [AppMetaDataController::class, 'getAssociationDetailsById']);
             Route::post('addAssociationDetails', [AppMetaDataController::class, 'addAssociationDetails']);
 
-        //vaccancy
-         Route::post('addVacancyDetails', [AppMetaDataController::class, 'addVacancyDetails']);
-        //NewsLetters
-        Route::get('getAllNewsLetters', [AppMetaDataController::class, 'getAllNewsLetters']);
-        Route::get('getNewsLetterDetailsById', [AppMetaDataController::class, 'getNewsLetterDetailsById']);
-        Route::get('getAllNewLetterDetailsForStudent', [AppMetaDataController::class, 'getAllNewLetterDetailsForStudent']);
-        Route::get('getAllNewLetterDetailsForMembers', [AppMetaDataController::class, 'getAllNewLetterDetailsForMembers']);
+            //vaccancy
+            Route::post('addVacancyDetails', [AppMetaDataController::class, 'addVacancyDetails']);
+            //NewsLetters
+            Route::get('getAllNewsLetters', [AppMetaDataController::class, 'getAllNewsLetters']);
+            Route::get('getNewsLetterDetailsById', [AppMetaDataController::class, 'getNewsLetterDetailsById']);
+            Route::get('getAllNewLetterDetailsForStudent', [AppMetaDataController::class, 'getAllNewLetterDetailsForStudent']);
+            Route::get('getAllNewLetterDetailsForMembers', [AppMetaDataController::class, 'getAllNewLetterDetailsForMembers']);
 
             //batches
             Route::get('getStudentBatches', [MetaDataController::class, 'getStudentBatches']);
@@ -289,13 +296,15 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
     Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
     Route::get('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
-        Route::get('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+    Route::get('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+    //Member Meetings
+    Route::get('getAllMemmbersMeeting', [WebMetaDataController::class, 'getAllMemmbersMeeting']);
+    Route::get('getMembersMeetingById', [WebMetaDataController::class, 'getMembersMeetingById']);
 
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
     Route::get('open', 'WebAuthController@open');
-
     Route::group(['middleware' => ['jwt.verify']], function () {
         //EventRegistration
         Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
@@ -303,11 +312,5 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
         // Student Batches
         Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
-        
     });
 });
-
-
-
-
-
