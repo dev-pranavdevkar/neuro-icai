@@ -7,9 +7,13 @@ use App\Models\AssociationDetails;
 use App\Models\EventDetails;
 use App\Models\NewsLetterDetails;
 use App\Models\StudentNoticeBoard;
+use App\Models\ApplyForJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\EventRegistration;
+use App\Models\LocationDetails;
+use App\Models\VacancyDetails;
+use Illuminate\Validation\Rule;
 use Razorpay\Api\Api;
 use DB;
 use Auth;
@@ -144,8 +148,8 @@ public function getMembersNoticeBoard(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_id' => 'required|integer|exists:event_details,id',
-
+                'event_id' => 'nullable|integer|exists:event_details,id',
+              //  'student_batche_id' => 'nullable|integer|exists:event_details,id',
                 'gst_no' => 'required',
                 'legal_name' => 'required',
                 'event_price' => 'required|nullable',
@@ -156,6 +160,7 @@ public function getMembersNoticeBoard(Request $request)
             }
             $newEventRegistration = new EventRegistration();
             $newEventRegistration->event_id=$request->event_id;
+           // $newEventRegistration->student_batche_id=$request->student_batche_id;
             $newEventRegistration->user_id=Auth::user()->id;
             $newEventRegistration->gst_no=$request->gst_no;
             $newEventRegistration->legal_name=$request->legal_name;
@@ -215,6 +220,77 @@ public function getMembersNoticeBoard(Request $request)
             return $this->sendError( $e->getMessage(),$e->getTrace(),413);
         }
     }
-
+    public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'position' => [ Rule::in(['Semi Qualified','Article Assistant','Industrial Trainee','Qualified'])],
+                'comments' => 'nullable',
+                'experience' => 'required',
+                'expiry_date' => 'nullable|date',
+                'job_type' => [ Rule::in(['internship', 'full_time'])],
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $user = Auth::user()->id;
+        if (auth()->user()->role !== 'member') {
+            return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
+        }
+            $newVacancy = new VacancyDetails();
+            $newVacancy->position=$request->position;
+            $newVacancy->comments=$request->comments;
+            $newVacancy->experience=$request->experience;
+            $newVacancy->company_id = auth::user()->company_id;
+            $newVacancy->created_by =$user;
+		    $newVacancy->expiry_date = $request->expiry_date;
+            $newVacancy->job_type = $request->job_type;
+            $newVacancy->save();
+            return $this->sendResponse([], 'Vacancy details added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
+public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
+  {
+      try {
+          $validator = Validator::make($request->all(), [
+        //   'user_id' => 'nullable|numeric|exists:users,id',
+          'vacancy_id' => 'required|numeric|exists:vacancy_details,id',
+          'name'=>'required|string',
+          'email'=>'required|email|string',
+          'resume_pdf'=>'required',
+          'experience'=>'nullable',
+          'qualification'=>'nullable',
+          'expected_package'=>'nullable',
+          'current_package'=>'nullable',
+          'notice_period_in_days'=>'nullable'
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors());
+          }
+          $newDetails = new ApplyForJob;
+        //   $newDetails->user_id = $request->user_id;
+          $newDetails->vacancy_id = $request->vacancy_id;
+          $newDetails->name = $request->name;
+          $newDetails->email = $request->email;
+          $newDetails->experience = $request->experience;
+          $newDetails->qualification = $request->qualification;
+          $newDetails->expected_package = $request->expected_package;
+          $newDetails->current_package = $request->current_package;
+            $newDetails->notice_period_in_days = $request->notice_period_in_days;
+      if ($request->resume_pdf != "") {
+        if (!str_contains($request->resume_pdf, "http")) {
+            $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf,$request->user_id);
+        }
+    }
+      $newDetails->save();
+        return $this->sendResponse([],'Apply for Job Successfully.', true);
+        }
+      catch (Exception $e) {
+          return $this->sendError('Something went wrong', $e->getTrace(), 413);
+      }
+  }
 
 }

@@ -149,6 +149,8 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::get('getAllEventRegistration', [MetaDataController::class, 'getAllEventRegistration']);
     Route::delete('deleteEventRegistration', [MetaDataController::class, 'deleteEventRegistration']);
 
+    //student registration
+    Route::get('getAllStudentBatchRegistration', [MetaDataController::class, 'getAllStudentBatchRegistration']);
 
 
     //RegisterToAssociation
@@ -199,6 +201,13 @@ Route::post('changeForgetPassword', [AuthController::class, 'changeForgetPasswor
     Route::post('addEventImage', [MetaDataController::class, 'addEventImage']);
     //event video
     Route::post('addEventVideoLink', [MetaDataController::class, 'addEventVideoLink']);
+
+    //annual report
+    Route::post('addAnnualReport', [MetaDataController::class, 'addAnnualReport']);
+    Route::post('editAnnualReports', [MetaDataController::class, 'editAnnualReports']);
+    Route::get('getAllAnnualReports', [MetaDataController::class, 'getAllAnnualReports']);
+    Route::get('getAnnualReportsById', [MetaDataController::class, 'getAnnualReportsById']);
+    Route::delete('deleteAnnualReportsById', [MetaDataController::class, 'deleteAnnualReportsById']);
 
 });
 });
@@ -284,6 +293,15 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function ()
     Route::get('getMembersNoticeBoard', [WebMetaDataController::class, 'getMembersNoticeBoard']);
     Route::get('open', 'WebAuthController@open');
 
+    //annual report
+    Route::get('getAllAnnualReports', [WebMetaDataController::class, 'getAllAnnualReports']);
+    Route::get('getAnnualReportsById', [WebMetaDataController::class, 'getAnnualReportsById']);
+
+    //apply to job
+    Route::post('addApplyJob', [MetaDataController::class, 'addApplyJob']);
+
+    //add vaccancy
+    Route::post('addVacancyDetails', [MetaDataController::class, 'addVacancyDetails']);
 
     Route::group(['middleware' => [ 'jwt.verify']], function () {
     //EventRegistration
