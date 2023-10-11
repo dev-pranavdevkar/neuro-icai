@@ -136,13 +136,13 @@
                         </ul>
                     @endif
                 </li>
-                <li><a href="{{ url('/') }}">Downloads</a>
+                {{-- <li><a href="{{ url('/') }}">Downloads</a>
                     <ul class="dropdown">
                         <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
 
                     </ul>
-                </li>
+                </li> --}}
 
                 <li><a href="{{ url('/contact') }}">Contact Us</a></li>
                 <li><a href="{{ url('/help') }}">Help</a></li>
@@ -331,13 +331,13 @@
                                         </ul>
                                     @endif
                                 </li>
-                                <li><a href="{{ url('/') }}">Downloads</a>
+                                {{-- <li><a href="{{ url('/') }}">Downloads</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
 
                                     </ul>
-                                </li>
+                                </li> --}}
 
                                 <li><a href="{{ url('/contact') }}">Contact Us</a></li>
                                 <li><a href="{{ url('/help') }}">Help</a></li>

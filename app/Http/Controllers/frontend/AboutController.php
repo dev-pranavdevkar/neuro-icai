@@ -8,7 +8,7 @@ use App\Models\EventDetails;
 use App\Models\AssociationDetails;
 use App\Models\NewsLetterDetails;
 use App\Models\StudentNoticeBoard;
-
+use App\Models\AnnualReports;
 class AboutController extends Controller
 {
     public function aboutPuneBranch(Request $request)
@@ -29,7 +29,8 @@ class AboutController extends Controller
     
     public function annualReports()
     {
-        return view('frontend.about.annualReports');
+        $annualReports= AnnualReports::with([])->paginate(12);
+        return view('frontend.about.annualReports', compact('annualReports'));
     }
     public function chairmanCommunique()
     {
