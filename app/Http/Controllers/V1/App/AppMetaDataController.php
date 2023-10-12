@@ -573,7 +573,8 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_id' => 'required|integer|exists:event_details,id',
+                'event_id' => 'nullable|integer|exists:event_details,id',
+                'student_batche_id' => 'nullable|integer|exists:student_batches,id',
                 'user_id'=>'required|integer|exists:users,id',
                 'gst_no' => 'required',
                 'legal_name' => 'required',
@@ -585,6 +586,7 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             }
             $newEventRegistration = new EventRegistration();
             $newEventRegistration->event_id=$request->event_id;
+            $newEventRegistration->student_batche_id=$request->student_batche_id;
             $newEventRegistration->user_id=$request->user_id;
             $newEventRegistration->gst_no=$request->gst_no;
             $newEventRegistration->legal_name=$request->legal_name;

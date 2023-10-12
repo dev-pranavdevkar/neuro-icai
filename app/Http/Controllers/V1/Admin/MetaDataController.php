@@ -22,6 +22,8 @@ use App\Models\OffersAssociation;
 use App\Models\EventPresentationPdf;
 use App\Models\StudentNoticeBoard;
 use App\Models\StudentBatches;
+use App\Models\AnnualReports;
+use Illuminate\Support\Str;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Validation\Rule;
@@ -41,7 +43,25 @@ class MetaDataController extends Controller
             $data = "Only authorized users can see this";
             return response()->json(compact('data'),200);
         }
+        public function annualPdf($file){
+        $pdfContent = base64_decode($file);
+        $fileName = Str::uuid().'.pdf';
+        $basePath = public_path('\\annual-report\\');
+        if(env('APP_ENV')=='prod'){
+            $basePath =  public_path('/annual-report/');
+        }
+        if(!is_dir($basePath)){
+            mkdir($basePath, 0755, true);
+        }
+        if(env('APP_ENV')=='prod'){
+            $destinationPath =  public_path('/annual-report/'.$fileName);
+        }else{
+            $destinationPath = public_path('\\annual-report\\'.$fileName);
+        }
+        file_put_contents($destinationPath,$pdfContent);
+        return '/'.'/quot-doc/'.$fileName;
 
+    }
         public function saveFile($image )
     {
         $imageName = rand(100, 9999) . '.webp';
@@ -1917,6 +1937,7 @@ class MetaDataController extends Controller
             }
             $query = EventRegistration::query()->with(['event_details','user_details',
             'paymentmode_details','voluntary_contribution_details']);
+             $query->whereNotNull('event_id');
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -1936,6 +1957,39 @@ class MetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
+    public function getAllStudentBatchRegistration(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = EventRegistration::query()->with(['event_details','user_details',
+            'paymentmode_details','voluntary_contribution_details']);
+             $query->whereNotNull('student_batche_id');
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['student_registration'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+
      public function getAllUserRegisterToEvent(Request $request)
     {
         try {
@@ -3366,6 +3420,126 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             } else {
                 return $this->sendResponse([], 'No client are available', false);
             }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+
+      public function addAnnualReport(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string',
+                'annual_reports_pdf' => 'required',
+                'report_start_date'=>'required|date',
+                'report_end_date' => 'required|date',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $newAnnualReports = new AnnualReports();
+            $newAnnualReports->title = $request->title;
+            $newAnnualReports->annual_reports_pdf = $request->annual_reports_pdf;
+            if ($request->annual_reports_pdf != "") {
+                if (!str_contains($request->annual_reports_pdf, "http")) {
+                    $newAnnualReports->annual_reports_pdf = $this->annualPdf($request->annual_reports_pdf, $request->transporter_doc_no);
+                }
+            }
+            $newAnnualReports->report_start_date = $request->report_start_date;
+            $newAnnualReports->report_end_date = $request->report_end_date;
+            $newAnnualReports->save();
+            return $this->sendResponse([], 'Annual reports added Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
+        }
+    }
+      public function editAnnualReports(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|numeric|exists:annual_reports,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $editAnnualReports = AnnualReports::query()->where('id', $request->id)->first();
+            if ($request->has('title')) {
+                $editAnnualReports->title = $request->title;
+            }
+            if ($request->annual_reports_pdf != "") {
+                if (!str_contains($request->annual_reports_pdf, "http")) {
+                    $editAnnualReports->annual_reports_pdf = $this->annualPdf($request->annual_reports_pdf, $request->transporter_doc_no);
+                }
+            }
+             if ($request->has('report_start_date')) {
+                $editAnnualReports->report_start_date = $request->report_start_date;
+            }
+             if ($request->has('report_end_date')) {
+                $editAnnualReports->report_end_date = $request->report_end_date;
+            }
+            $editAnnualReports->save();
+            return $this->sendResponse([], 'Annual reports updated successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+        public function getAllAnnualReports(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $query = AnnualReports::query();
+            $count = $query->count();
+
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $getCompany = $query->orderBy('id', 'DESC')->get();
+            if (count($getCompany) > 0) {
+                return $this->sendResponse(["annual_reports" => $getCompany, 'count' => $count], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No client are available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+    public function deleteAnnualReportsById(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|numeric|exists:annual_reports,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $deleteAnnualReports = AnnualReports::query()
+            ->where('id', $request->id)->first();
+            $deleteAnnualReports->delete();
+            return $this->sendResponse([],'AnnualReports deleted successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
+    }
+    public function getAnnualReportsById(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|numeric|exists:annual_reports,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getAnnualReports = AnnualReports::query()->where('id', $request->id)->first();
+            return $this->sendResponse(['annual_reports'=>$getAnnualReports], 'Data fetch successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }

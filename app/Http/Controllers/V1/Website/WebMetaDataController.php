@@ -7,12 +7,15 @@ use App\Models\AssociationDetails;
 use App\Models\EventDetails;
 use App\Models\NewsLetterDetails;
 use App\Models\StudentNoticeBoard;
+use App\Models\ApplyForJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\EventRegistration;
+use App\Models\LocationDetails;
+use App\Models\VacancyDetails;
+use Illuminate\Validation\Rule;
 use Razorpay\Api\Api;
 use App\Models\StudentBatches;
-use App\Models\LocationDetails;
 use App\Models\EventPresentationVideo;
 use App\Models\EventImages;
 use App\Models\EventPresentationPdf;
@@ -75,171 +78,238 @@ class WebMetaDataController extends Controller
 //     }
 // }
 
-public function getLatestUpdate(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'limit' => 'numeric',
-            'pageNo' => 'numeric',
-        ]);
+    public function getLatestUpdate(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-        $eventData = EventDetails::orderBy('created_at', 'desc')->get();
-        $associationData = AssociationDetails::orderBy('created_at', 'desc')->get();
-        $newsletterData = NewsLetterDetails::orderBy('created_at', 'desc')->get();
-        $noticeBoardData = StudentNoticeBoard::orderBy('created_at', 'desc')->get();
-        $combinedData = $eventData
-            ->concat($associationData)
-            ->concat($newsletterData)
-            ->concat($noticeBoardData);
-        $combinedData = $combinedData->sortByDesc('created_at');
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $eventData = EventDetails::orderBy('created_at', 'desc')->get();
+            $associationData = AssociationDetails::orderBy('created_at', 'desc')->get();
+            $newsletterData = NewsLetterDetails::orderBy('created_at', 'desc')->get();
+            $noticeBoardData = StudentNoticeBoard::orderBy('created_at', 'desc')->get();
+            $combinedData = $eventData
+                ->concat($associationData)
+                ->concat($newsletterData)
+                ->concat($noticeBoardData);
+            $combinedData = $combinedData->sortByDesc('created_at');
 
-        if ($request->has('pageNo') && $request->has('limit')) {
-            $limit = $request->limit;
-            $pageNo = $request->pageNo;
-            $skip = $limit * ($pageNo - 1);
-            $combinedData = $combinedData->slice($skip, $limit);
-        }
-        $formattedData = $combinedData->values();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * ($pageNo - 1);
+                $combinedData = $combinedData->slice($skip, $limit);
+            }
+            $formattedData = $combinedData->values();
 
-        if ($formattedData->count() > 0) {
-            return $this->sendResponse(["latest_update" => $formattedData], 'Data fetch successfully');
-        } else {
-            return $this->sendResponse([], 'No data available', false);
+            if ($formattedData->count() > 0) {
+                return $this->sendResponse(["latest_update" => $formattedData], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No data available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
-    } catch (Exception $e) {
-        return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
     }
-}
-public function getMembersNoticeBoard(Request $request)
-{
-   try{
-       $validator = Validator::make($request->all(), [
-           'pageNo'=>'numeric',
-           'limit'=>'numeric',
-       ]);
-       if ($validator->fails()) {
-           return $this->sendError('Validation Error.', $validator->errors(),400);
-       }
-       $query = StudentNoticeBoard::query()->where('type', 'members');
-       $count=$query->count();
-       if ($request->has('title')) {
+
+    public function getMembersNoticeBoard(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = StudentNoticeBoard::query()->where('type', 'members');
+            $count = $query->count();
+            if ($request->has('title')) {
                 $query = $query->where('title', 'like', '%' . $request->title . '%');
             }
-       if($request->has('pageNo') && $request->has('limit')){
-           $limit = $request->limit;
-           $pageNo = $request->pageNo;
-           $skip = $limit*$pageNo;
-           $query= $query->skip($skip)->limit($limit);
-       }
-       $data = $query->get();
-       if(count($data)>0){
-           $response['notice_board'] =  $data;
-           $response['count']=$count;
-           return $this->sendResponse($response,'Data Fetched Successfully', true);
-       }else{
-           return $this->sendResponse('No Data Available', [],false);
-       }
-   }catch (\Exception $e){
-           return $this->sendError($e->getMessage(), $e->getTrace(),500);
-       }
-}
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->get();
+            if (count($data) > 0) {
+                $response['notice_board'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
 
     public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
-        {
-            try {
-                $validator = Validator::make($request->all(), [
-                    'event_id' => 'required|integer|exists:event_details,id',
-                    'gst_no' => 'required',
-                    'legal_name' => 'required',
-                    'event_price' => 'required|nullable',
-                    'total_amount' => 'required|nullable',
-                ]);
-                if ($validator->fails()) {
-                    return $this->sendError('Validation Error.', $validator->errors());
-                }
-                $user = Auth::user();
-                $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
-                    ->where('payment_status','like',"paid")->first();
-                if(!is_null($eventRegistration)){
-                    return $this->sendResponse([],'You are already registered to this event',false);
-                }
-                $newEventRegistration = new EventRegistration();
-                $newEventRegistration->event_id=$request->event_id;
-                $newEventRegistration->user_id=$user->id;
-                $newEventRegistration->gst_no=$request->gst_no;
-                $newEventRegistration->legal_name=$request->legal_name;
-                $newEventRegistration->attendance_status = $request->attendance_status;
-                $newEventRegistration->event_price = $request->event_price;
-                $newEventRegistration->total_amount = $request->total_amount;
-                $newEventRegistration->save();
-                if($newEventRegistration->save()){
-                    $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                    $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
-                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
-                    $newEventRegistration->razorpay_id = $orderDetails->id;
-                    $newEventRegistration->save();
-                    $response = [];
-                    $response['system_order_id']=$newEventRegistration->id;
-                    $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
-                    $response['razorpay_api_key']=env('R_API_KEY');
-                    return $this->sendResponse($response, 'Payment Initiated Successfully',true);
-                }else{
-                    return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
-                }
-
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'event_id' => 'nullable|integer|exists:event_details,id',
+                //  'student_batche_id' => 'nullable|integer|exists:event_details,id',
+                'gst_no' => 'required',
+                'legal_name' => 'required',
+                'event_price' => 'required|nullable',
+                'total_amount' => 'required|nullable',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
             }
-            catch (\Exception $e) {
-                return $this->sendError('Something went wrong', $e->getTrace(), 413);
-            }
-        }
-    public function paymentVerification(Request $request)
-            {
-            try{
-                $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-                    'system_order_id'=>'required|numeric',
-                    'razorpay_order_id'=>'required|string',
-                ]);
-                if($validator->fails()){
-                    return $this->sendError('Validation Error.', $validator->errors());
-                }
-                $payment = EventRegistration::where('razorpay_id',$request->razorpay_order_id)->find($request->system_order_id);
-                if(is_null($payment)){
-                    return $this->sendResponse([], 'Wrong Payment Id',false);
-                }
-                if($payment->payment_status=="paid"){
-                    return $this->sendResponse([], 'Payment Already Done',false);
-                }
+            $newEventRegistration = new EventRegistration();
+            $newEventRegistration->event_id = $request->event_id;
+            // $newEventRegistration->student_batche_id=$request->student_batche_id;
+            $newEventRegistration->user_id = Auth::user()->id;
+            $newEventRegistration->gst_no = $request->gst_no;
+            $newEventRegistration->legal_name = $request->legal_name;
+            $newEventRegistration->attendance_status = $request->attendance_status;
+            $newEventRegistration->event_price = $request->event_price;
+            $newEventRegistration->total_amount = $request->total_amount;
+            $newEventRegistration->save();
+            if ($newEventRegistration->save()) {
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $razorpay_order = $api->order->fetch($request->razorpay_order_id);
-                if($razorpay_order->status == 'paid' || true){
-                    $payment->payment_status="paid";
-                    $payment->save();
-                }else {
-                    $payment->payment_status="unpaid";
-                    $payment->save();
-                    return $this->sendResponse([], 'Payment Pending',false);
-                }
-                return $this->sendResponse([], 'Event registration successfully',false);
-            }catch (\Exception $e){
-                return $this->sendError( $e->getMessage(),$e->getTrace(),413);
+                $orderDetails = $api->order->create(array('receipt' => 'Inv-' . $newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes' => array()));
+                $newEventRegistration->razorpay_id = $orderDetails->id;
+                $newEventRegistration->save();
+                $response = [];
+                $response['system_order_id'] = $newEventRegistration->id;
+                $response['razorpay_order_id'] = $newEventRegistration->razorpay_id;
+                $response['razorpay_api_key'] = env('R_API_KEY');
+                return $this->sendResponse($response, 'Payment Initiated Successfully', true);
+            } else {
+                return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
             }
+
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
+    }
 
+    public function paymentVerification(Request $request)
+    {
+        try {
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'system_order_id' => 'required|numeric',
+                'razorpay_order_id' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $payment = EventRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
+            if (is_null($payment)) {
+                return $this->sendResponse([], 'Wrong Payment Id', false);
+            }
+            if ($payment->payment_status == "paid") {
+                return $this->sendResponse([], 'Payment Already Done', false);
+            }
+            $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+            $razorpay_order = $api->order->fetch($request->razorpay_order_id);
+            if ($razorpay_order->status == 'paid' || true) {
+                $payment->payment_status = "paid";
+                $payment->save();
+            } else {
+                $payment->payment_status = "unpaid";
+                $payment->save();
+                return $this->sendResponse([], 'Payment Pending', false);
+            }
+            return $this->sendResponse([], 'Event registration successfully', false);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 413);
+        }
+    }
 
+    public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'position' => [Rule::in(['Semi Qualified', 'Article Assistant', 'Industrial Trainee', 'Qualified'])],
+                'comments' => 'nullable',
+                'experience' => 'required',
+                'expiry_date' => 'nullable|date',
+                'job_type' => [Rule::in(['internship', 'full_time'])],
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $user = Auth::user()->id;
+            if (auth()->user()->role !== 'member') {
+                return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
+            }
+            $newVacancy = new VacancyDetails();
+            $newVacancy->position = $request->position;
+            $newVacancy->comments = $request->comments;
+            $newVacancy->experience = $request->experience;
+            $newVacancy->company_id = auth::user()->company_id;
+            $newVacancy->created_by = $user;
+            $newVacancy->expiry_date = $request->expiry_date;
+            $newVacancy->job_type = $request->job_type;
+            $newVacancy->save();
+            return $this->sendResponse([], 'Vacancy details added successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
+
+    public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                //   'user_id' => 'nullable|numeric|exists:users,id',
+                'vacancy_id' => 'required|numeric|exists:vacancy_details,id',
+                'name' => 'required|string',
+                'email' => 'required|email|string',
+                'resume_pdf' => 'required',
+                'experience' => 'nullable',
+                'qualification' => 'nullable',
+                'expected_package' => 'nullable',
+                'current_package' => 'nullable',
+                'notice_period_in_days' => 'nullable'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $newDetails = new ApplyForJob;
+            //   $newDetails->user_id = $request->user_id;
+            $newDetails->vacancy_id = $request->vacancy_id;
+            $newDetails->name = $request->name;
+            $newDetails->email = $request->email;
+            $newDetails->experience = $request->experience;
+            $newDetails->qualification = $request->qualification;
+            $newDetails->expected_package = $request->expected_package;
+            $newDetails->current_package = $request->current_package;
+            $newDetails->notice_period_in_days = $request->notice_period_in_days;
+            if ($request->resume_pdf != "") {
+                if (!str_contains($request->resume_pdf, "http")) {
+                    $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf, $request->user_id);
+                }
+            }
+            $newDetails->save();
+            return $this->sendResponse([], 'Apply for Job Successfully.', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
 
     public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
-            'batch_name' => 'required|nullable',
-            'fees' => 'required|nullable',
-          //   'location_id' => 'required|nullable',
-            'end_date' => 'required|nullable',
-            'address_line_1' => 'required|nullable|string|max:255',
-            'pincode' => 'required|nullable|string|max:255',
+                'batch_name' => 'required|nullable',
+                'fees' => 'required|nullable',
+                //   'location_id' => 'required|nullable',
+                'end_date' => 'required|nullable',
+                'address_line_1' => 'required|nullable|string|max:255',
+                'pincode' => 'required|nullable|string|max:255',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -261,75 +331,75 @@ public function getMembersNoticeBoard(Request $request)
             $newDetails->early_bird_fees = $request->early_bird_fees;
             $newDetails->save();
             return $this->sendResponse([],' Student batches added successfully.', true);
-          }
+        }
         catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-  public function getStudentBatches(Request $request)
-   {
-      try{
-          $validator = Validator::make($request->all(), [
-              'pageNo'=>'numeric',
-              'limit'=>'numeric',
-          ]);
-          if ($validator->fails()) {
-              return $this->sendError('Validation Error.', $validator->errors(),400);
-          }
-          $currentDate = carbon::now('Asia/Kolkata');
-              $now = carbon::now();
-          $query = StudentBatches::query()->with('location_details');
-          if ($request->has('batch_name')) {
-                  $query = $query->where('batch_name', 'like', '%' . $request->batch_name. '%');
-          }
-          if ($request->has('start_date')) {
-                  $query = $query->where('start_date', 'like', '%' . $request->start_date. '%');
-          }
-          if ($request->has('end_date')) {
-                  $query = $query->where('end_date', 'like', '%' . $request->end_date. '%');
-          }
-          if ($request->has('fees')) {
-                  $query = $query->where('fees', 'like', '%' . $request->fees. '%');
-          }
-          if ($request->has('address_line_1')) {
-              $searchTerm = $request->input('address_line_1');
-              $query = $query->whereHas('location_details', function ($query) use ($searchTerm) {
-              $query->where('address_line_1', 'like', '%' . $searchTerm . '%');
-              });
-          }
-              if ($request->has('filter')) {
-                  $filter = $request->filter;
-                  if ($filter === 'upcoming') {
-                      $query = $query->where('end_date', '>', $now);
-                  }
-                  if ($filter === 'past') {
-                      $query = $query->where('end_date', '<', $now);
-                  }
-                  if ($filter === 'ongoing') {
-                      $query->where('start_date', '<=', $currentDate)
-                          ->where('end_date', '>=', $currentDate);
-                  }
-              }
-          $count=$query->count();
-          if($request->has('pageNo') && $request->has('limit')){
-              $limit = $request->limit;
-              $pageNo = $request->pageNo;
-              $skip = $limit*$pageNo;
-              $query= $query->skip($skip)->limit($limit);
-          }
-          $data = $query->get();
-          if(count($data)>0){
-              $response['data'] =  $data;
-              $response['count']=$count;
-              return $this->sendResponse($response,'Data Fetched Successfully', true);
-          }else{
-              return $this->sendResponse([],'No Data Available',false);
-          }
-      }catch (\Exception $e){
-              return $this->sendError($e->getMessage(), $e->getTrace(),500);
-          }
-  }
-  public function getStudentBatchesById(Request $request):  \Illuminate\Http\JsonResponse
+    public function getStudentBatches(Request $request)
+    {
+        try{
+            $validator = Validator::make($request->all(), [
+                'pageNo'=>'numeric',
+                'limit'=>'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(),400);
+            }
+            $currentDate = carbon::now('Asia/Kolkata');
+            $now = carbon::now();
+            $query = StudentBatches::query()->with('location_details');
+            if ($request->has('batch_name')) {
+                $query = $query->where('batch_name', 'like', '%' . $request->batch_name. '%');
+            }
+            if ($request->has('start_date')) {
+                $query = $query->where('start_date', 'like', '%' . $request->start_date. '%');
+            }
+            if ($request->has('end_date')) {
+                $query = $query->where('end_date', 'like', '%' . $request->end_date. '%');
+            }
+            if ($request->has('fees')) {
+                $query = $query->where('fees', 'like', '%' . $request->fees. '%');
+            }
+            if ($request->has('address_line_1')) {
+                $searchTerm = $request->input('address_line_1');
+                $query = $query->whereHas('location_details', function ($query) use ($searchTerm) {
+                    $query->where('address_line_1', 'like', '%' . $searchTerm . '%');
+                });
+            }
+            if ($request->has('filter')) {
+                $filter = $request->filter;
+                if ($filter === 'upcoming') {
+                    $query = $query->where('end_date', '>', $now);
+                }
+                if ($filter === 'past') {
+                    $query = $query->where('end_date', '<', $now);
+                }
+                if ($filter === 'ongoing') {
+                    $query->where('start_date', '<=', $currentDate)
+                        ->where('end_date', '>=', $currentDate);
+                }
+            }
+            $count=$query->count();
+            if($request->has('pageNo') && $request->has('limit')){
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit*$pageNo;
+                $query= $query->skip($skip)->limit($limit);
+            }
+            $data = $query->get();
+            if(count($data)>0){
+                $response['data'] =  $data;
+                $response['count']=$count;
+                return $this->sendResponse($response,'Data Fetched Successfully', true);
+            }else{
+                return $this->sendResponse([],'No Data Available',false);
+            }
+        }catch (\Exception $e){
+            return $this->sendError($e->getMessage(), $e->getTrace(),500);
+        }
+    }
+    public function getStudentBatchesById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -358,30 +428,28 @@ public function getMembersNoticeBoard(Request $request)
 
             $getEvent = EventDetails::query()->where('id', $request->id)->with(['location_details'])->first();
             if($getEvent['id']!=null){
-                    $product=EventPresentationVideo::query()->where('event_id',$getEvent['id'])
+                $product=EventPresentationVideo::query()->where('event_id',$getEvent['id'])
                     ->get();
-                    $getEvent['event_video']=$product;
+                $getEvent['event_video']=$product;
             }
             if($getEvent['id']!=null){
-                    $product=EventImages::query()->where('event_id',$getEvent['id'])
+                $product=EventImages::query()->where('event_id',$getEvent['id'])
                     ->get();
-                    $getEvent['event_images']=$product;
+                $getEvent['event_images']=$product;
             }
             if($getEvent['id']!=null){
-                    $product=EventPresentationPdf::query()->where('event_id',$getEvent['id'])
+                $product=EventPresentationPdf::query()->where('event_id',$getEvent['id'])
                     ->get();
-                    $getEvent['event_prsentation']=$product;
-                }
+                $getEvent['event_prsentation']=$product;
+            }
 
             return $this->sendResponse([
-                 "event_details" => $getEvent,
-                ], 'Data fetch successfully', true);
+                "event_details" => $getEvent,
+            ], 'Data fetch successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
+
+
 }
-
-
-
-
