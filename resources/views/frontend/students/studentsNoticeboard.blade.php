@@ -26,9 +26,9 @@
                 <div class="row d-flex justify-content-between">
                     {{-- 1 --}}
                     @foreach ($studentNoticeBoard as $studentNotice)
-                        <div class="col-lg-4 py-3 ">
+                        <div class="col-lg-4 my-3 ">
 
-                            <div class="card newsletter-card w-100">
+                            <div class="card newsletter-card h-100 w-100">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-2">
@@ -50,27 +50,48 @@
                         </div>
                     @endforeach
                 </div>
+                <div>
+                    <div class="d-flex justify-content-center mt-5 w-100">
+                        <ul class="pagination">
+                            <li class="pagination-cell">
+                                @if ($studentNoticeBoard->onFirstPage())
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.previous')">Previous</span>
+                                @else
+                                    <a href="{{ $studentNoticeBoard->previousPageUrl() }}" rel="prev"
+                                        aria-label="@lang('pagination.previous')">Previous</a>
+                                @endif
+                            </li>
+
+                            @for ($i = max(1, $studentNoticeBoard->currentPage() - 5); $i <= min($studentNoticeBoard->lastPage(), $studentNoticeBoard->currentPage() + 5); $i++)
+                                <li
+                                    class="pagination-cell {{ $studentNoticeBoard->currentPage() == $i ? 'active text-white' : '' }}">
+                                    <a href="{{ $studentNoticeBoard->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="pagination-cell">
+                                @if ($studentNoticeBoard->hasMorePages())
+                                    <a href="{{ $studentNoticeBoard->nextPageUrl() }}" rel="next"
+                                        aria-label="@lang('pagination.next')">Next</a>
+                                @else
+                                    <span class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">Next</span>
+                                @endif
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center mt-2 w-100">
+                        Showing {{ $studentNoticeBoard->firstItem() }} to {{ $studentNoticeBoard->lastItem() }} of
+                        {{ $studentNoticeBoard->total() }} results
+                    </div>
+                </div>
             @else
-                <h1>No Notice details available.</h1>
+                <h1>No Data available.</h1>
             @endif
         </div>
     </section>
 @endsection
 
 
-{{-- <h5>Student's Noticeboard</h5>
-<p>
-    @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
-        <ul class="text-left  px-lg-5 px-4 fa-list-notice">
-            @foreach ($studentNoticeBoard as $studentNotice)
-                <li>
-                    <a href={{ $studentNotice['notice_board_pdf'] }}>
-                        {{ $studentNotice['title'] }}</a>
 
-                </li>
-            @endforeach
-        </ul>
-    @else
-        <h1>No Notice details available.</h1>
-    @endif
-</p> --}}

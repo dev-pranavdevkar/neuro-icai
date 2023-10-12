@@ -35,9 +35,9 @@
     <!-- Offcanvas Menu Begin -->
     <div class="offcanvas-menu-overlay"></div>
     <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__search d-none">
+        {{-- <div class="offcanvas__search d-none">
             <i class="fa fa-search search-switch"></i>
-        </div>
+        </div> --}}
         <div class="offcanvas__logo ">
             <a href="{{ url('/') }}"><img src="{{ url('frontend/img/logo.jpg') }}" alt=""></a>
         </div>
@@ -145,7 +145,7 @@
                 </li> --}}
 
                 <li><a href="{{ url('/contact') }}">Contact Us</a></li>
-                <li><a href="{{ url('/help') }}">Help</a></li>
+                {{-- <li><a href="{{ url('/help') }}">Help</a></li> --}}
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
@@ -340,12 +340,12 @@
                                 </li> --}}
 
                                 <li><a href="{{ url('/contact') }}">Contact Us</a></li>
-                                <li><a href="{{ url('/help') }}">Help</a></li>
+                                {{-- <li><a href="{{ url('/help') }}">Help</a></li> --}}
                             </ul>
                         </nav>
-                        <div class="header__search">
+                        {{-- <div class="header__search">
                             <i class="fa fa-search search-switch"></i>
-                        </div>
+                        </div> --}}
 
 
                     </div>
@@ -455,7 +455,7 @@
                                 <li><a href="{{ url('/usefulLinks') }}">Useful Links</a></li>
                                 <li><a href="{{ url('/vacancies/viewVacancies') }}">Article Vacancy</a></li>
                                 <li><a href="{{ url('/tenders') }}">Tenders</a></li>
-                                <li><a href="{{ url('/help') }}">Help</a></li>
+                                {{-- <li><a href="{{ url('/help') }}">Help</a></li> --}}
 
                             </ul>
                         </div>

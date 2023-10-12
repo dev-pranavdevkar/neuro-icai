@@ -50,10 +50,43 @@
                     @endforeach
                 </div>
                 <div>
-                    {!! $eventDetails->links() !!}
+                    <div class="d-flex justify-content-center mt-5 w-100">
+                        <ul class="pagination">
+                            <li class="pagination-cell">
+                                @if ($annualReports->onFirstPage())
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.previous')">Previous</span>
+                                @else
+                                    <a href="{{ $annualReports->previousPageUrl() }}" rel="prev"
+                                        aria-label="@lang('pagination.previous')">Previous</a>
+                                @endif
+                            </li>
+
+                            @for ($i = max(1, $annualReports->currentPage() - 5); $i <= min($annualReports->lastPage(), $annualReports->currentPage() + 5); $i++)
+                                <li
+                                    class="pagination-cell {{ $annualReports->currentPage() == $i ? 'active text-white' : '' }}">
+                                    <a href="{{ $annualReports->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="pagination-cell">
+                                @if ($annualReports->hasMorePages())
+                                    <a href="{{ $annualReports->nextPageUrl() }}" rel="next"
+                                        aria-label="@lang('pagination.next')">Next</a>
+                                @else
+                                    <span class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">Next</span>
+                                @endif
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center mt-2 w-100">
+                        Showing {{ $annualReports->firstItem() }} to {{ $annualReports->lastItem() }} of
+                        {{ $annualReports->total() }} results
+                    </div>
                 </div>
             @else
-                <h1>Annual Reports Unavilable.</h1>
+                <h1>No Data available.</h1>
             @endif
         </div>
     </section>

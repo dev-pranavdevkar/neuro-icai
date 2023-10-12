@@ -39,7 +39,8 @@
                                                 <div class="row">
                                                     <div class="col-3">
                                                         <a href="{{ $newsLetter['upload_newsletter_pdf'] }}"><img
-                                                                src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
+                                                                src="{{ url('frontend/img/download-pdf.png') }}"
+                                                                alt=""></a>
                                                     </div>
                                                     <div class="col-9 text-right">
                                                         <div class="">
@@ -55,22 +56,56 @@
                                     </div>
                                     {{-- @endif --}}
                                 @endforeach
-                                <div>
-                                    {!! $newsLetterDetails->links() !!}
-                                </div>
+                                <div class="w-100">
+                                    <div class="d-flex justify-content-center mt-5 w-100">
+                                        <ul class="pagination">
+                                            <li class="pagination-cell">
+                                                @if ($newsLetterDetails->onFirstPage())
+                                                    <span class="disabled" aria-disabled="true"
+                                                        aria-label="@lang('pagination.previous')">Previous</span>
+                                                @else
+                                                    <a href="{{ $newsLetterDetails->previousPageUrl() }}" rel="prev"
+                                                        aria-label="@lang('pagination.previous')">Previous</a>
+                                                @endif
+                                            </li>
 
+                                            @for ($i = max(1, $newsLetterDetails->currentPage() - 5); $i <= min($newsLetterDetails->lastPage(), $newsLetterDetails->currentPage() + 5); $i++)
+                                                <li
+                                                    class="pagination-cell {{ $newsLetterDetails->currentPage() == $i ? 'active text-white' : '' }}">
+                                                    <a href="{{ $newsLetterDetails->url($i) }}">{{ $i }}</a>
+                                                </li>
+                                            @endfor
+
+                                            <li class="pagination-cell">
+                                                @if ($newsLetterDetails->hasMorePages())
+                                                    <a href="{{ $newsLetterDetails->nextPageUrl() }}" rel="next"
+                                                        aria-label="@lang('pagination.next')">Next</a>
+                                                @else
+                                                    <span class="disabled" aria-disabled="true"
+                                                        aria-label="@lang('pagination.next')">Next</span>
+                                                @endif
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="text-center mt-2 w-100">
+                                        Showing {{ $newsLetterDetails->firstItem() }} to
+                                        {{ $newsLetterDetails->lastItem() }} of
+                                        {{ $newsLetterDetails->total() }} results
+                                    </div>
+                                </div>
                             @else
-                                <h1>No Newsletter available.</h1>
+                                <h1>No Data available.</h1>
                             @endif
                         </div>
 
                         {{-- <div>
                             {!! $newsLetterDetails->links() !!}
                         </div> --}}
-                        <div class="pt-lg-5 pt-4 d-flex justify-content-between ">
+                        {{-- <div class="pt-lg-5 pt-4 d-flex justify-content-between ">
                             <a href="#" class="primary-btn">Previous Year</a>
                             <a href="#" class="primary-btn">Next Year</a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

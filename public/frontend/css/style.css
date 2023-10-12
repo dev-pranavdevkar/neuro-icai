@@ -134,6 +134,24 @@ input[type=file]::file-selector-button {
 		transform: translateY(-100%);
 	}
 }
+.pagination-cell {
+    border: 1px solid #ddd;
+    padding:10px 15px;
+}
+
+.pagination-cell a {
+    text-decoration: none;
+    color: #182141;
+	font-weight: 400;
+}
+
+.pagination-cell.active {
+    background-color: #182141;
+    color: #fff;
+	border: 1px solid #182141;
+}
+
+
 .member-card {
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	height: 100%;
