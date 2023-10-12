@@ -595,11 +595,13 @@
                                     @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
                                         <ul class="text-left  px-lg-5 px-4 fa-list-notice">
                                             @foreach ($studentNoticeBoard as $studentNotice)
+                                            @if ($studentNotice['type'] == 'members')
                                                 <li>
                                                     <a href={{ $studentNotice['notice_board_pdf'] }}>
                                                         {{ $studentNotice['title'] }}</a>
 
                                                 </li>
+                                                @endif
                                             @endforeach
                                         </ul>
                                     @else
@@ -636,11 +638,13 @@
                                 @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
                                     <ul class="text-left  px-lg-5 px-4 fa-list-notice">
                                         @foreach ($studentNoticeBoard as $studentNotice)
-                                            <li>
-                                                <a href={{ $studentNotice['notice_board_pdf'] }}>
-                                                    {{ $studentNotice['title'] }}</a>
+                                            @if ($studentNotice['type'] == 'student')
+                                                <li>
+                                                    <a href={{ $studentNotice['notice_board_pdf'] }}>
+                                                        {{ $studentNotice['title'] }}</a>
 
-                                            </li>
+                                                </li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 @else

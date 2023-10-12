@@ -70,7 +70,7 @@ Route::get('/members/updatesForMembers/updatesDetails',[MembersController::class
 Route::get('/members/subscribeForSMSAlerts',[MembersController::class, 'subscribeForSMSAlerts']);
 Route::get('/members/membersFAQ',[MembersController::class, 'membersFAQ']);
 Route::get('/members/CPEStudyCircles',[MembersController::class, 'CPEStudyCircles']);
-
+Route::get('/members/membersNoticeboard',[MembersController::class, 'membersNoticeboard']);
 
 
 // Students Dropdown Pages
@@ -85,7 +85,7 @@ Route::get('/students/AICITSS',[StudentsController::class, 'AICITSS']);
 Route::get('/students/ICITSSOrientationCourse',[StudentsController::class, 'ICITSSOrientationCourse']);
 Route::get('/students/advancedICITSSMCSCourse',[StudentsController::class, 'advancedICITSSMCSCourse']);
 Route::get('/students/libraryReadingRooms',[StudentsController::class, 'libraryReadingRooms']);
-Route::get('/students/studentNoticeboard',[StudentsController::class, 'studentNoticeboard']);
+
 Route::get('/students/studentFAQs',[StudentsController::class, 'studentFAQs']);
 Route::get('/students/batch',[StudentsController::class, 'batch']);
 Route::get('/batch-details/{id}',[StudentsController::class,'batchDetails'])->name('batchDetails');

@@ -18,10 +18,10 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $eventDetails = EventDetails::with([])->paginate(3);
+        $eventDetails = EventDetails::with([])->paginate(4);
         $associationDetails = AssociationDetails::with([])->paginate(3);
-        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
-        $newsLetterDetails = NewsLetterDetails::with([])->paginate(3);
+        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(10);
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(6);
         $vacancyDetails = VacancyDetails::with([])->paginate(3);
         // ==================================================================================
         $eventData = EventDetails::with([])->get();
