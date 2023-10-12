@@ -11,17 +11,43 @@ use App\Models\EventImages;
 use App\Models\EventPresentationPdf;
 class EventsController extends Controller
 {
-    public function pastEvents()
-    {
-        $eventDetails = EventDetails::with([])->paginate(5);
+    public function pastEvents($filter = 'past')
+{
+    try {
+        $eventDetails = EventDetails::query();
+
+        if ($filter === 'past') {
+            $eventDetails->where('event_end_date', '<', now());
+        }
+
+        $eventDetails = $eventDetails->with([])->paginate(5);
+
         return view('frontend.events.pastEvents', compact('eventDetails'));
+    } catch (Exception $e) {
+        // Handle exceptions as needed
+        return redirect()->back()->with('error', 'Error fetching past events.');
     }
+}
+
     
-    public function upcommingEvents()
-    {
-        $eventDetails = EventDetails::with([])->paginate(9);
+public function upcommingEvents($filter = 'upcoming')
+{
+    try {
+        $eventDetails = EventDetails::query();
+
+        if ($filter === 'upcoming') {
+            $eventDetails->where('event_end_date', '>', now());
+        }
+
+        $eventDetails = $eventDetails->with([])->paginate(9);
+
         return view('frontend.events.upcommingEvents', compact('eventDetails'));
+    } catch (Exception $e) {
+        // Handle exceptions as needed
+        return redirect()->back()->with('error', 'Error fetching upcoming events.');
     }
+}
+
 
     public function eventDetails($id)
     {

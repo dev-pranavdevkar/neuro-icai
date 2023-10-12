@@ -5,6 +5,8 @@ namespace App\Http\Controllers\frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\NewsLetterDetails;
+
+use App\Models\MembersMeeting;
 class MembersController extends Controller
 {
     public function exposureDrafts()
@@ -14,11 +16,12 @@ class MembersController extends Controller
     
     public function managingCommitteeMinutes()
     {
-        return view('frontend.members.managingCommitteeMinutes');
+        $meetings = MembersMeeting::with([])->paginate(12);
+        return view('frontend.members.managingCommitteeMinutes',compact('meetings'));
     }
     public function puneMembersNewsletter()
     {
-        $newsLetterDetails = NewsLetterDetails::with([])->paginate(12);
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(4);
         return view('frontend.members.puneMembersNewsletter', compact( 'newsLetterDetails'));
     }
 

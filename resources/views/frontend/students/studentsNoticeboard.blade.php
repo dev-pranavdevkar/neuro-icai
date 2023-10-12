@@ -58,7 +58,7 @@
 @endsection
 
 
-<h5>Student's Noticeboard</h5>
+{{-- <h5>Student's Noticeboard</h5>
 <p>
     @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
         <ul class="text-left  px-lg-5 px-4 fa-list-notice">
@@ -73,4 +73,4 @@
     @else
         <h1>No Notice details available.</h1>
     @endif
-</p>
+</p> --}}

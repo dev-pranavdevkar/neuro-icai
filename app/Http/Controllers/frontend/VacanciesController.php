@@ -12,11 +12,16 @@ class VacanciesController extends Controller
     {
         return view('frontend.vacancies.submitVacancies');
     }
-    
+
     public function viewVacancies()
     {
-        $vacancyDetails = VacancyDetails::with([])->paginate(3);
+        $vacancyDetails = VacancyDetails::with([])->paginate(5);
         return view('frontend.vacancies.viewVacancies', compact('vacancyDetails'));
     }
-  
+
+    public function vacancyDetails(Request $request, $id)
+    {
+        $vacancyDetails = VacancyDetails::with([''])->find($id);
+        return view('frontend.vacancies.applyJob', compact('vacancyDetails'));
+    }
 }
