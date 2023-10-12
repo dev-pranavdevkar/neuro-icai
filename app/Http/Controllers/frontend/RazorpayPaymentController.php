@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\EventRegistration;
 use App\Models\EventDetails;
 use App\Models\StudentBatches;
-use Razorpay\Api\Api;
+use Razorpay\Api\Api;/*
 use Session;
 use Exception;
 

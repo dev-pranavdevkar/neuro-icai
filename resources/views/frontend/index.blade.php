@@ -353,44 +353,52 @@
                 </div>
             </div>
             <div class="row d-flex justify-content-center">
-                @if (isset($eventDetails) && count($eventDetails) > 0)
-                    @foreach ($eventDetails as $event)
-                        <div class="col-lg-3 py-3 py-lg-0">
-                            {{-- ------------------------------------------------------------------------------------------- --}}
-                            <div class="card events-card h-100">
-                                <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-4.jpg') }}"
-                                    alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $event['event_name'] }}</h5>
-                                    <div class="">
-                                        <ul class="events">
-                                            <li><a href="{{ url('/') }}"><i
-                                                        class="fa fa-calendar"></i>{{ $event['event_start_date'] }} To
-                                                    {{ $event['event_end_date'] }}
-                                                </a></li>
-                                            <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To
-                                                    06:00 PM
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="readMore" href="#">Read More</a>
+                {{-- 1 --}}
+                <div class="col-lg-12 py-3 ">
+                    <div class="card member-card p-4 HomeupdatesCard">
+                        <div class="card-body " style="border: 1px solid #909090">
+                            <div class="row">
+                                <div class="col-lg-3 d-flex align-items-center justify-content-center">
+                                    <div class="member-card-img">
+                                        <img src="{{ url('frontend/img/updatelogo.png') }}" alt="">
                                     </div>
                                 </div>
+                                <div class="col-lg-8">
+                                    <h4>Latest Updates Are:</h4>
+
+                                    <div class="">
+                                        @if (isset($combinedData) && count($combinedData) > 0)
+                                            <ul>
+                                                @foreach ($combinedData as $update)
+                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><a
+                                                            href="https://maps.app.goo.gl/LDaHDH3XSHSPAF3Q6" class="">
+                                                            @if (isset($update->title))
+                                                                {{ $update->title }}
+                                                            @elseif(isset($update->event_name))
+                                                                {{ $update->event_name }}
+                                                            @elseif(isset($update->association_name))
+                                                                {{ $update->association_name }}
+                                                            @endif
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+
+                                            </ul>
+                                        @endif
+                                    </div>
+                                </div>
+
                             </div>
-                            {{-- ------------------------------------------------------------------------------------------- --}}
                         </div>
-                    @endforeach
+                    </div>
+                </div>
 
 
-                    {{-- Commented Code is Pagination Code --}}
-                    {{-- <div>
-            {!! $eventDetails->links() !!}
-        </div> --}}
-                @else
-                    <h1>No Event details available.</h1>
-                @endif
+
+
+
+
+
             </div>
             <div class="py-4 text-center ">
                 <a href="{{ url('/about/updates') }}" class="primary-btn">View More</a>

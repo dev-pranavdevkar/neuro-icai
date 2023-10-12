@@ -109,7 +109,7 @@
                                     <th scope="col">Batch Description:</th>
                                     <td scope="col">
 
-                                        <p> ₹ {{ $batchDetails['batch_discription'] }}</p><br>
+                                        <p> {{ $batchDetails['batch_discription'] }}</p><br>
                                         {{-- <span>For Students: ₹ {{ $batchDetails['price_for_students'] }} </span><br>
                                         <span>For Others: ₹ {{ $batchDetails['event_fee'] }} </span><br> --}}
 

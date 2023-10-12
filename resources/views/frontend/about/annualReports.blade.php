@@ -29,12 +29,14 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-2">
-                                            <a href="{{ $annualReport['annual_reports_pdf'] }}" target="_blank" download><img
-                                                    src="{{ url('frontend/img/download-pdf.png') }}" alt=""></a>
+                                            <a href="{{ $annualReport['annual_reports_pdf'] }}" target="_blank"
+                                                download><img src="{{ url('frontend/img/download-pdf.png') }}"
+                                                    alt=""></a>
                                         </div>
                                         <div class="col-10 text-right">
                                             <div class="">
-                                                <h4>{{ \Carbon\Carbon::parse($meeting['report_start_date'])->format('Y') }}-{{ \Carbon\Carbon::parse($meeting['report_end_date'])->format('y') }}</h4>
+                                                <h4>{{ \Carbon\Carbon::parse($meeting['report_start_date'])->format('Y') }}-{{ \Carbon\Carbon::parse($meeting['report_end_date'])->format('y') }}
+                                                </h4>
                                             </div>
                                             <div class="">
                                                 <b> {{ $annualReport['title'] }} </b>

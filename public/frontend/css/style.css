@@ -116,6 +116,24 @@ input[type=file]::file-selector-button {
 	  opacity: 0;
 	}
   }
+.hidden-div{
+	max-height: 500px !important;
+	overflow-y:hidden !important;
+	position: relative;
+  }
+  .scrolling-content {
+	position: absolute;
+	animation: scroll 10s linear infinite; /* Adjust the animation duration as needed */
+}
+
+@keyframes scroll {
+	from {
+		transform: translateY(0);
+	}
+	to {
+		transform: translateY(-100%);
+	}
+}
 .member-card {
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	height: 100%;
