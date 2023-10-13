@@ -2691,7 +2691,7 @@ public function getAllUserAttendTheEvent(Request $request)
 			$skip = $limit*$pageNo;
 			$query= $query->skip($skip)->limit($limit);
 		}
-		$data = $query->get();
+		$data = $query->orderBy('id', 'DESC')->get();
 		if(count($data)>0){
 			$response['notice_board'] =  $data;
 			$response['count']=$count;

@@ -208,86 +208,127 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
     }
 }
 
-  public function getUpcomingEvent(Request $request)
-  {
-      try {
-          $validator = Validator::make($request->all(), [
-              'pageNo' => 'numeric',
-              'limit' => 'numeric',
-              'filter' => 'in:upcoming,past',
-          ]);
 
-          if ($validator->fails()) {
-              return $this->sendError('Validation Error.', $validator->errors(), 400);
-          }
-          // $query = LocationDetails::query();
-          $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
-          // Filter upcoming events based on the 'filter' parameter
-          if ($request->has('filter')) {
-              $filter = $request->filter;
-              if ($filter === 'upcoming') {
-                  // For upcoming events, filter those with the event_end_date greater than today's date
-                  $query = $query->where('event_end_date', '>', date('Y-m-d'));
-              }
-          }
-          // Get the start and end dates for the current week
-          $startOfWeek = date('Y-m-d', strtotime('this week'));
-          $endOfWeek = date('Y-m-d', strtotime('this week +6 days'));
-          // Filter events for this week
-          $queryThisWeek = clone $query; // Create a clone of the query to use for this week
-          $queryThisWeek = $queryThisWeek->where('event_start_date', '>=', $startOfWeek); // Events that start on or after the start of the week
-          $queryThisWeek = $queryThisWeek->where('event_start_date', '<=', $endOfWeek); // Events that start on or before the end of the week
-          // Filter events for next week
-          $nextWeek = date('Y-m-d', strtotime('+1 week')); // Get the date one week from today
-          $queryNextWeek = clone $query; // Create a clone of the query to use for the next week
-          $queryNextWeek = $queryNextWeek->where('event_start_date', '>=', date('Y-m-d')); // Only consider events that haven't ended yet
-          $queryNextWeek = $queryNextWeek->where('event_start_date', '<', $nextWeek);
-                $currentDate = now();
+public function getUpcomingEvent(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'filter' => 'in:upcoming,past',
+        ]);
 
-        // Calculate the first day of the next month
-        $firstDayNextMonth = $currentDate->copy()->addMonthNoOverflow()->startOfMonth();
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $userId = Auth::user()->id;
+        $now = Carbon::now();
+        $currentDate = Carbon::now('Asia/Kolkata');
 
-        // Calculate the last day of the next month
-        $lastDayNextMonth = $firstDayNextMonth->copy()->endOfMonth();
+        // Calculate the start and end of the current week with time
+        $startOfWeek = $now->startOfWeek()->format('Y-m-d H:i:s');
+        $endOfWeek = $now->endOfWeek()->format('Y-m-d H:i:s');
 
-        // Query for events in the next month
-        $queryNextMonth = EventDetails::query()
-            ->where('event_start_date', '>=', $firstDayNextMonth)
-            ->where('event_start_date', '<', $lastDayNextMonth)
-            ->with(['location_details']);
-          // Count the total number of events matching the filters
-          $countThisWeek = $queryThisWeek->count();
-          $countNextWeek = $queryNextWeek->count();
-          $countNextMonth = $queryNextMonth->count();
-          if ($request->has('pageNo') && $request->has('limit')) {
-              $limit = $request->limit;
-              $pageNo = $request->pageNo;
-              $skip = $limit * $pageNo;
-              $query = $query->skip($skip)->limit($limit);
-              $queryThisWeek = $queryThisWeek->skip($skip)->limit($limit);
-              $queryNextWeek = $queryNextWeek->skip($skip)->limit($limit);
-              $queryNextMonth = $queryNextMonth->skip($skip)->limit($limit);
-          }
-          $data = $query->orderBy('event_start_date', 'ASC')->get();
-          $dataThisWeek = $queryThisWeek->orderBy('event_start_date', 'ASC')->get();
-          $dataNextWeek = $queryNextWeek->orderBy('event_start_date', 'ASC')->get();
-          $dataNextMonth = $queryNextMonth->orderBy('event_start_date', 'ASC')->get();
-          $response['this_week'] = $dataThisWeek;
-          $response['next_week'] = $dataNextWeek;
-          $response['next_month'] = $dataNextMonth;
-          $response['count_this_week'] = $countThisWeek;
-          $response['count_next_week'] = $countNextWeek;
-          $response['count_next_month'] = $countNextMonth;
-          if (count($dataThisWeek) > 0 || count($dataNextWeek) > 0 || count($dataNextMonth) > 0) {
-              return $this->sendResponse($response, 'Data Fetched Successfully', true);
-          } else {
-              return $this->sendResponse('No Data Available', [], false);
-          }
-      } catch (Exception $e) {
-          return $this->sendError($e->getMessage(), $e->getTrace(), 500);
-      }
-  }
+        // Calculate the start of next week with time
+        $nextWeekStart = $now->copy()->endOfWeek()->addDay()->format('Y-m-d H:i:s');
 
+        // Calculate the start of next month
+        $nextMonthStart = $now->copy()->addMonthNoOverflow()->startOfMonth();
+
+        $query = EventDetails::query()->with(['location_details'])->get();
+
+        // Filter events for this week
+        $queryThisWeek = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->where('event_start_date', '>=', $startOfWeek)
+            ->where('event_start_date', '<=', $endOfWeek);
+
+        $queryNextWeek = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->where('event_start_date', '>=', $nextWeekStart);
+
+        $queryThisMonth = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->whereBetween('event_start_date', [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()]);
+
+        $queryNextMonth = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->where('event_start_date', '>=', $nextMonthStart);
+
+        // Count the total number of events matching the filters
+        $countThisWeek = $queryThisWeek->count();
+        $countNextWeek = $queryNextWeek->count();
+        $countThisMonth = $queryThisMonth->count();
+        $countNextMonth = $queryNextMonth->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+            $queryThisWeek = $queryThisWeek->skip($skip)->limit($limit);
+            $queryNextWeek = $queryNextWeek->skip($skip)->limit($limit);
+            $queryThisMonth = $queryThisMonth->skip($skip)->limit($limit);
+            $queryNextMonth = $queryNextMonth->skip($skip)->limit($limit);
+        }
+
+       // Fetch the data for each time frame
+        $dataThisWeek = $queryThisWeek->orderBy('event_start_date', 'ASC')->get();
+        $dataNextWeek = $queryNextWeek->orderBy('event_start_date', 'ASC')->get();
+        $dataThisMonth = $queryThisMonth->orderBy('event_start_date', 'ASC')->get();
+        $dataNextMonth = $queryNextMonth->orderBy('event_start_date', 'ASC')->get();
+
+        // Additional code to update properties of each event
+        foreach ($dataThisWeek as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        foreach ($dataNextWeek as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        foreach ($dataThisMonth as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        foreach ($dataNextMonth as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        $response['this_week'] = $dataThisWeek;
+        $response['next_week'] = $dataNextWeek;
+        $response['this_month'] = $dataThisMonth;
+        $response['next_month'] = $dataNextMonth;
+        $response['count_this_week'] = $countThisWeek;
+        $response['count_next_week'] = $countNextWeek;
+        $response['count_this_month'] = $countThisMonth;
+        $response['count_next_month'] = $countNextMonth;
+
+        if (count($dataThisWeek) > 0 || count($dataNextWeek) > 0 || count($dataThisMonth) > 0 || count($dataNextMonth) > 0) {
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
     public function getPastEvents(Request $request)
 {
     try {
@@ -569,34 +610,88 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
+    // public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'event_id' => 'nullable|integer|exists:event_details,id',
+    //             'student_batche_id' => 'nullable|integer|exists:student_batches,id',
+    //             'user_id'=>'required|integer|exists:users,id',
+    //             'gst_no' => 'required',
+    //             'legal_name' => 'required',
+    //             'event_price' => 'required|nullable',
+    //             'total_amount' => 'required|nullable',
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
+    //         $newEventRegistration = new EventRegistration();
+    //         $newEventRegistration->event_id=$request->event_id;
+    //         $newEventRegistration->student_batche_id=$request->student_batche_id;
+    //         $newEventRegistration->user_id=$request->user_id;
+    //         $newEventRegistration->gst_no=$request->gst_no;
+    //         $newEventRegistration->legal_name=$request->legal_name;
+    //         $newEventRegistration->attendance_status = $request->attendance_status;
+    //         $newEventRegistration->event_price = $request->event_price;
+    //         $newEventRegistration->total_amount = $request->total_amount;
+    //         $newEventRegistration->save();
+    //         if($newEventRegistration->save()){
+    //             $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+    //             $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id, 'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
+    //             $newEventRegistration->razorpay_id = $orderDetails->id;
+    //             $newEventRegistration->save();
+    //             $response = [];
+    //             $response['system_order_id']=$newEventRegistration->id;
+    //             $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
+    //             $response['razorpay_api_key']=env('R_API_KEY');
+    //             return $this->sendResponse($response, 'Payment Initiated Successfully',true);
+    //         }else{
+    //             return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
+    //         }
+
+    //     }
+    //     catch (Exception $e) {
+    //         return $this->sendError('Something went wrong', $e->getTrace(), 413);
+    //     }
+    // }
+        public function eventRegister(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_id' => 'nullable|integer|exists:event_details,id',
-                'student_batche_id' => 'nullable|integer|exists:student_batches,id',
-                'user_id'=>'required|integer|exists:users,id',
-                'gst_no' => 'required',
-                'legal_name' => 'required',
-                'event_price' => 'required|nullable',
-                'total_amount' => 'required|nullable',
+                'event_id' => 'required|integer|exists:event_details,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
+            $eventDetails = EventDetails::find($request->event_id);
+            $user = Auth::user();
+            $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
+                ->where('payment_status','like',"paid")->first();
+            if(!is_null($eventRegistration)){
+                return $this->sendResponse([],'You are already registered to this event',false);
+            }
+            $isMember = false;
+            if(in_array('members',Auth::user()->roles->pluck('name')->toArray())){
+                $isMember = true;
+            }else if(in_array('students',Auth::user()->roles->pluck('name')->toArray())){
+                $isMember = false;
+            }
+            $totalAmount = $isMember?$eventDetails->price_for_members:$eventDetails->price_for_students;
+
             $newEventRegistration = new EventRegistration();
             $newEventRegistration->event_id=$request->event_id;
-            $newEventRegistration->student_batche_id=$request->student_batche_id;
-            $newEventRegistration->user_id=$request->user_id;
-            $newEventRegistration->gst_no=$request->gst_no;
-            $newEventRegistration->legal_name=$request->legal_name;
-            $newEventRegistration->attendance_status = $request->attendance_status;
-            $newEventRegistration->event_price = $request->event_price;
-            $newEventRegistration->total_amount = $request->total_amount;
+            $newEventRegistration->student_batche_id = $request->student_batche_id;
+            $newEventRegistration->user_id=$user->id;
+            $newEventRegistration->gst_no=null;
+            $newEventRegistration->legal_name=null;
+            $newEventRegistration->attendance_status =null;
+            $newEventRegistration->event_price = $totalAmount;
+            $newEventRegistration->total_amount = $totalAmount;
             $newEventRegistration->save();
             if($newEventRegistration->save()){
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id, 'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
+                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
@@ -607,9 +702,8 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
             }else{
                 return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
             }
-
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
@@ -890,7 +984,10 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
                 });
             }
             $currentDate = date('Y-m-d');
-            $query->where('expiry_date', '>=', $currentDate);
+            $query->where(function ($query) use ($currentDate) {
+            $query->where('expiry_date', '>=', $currentDate)
+                ->orWhereNull('expiry_date');
+        });
 
             $count = $query->count();
 
@@ -988,7 +1085,7 @@ public function addRegisterToAssociation(Request $request): \Illuminate\Http\Jso
 			$skip = $limit*$pageNo;
 			$query= $query->skip($skip)->limit($limit);
 		}
-		$data = $query->get();
+		$data = $query->orderBy('id', 'DESC')->get();
 		if(count($data)>0){
 			$response['data'] =  $data;
 			$response['count']=$count;
@@ -1018,13 +1115,13 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
     }
 }
-      public function getAllEventDetails(Request $request)
+  public function getAllEventDetails(Request $request)
 {
     try {
         $validator = Validator::make($request->all(), [
             'pageNo' => 'numeric',
             'limit' => 'numeric',
-            'filter' => 'in:upcoming,past',
+            'filter' => 'in:upcoming,past,ongoing,this_week,next_week',
             'event_start_date' => 'date_format:Y-m-d',
             'event_end_date' => 'date_format:Y-m-d',
         ]);
@@ -1032,9 +1129,15 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
+        $userId = Auth::user()->id;
         $currentDate = carbon::now('Asia/Kolkata');
             $now = carbon::now();
-        $query = EventDetails::query()->with(['location_details','event_images','event_video','event_presntation']);
+            $currentWeekStart = $now->startOfWeek();
+            $currentWeekEnd = $now->endOfWeek();
+            $nextWeekStart = $currentWeekStart->copy()->addWeek();
+        $nextWeekEnd = $currentWeekEnd->copy()->addWeek();
+        $query = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation']);
         if ($request->has('filter')) {
             $filter = $request->filter;
             if ($filter === 'upcoming') {
@@ -1046,7 +1149,20 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
             if ($filter === 'ongoing') {
                     $query->where('event_start_date', '<=', $currentDate)
                         ->where('event_end_date', '>=', $currentDate);
-                }
+            }
+            if ($filter === 'this_week') {
+                // Include events that have not yet started and are ongoing this week
+                $query->where(function ($query) use ($currentWeekStart, $currentWeekEnd, $currentDate) {
+                    $query->where('event_start_date', '>', $currentDate)
+                        ->orWhere(function ($query) use ($currentDate) {
+                            $query->where('event_start_date', '<=', $currentDate)
+                                ->where('event_end_date', '>=', $currentDate);
+                        });
+                });
+            }
+            if ($filter === 'next_week') {
+                $query->whereBetween('event_start_date', [$nextWeekStart, $nextWeekEnd]);
+            }
         }
         $count = $query->count();
         if ($request->has('event_name')) {
@@ -1064,28 +1180,22 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
             $skip = $limit * $pageNo;
             $query = $query->skip($skip)->limit($limit);
         }
-         $data = $query->orderBy('id', 'DESC')->get();
-         $eventsData = [];
+            $data = $query->orderBy('id', 'DESC')->get();
 
-    foreach ($data as $event) {
-        if ($event->parent_event_id === null) {
-            $event->children = [];
-            $eventsData[] = $event;
-        } else {
-            foreach ($eventsData as &$parentEvent) {
-                if ($parentEvent->id === $event->parent_event_id) {
-                    $parentEvent->children[] = $event;
-                }
+             if (count($data) > 0) {
+            foreach ($data as $event) {
+                $event->is_series_event = count($event->children) > 0;
+                $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+                $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
             }
-        }
-    }
-        if (count($eventsData) > 0) {
-            $response['event_details'] = $eventsData;
-            $response['count'] = $count;
-            return $this->sendResponse($response, 'Data Fetched Successfully', true);
-        } else {
-            return $this->sendResponse('No Data Available', [], false);
-        }
+                $response['event_details'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
     } catch (Exception $e) {
         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
@@ -1104,6 +1214,10 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $user = Auth::user()->id;
+
+        // if (!$user->member) {
+        //     return $this->sendError('Permission Error', 'User is not a member', 403);
+        // }
             $newVacancy = new VacancyDetails();
             $newVacancy->position=$request->position;
             $newVacancy->comments=$request->comments;
@@ -1119,5 +1233,112 @@ public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\J
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
+public function getEventRegistrationByUser(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = EventRegistration::query()->with(['event_details','user_details',
+            'paymentmode_details','voluntary_contribution_details'])
+            ->where('user_id',Auth::user()->id);
+             $query->whereNotNull('event_id');
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['event_registration'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+     public function getLatestUpdate(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
 
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $eventData = EventDetails::orderBy('created_at', 'desc')->get();
+            $associationData = AssociationDetails::orderBy('created_at', 'desc')->get();
+            $newsletterData = NewsLetterDetails::orderBy('created_at', 'desc')->get();
+            $noticeBoardData = StudentNoticeBoard::orderBy('created_at', 'desc')->get();
+            $combinedData = $eventData
+                ->concat($associationData)
+                ->concat($newsletterData)
+                ->concat($noticeBoardData);
+            $combinedData = $combinedData->sortByDesc('created_at');
+
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * ($pageNo - 1);
+                $combinedData = $combinedData->slice($skip, $limit);
+            }
+            $formattedData = $combinedData->values();
+
+            if ($formattedData->count() > 0) {
+                return $this->sendResponse(["latest_update" => $formattedData], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No data available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+
+    public function getEventAttendentByUser(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = EventRegistration::query()
+            ->with(['event_details', 'user_details', 'paymentmode_details', 'voluntary_contribution_details'])
+            ->where('user_id', Auth::user()->id)
+            ->whereNotNull('event_id')
+            ->where('attendance_status', 1); // Filter by attendance_status equal to 1
+
+             $query->whereNotNull('event_id');
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['event_registration'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
 }

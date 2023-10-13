@@ -113,7 +113,6 @@ class HomeController extends Controller
             }else{
                 return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
             }
-
         }
         catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);

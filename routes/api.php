@@ -242,7 +242,7 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
 
             // EventDetails
             Route::get('getUpcomingEvent', [AppMetaDataController::class, 'getUpcomingEvent']);
-
+            Route::get('getAllEventDetails', [AppMetaDataController::class, 'getAllEventDetails']);
 
             Route::get('getEventCount', [AppMetaDataController::class, 'getEventCount']);
             Route::get('getEventAndAssociation', [AppMetaDataController::class, 'getEventAndAssociation']);
@@ -251,6 +251,12 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
 
             //EventRegistration
             Route::post('addEventRegistration', [AppMetaDataController::class, 'addEventRegistration']);
+            //get event register by  user
+            Route::get('getEventRegistrationByUser', [AppMetaDataController::class, 'getEventRegistrationByUser']);
+
+            //get Event Attend By User
+            Route::get('getEventAttendentByUser', [AppMetaDataController::class, 'getEventAttendentByUser']);
+
             //payment verification
             Route::post('paymentVerification', [AppMetaDataController::class, 'paymentVerification']);
 
@@ -279,6 +285,8 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
             //Student Notice Board
             Route::get('getStudentNoticeBoard', [AppMetaDataController::class, 'getStudentNoticeBoard']);
             Route::get('getStudentNoticeBoardById', [AppMetaDataController::class, 'getStudentNoticeBoardById']);
+            //get latest update
+            Route::get('getLatestUpdate', [AppMetaDataController::class, 'getLatestUpdate']);
         }
     );
 });
