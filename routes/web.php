@@ -71,6 +71,7 @@ Route::get('/members/subscribeForSMSAlerts',[MembersController::class, 'subscrib
 Route::get('/members/membersFAQ',[MembersController::class, 'membersFAQ']);
 Route::get('/members/CPEStudyCircles',[MembersController::class, 'CPEStudyCircles']);
 Route::get('/members/membersNoticeboard',[MembersController::class, 'membersNoticeboard']);
+Route::get('/members/association/associations',[MembersController::class, 'associations']);
 
 
 // Students Dropdown Pages

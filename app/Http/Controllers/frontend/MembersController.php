@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\NewsLetterDetails;
 use App\models\StudentNoticeBoard;
 use App\Models\MembersMeeting;
-
+use App\Models\AssociationDetails;
 class MembersController extends Controller
 {
     public function exposureDrafts()
@@ -53,4 +53,11 @@ class MembersController extends Controller
         $memberNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
         return view('frontend.members.membersNoticeboard', compact('memberNoticeBoard'));
     }
+
+    public function associations()
+    {
+        $associations = AssociationDetails::with([])->paginate(10);
+        return view('frontend.members.association.associations', compact('associations'));
+    }
+
 }

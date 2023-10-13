@@ -298,17 +298,19 @@
                                     <div class="">
                                         <ul class="events">
                                             <li><a href="{{ url('/') }}"><i
-                                                        class="fa fa-calendar"></i>{{ $event['event_start_date'] }} To
-                                                    {{ $event['event_end_date'] }}
+                                                        class="fa fa-calendar"></i> {{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-m-Y') }} To 
+                                                        <br/> {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-m-Y') }}
+                                                   
                                                 </a></li>
-                                            <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To
-                                                    06:00 PM
+                                            <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> {{ \Carbon\Carbon::parse($event['event_start_date'])->format('h:i A') }} To
+                                                {{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }}
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="text-center">
-                                        <a class="readMore" href="#">Read More</a>
+                                        <a class="readMore"   href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}">Read More</a>
+                                  
                                     </div>
                                 </div>
                             </div>
@@ -370,18 +372,26 @@
                                         @if (isset($combinedData) && count($combinedData) > 0)
                                             <ul>
                                                 @foreach ($combinedData as $update)
-                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><a
-                                                            href="https://maps.app.goo.gl/LDaHDH3XSHSPAF3Q6" class="">
-                                                            @if (isset($update->title))
-                                                                {{ $update->title }}
-                                                            @elseif(isset($update->event_name))
-                                                                {{ $update->event_name }}
-                                                            @elseif(isset($update->association_name))
-                                                                {{ $update->association_name }}
-                                                            @endif
+                                                <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>
+                                            
+                                                    {{-- Determine the link based on the type of update --}}
+                                                    @if (isset($update->title))
+                                                        <a href="{{ url('/about/updates') }}" class="">
+                                                            {{ $update->title }}
                                                         </a>
-                                                    </li>
-                                                @endforeach
+                                                    @elseif(isset($update->event_name))
+                                                        <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}" class="">
+                                                            {{ $update->event_name }}
+                                                        </a>
+                                                    @elseif(isset($update->association_name))
+                                                        <a href="{{ url('/') }}" class="">
+                                                            {{ $update->association_name }}
+                                                        </a>
+                                                    @endif
+                                            
+                                                </li>
+                                            @endforeach
+                                            
 
                                             </ul>
                                         @endif
@@ -467,11 +477,7 @@
     <!-- Counter Begin -->
     <div class="counter spad">
         <div class="container">
-            @if (Auth::user() ||
-                    (Auth::user() &&
-                        in_array(
-                            'members',
-                            Auth::user()->roles->pluck('name')->toArray())))
+            @if (Auth::user() && in_array('members', Auth::user()->roles->pluck('name')->toArray()))
                 <div class="row">
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="counter__item">
@@ -507,11 +513,7 @@
             @endif
 
 
-            @if (Auth::user() ||
-                    (Auth::user() &&
-                        in_array(
-                            'student',
-                            Auth::user()->roles->pluck('name')->toArray())))
+            @if (Auth::user() && in_array('student', Auth::user()->roles->pluck('name')->toArray()))
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-6">
                         <div class="counter__item">
@@ -828,7 +830,8 @@
                                             GST, TDS, etc.</p>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary">View
+                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#applyJob">View
                                             Details</a>
                                     </div>
 

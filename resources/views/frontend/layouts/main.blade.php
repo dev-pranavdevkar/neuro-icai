@@ -83,6 +83,10 @@
                                     SMS Alerts </a></li> --}}
                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
                                 </a></li>
+                                <li><a href="{{ url('/members/membersNoticeboard') }}"> Members Noticeboard
+                                </a></li>
+                                <li><a href="{{ url('/members/association/associations') }}"> Associations
+                                </a></li>
 
                         </ul>
 
@@ -278,6 +282,10 @@
                                             {{-- <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
                                                     SMS Alerts </a></li> --}}
                                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
+                                                </a></li>
+                                                <li><a href="{{ url('/members/membersNoticeboard') }}"> Members Noticeboard
+                                                </a></li>
+                                                <li><a href="{{ url('/members/association/associations') }}"> Associations
                                                 </a></li>
                                         </ul>
 
