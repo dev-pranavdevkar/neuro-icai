@@ -257,7 +257,7 @@
                                                     <div>
 
                                                         @if (Auth::user())
-                                                            @if ($eventDetails->event_end_date > now())
+                                                            @if ($eventDetails->event_start_date > now())
                                                                 <button id="payNow" class="btn btn-primary"
                                                                     data-event="{{ $eventDetails->id }}">Pay
                                                                     Now</button>

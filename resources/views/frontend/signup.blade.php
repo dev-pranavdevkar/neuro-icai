@@ -21,7 +21,7 @@
                                 <div class="input-list">
                                     <p>Register As</p>
                                     <div class="input-list-item radio d-flex">
-                                        <input class="radio-btn" type="radio" id="role_member" name="role"
+                                        <input class="radio-btn" type="radio" id="role_members" name="role"
                                             value="members">
                                         <label for="role_member">Member</label>
                                     </div>
@@ -31,6 +31,7 @@
                                         <label for="role_student">Student</label>
                                     </div>
                                 </div>
+
 
 
                                 <!-- Personal Information -->

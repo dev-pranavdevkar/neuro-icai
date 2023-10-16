@@ -16,20 +16,20 @@ class EventsController extends Controller
     {
         try {
             $eventDetails = EventDetails::query();
-
+    
             if ($filter === 'past') {
                 $eventDetails->where('event_start_date', '<', now());
             }
-
-            $eventDetails = EventDetails::orderBy('created_at', 'desc')->paginate(5);
-
-
+    
+            $eventDetails = $eventDetails->orderBy('created_at', 'desc')->paginate(5);
+    
             return view('frontend.events.pastEvents', compact('eventDetails'));
         } catch (Exception $e) {
             // Handle exceptions as needed
             return redirect()->back()->with('error', 'Error fetching past events.');
         }
     }
+    
 
 
     public function upcommingEvents($filter = 'upcoming')

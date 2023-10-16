@@ -120,7 +120,11 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/event-details/{id}',[HomeController::class,'eventDetails'])->name('eventDetails');
 Route::post('/eventRegister',[HomeController::class,'eventRegister'])->name('eventRegister')->middleware(['auth']);
 Route::post('/checkOrderRazorpayPaymentStatus',[HomeController::class,'checkOrderRazorpayPaymentStatus'])->name('checkOrderRazorpayPaymentStatus');
+Route::post('/batchRegister', [StudentsController::class, 'batchRegister'])
+    ->name('batchRegister')
+    ->middleware(['auth', 'web']);
 
+Route::post('/checkOrderRazorpayPaymentStatusforBatch', [StudentsController::class, 'checkOrderRazorpayPaymentStatusforBatch'])->name('checkOrderRazorpayPaymentStatusforBatch');
 // ===========Profile Routes ====================
 Route::get('/profile/digitalIdCard',[ProfileController::class, 'digitalIdCard']);
 Route::get('/profile/editProfile',[ProfileController::class, 'editProfile']);

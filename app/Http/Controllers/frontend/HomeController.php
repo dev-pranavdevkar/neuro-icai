@@ -85,6 +85,7 @@ class HomeController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'event_id' => 'required|integer|exists:event_details,id',
+                
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());

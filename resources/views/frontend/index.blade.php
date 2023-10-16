@@ -376,7 +376,7 @@
                                             
                                                     {{-- Determine the link based on the type of update --}}
                                                     @if (isset($update->title))
-                                                        <a href="{{ url('/about/updates') }}" class="">
+                                                        <a href=" {{ $update->upload_newsletter_pdf ?? $update->notice_board_pdf ?? url('/') }}" class="">
                                                             {{ $update->title }}
                                                         </a>
                                                     @elseif(isset($update->event_name))
@@ -384,7 +384,7 @@
                                                             {{ $update->event_name }}
                                                         </a>
                                                     @elseif(isset($update->association_name))
-                                                        <a href="{{ url('/') }}" class="">
+                                                        <a href="{{ url('/members/association/associations') }}" class="">
                                                             {{ $update->association_name }}
                                                         </a>
                                                     @endif

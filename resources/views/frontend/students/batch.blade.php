@@ -118,7 +118,7 @@
                     </div>
                 </div>
             @else
-                <h1>No event details available.</h1>
+                <h1>No Batches details available.</h1>
             @endif
 
 
