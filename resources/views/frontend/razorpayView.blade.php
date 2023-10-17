@@ -1,6 +1,7 @@
 @extends('frontend.layouts.main')
 @section('main-container')
     <!-- Breadcrumb Section Begin -->
+
     <div class="breadcrumb-option set-bg" data-setbg="{{ url('frontend/img/breadcrumb/breadcrumb-bg.jpg') }}">
         <div class="container">
             <div class="row">
@@ -142,6 +143,8 @@
                                     role="tab">Event Images</a> </li>
                             <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-four"
                                     role="tab">Event Videos</a> </li>
+                            <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
+                                    role="tab">Event Tickit</a> </li>
                         </ul>
 
                     </nav>
@@ -258,13 +261,14 @@
 
                                                         @if (Auth::user())
                                                             @if ($eventDetails->event_start_date > now())
-                                                                @if(is_null($alreadyRegistered))
+                                                                @if (is_null($alreadyRegistered))
                                                                     <button id="payNow" class="btn btn-primary"
                                                                         data-event="{{ $eventDetails->id }}">Pay
                                                                         Now</button>
                                                                 @else
-                                                                <button id="viewTickit" class="btn btn-primary"
-                                                                data-event="{{ $eventDetails->id }}">View Tickit</button>
+                                                                    <button id="viewTickit" class="btn btn-primary"
+                                                                        data-event="{{ $eventDetails->id }}">View
+                                                                        Tickit</button>
                                                                 @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
@@ -391,6 +395,123 @@
                         </div>
                         <!-- end tab-pane -->
 
+                        <div class="tab-pane fade" id="tab-five">
+                            <div class="row">
+
+
+                                <div class="col-lg-12 py-3">
+
+                                    <div class="card">
+                                        <div class="card-body">
+
+                                            <div class="row ">
+                                                <div class="col-lg-2 ">
+
+                                                    <div class=" ">
+
+
+                                                        <img src="{{ url('/frontend/img/icai.png') }}"
+                                                            alt="">
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-7">
+                                                    <h5 class="card-title tex-left">{{ $eventDetails['event_name'] }}</h5>
+                                                    <table class="table ">
+
+
+
+                                                        <tbody>
+                                                            <tr>
+
+                                                                <th scope="col">Event Date:</th>
+                                                                <td scope="col">
+                                                                    {{ \Carbon\Carbon::parse($eventDetails['event_start_date'])->format('d-M-Y') }}
+                                                                    TO
+                                                                    {{ \Carbon\Carbon::parse($eventDetails['event_end_date'])->format('d-M-Y') }}
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                            <tr>
+
+                                                                <th scope="col">Event Time:</th>
+                                                                <td scope="col">
+                                                                    {{ \Carbon\Carbon::parse($eventDetails['event_end_date'])->format('h:i A') }}
+                                                                    To
+                                                                    {{ \Carbon\Carbon::parse($eventDetails['event_start_date'])->format('h:i A') }}
+                                                                </td>
+
+
+                                                            </tr>
+
+                                                            <tr>
+
+                                                                <th scope="col">Event Fee:</th>
+                                                                <td scope="col">
+                                                                    {{ $eventDetails['price_for_members'] }}
+                                                                </td>
+
+
+
+                                                            </tr>
+
+
+                                                            <tr>
+                                                                <th scope="col">Location:</th>
+                                                                <td scope="col">
+                                                                    {{ $eventDetails['location_details']['address_line_1'] }}
+                                                                    {{ $eventDetails['location_details']['address_line_2'] }}
+                                                                    {{ $eventDetails['location_details']['city'] }}
+                                                                    {{ $eventDetails['location_details']['state'] }}
+                                                                    {{ $eventDetails['location_details']['country'] }}-{{ $eventDetails['location_details']['pincode'] }}
+                                                                </td>
+                                                            </tr>
+
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-lg-3 border-left-dashed">
+
+                                                    <div>
+
+                                                        <p class="text-center">{{ $eventDetails['event_name'] }}</p>
+                                                        <img src="{{ url('/frontend/img/scanner.jpg') }}"
+                                                            alt="">
+                                                        <p class="text-center">{{ $eventDetails['event_name'] }}</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                     
+
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mt-5">
+
+                                        <div>
+
+
+                                            <button id="viewTickit" class="btn btn-primary"
+                                                data-event="{{ $eventDetails->id }}">Download Tickit</button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <!-- end tab-pane -->
+
 
 
                     </div>
@@ -414,7 +535,7 @@
     </div>
 
 
-    
+
 
 
 
