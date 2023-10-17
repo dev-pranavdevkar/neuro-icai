@@ -414,8 +414,7 @@
     </div>
 
 
-    {{ $eventDetails['is_event_registered'] ?? 'Default Value' }}
-
+    
 
 
 

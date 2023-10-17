@@ -19,56 +19,56 @@
         </div>
     </div>
     <!-- Breadcrumb Section End -->
-@section('js')
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
-        $(document).ready(function() {
-            console.log("ready!");
-        });
 
-        $('#payNow').click(function() {
-            console.log('clicked', $(this).data('batch'));
-            let body = {
-                student_batche_id: $(this).data('batch')
-            }
 
-            // Include CSRF token in AJAX setup
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+
+    <section class="event-page py-5 spad">
+
+    @section('js')
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            $(document).ready(function() {
+                console.log("ready!");
             });
 
-            $.ajax({
-                url: `${window.location.protocol}//${window.location.host}/batchRegister`,
-                type: 'post',
-                contentType: 'application/json',
-                data: JSON.stringify(body),
-                success: function(data) {
-                    console.log(data);
-                    if (!data['success']) {
-                        toastr.error(data.message)
-                        return
+            $('#payNow').click(function() {
+                console.log('clicked', $(this).data('batch'));
+                let body = {
+                    student_batche_id: $(this).data('batch')
+                }
+
+                // Include CSRF token in AJAX setup
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                    // ... (unchanged code) ...
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    // Handle errors here
-                }
-            });
-        })
+                });
 
-        function verifyRazorpayPayment(payment_gateway_order_id, system_id) {
-            // ... (unchanged code) ...
-        }
-    </script>
-@endsection
+                $.ajax({
+                    url: `${window.location.protocol}//${window.location.host}/batchRegister`,
+                    type: 'post',
+                    contentType: 'application/json',
+                    data: JSON.stringify(body),
+                    success: function(data) {
+                        console.log(data);
+                        if (!data['success']) {
+                            toastr.error(data.message)
+                            return
+                        }
+                        // ... (unchanged code) ...
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        // Handle errors here
+                    }
+                });
+            })
 
-
-<section class="event-page py-5 spad">
-
-
+            function verifyRazorpayPayment(payment_gateway_order_id, system_id) {
+                // ... (unchanged code) ...
+            }
+        </script>
+    @endsection
     <div class="container">
 
         <div class="row">

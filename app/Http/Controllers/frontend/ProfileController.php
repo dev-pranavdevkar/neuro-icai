@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\EventDetails;
 use App\Models\EventRegistration;
+use  App\Models\StudentBatches;
 use Auth;
 
 class ProfileController extends Controller
@@ -28,6 +29,7 @@ class ProfileController extends Controller
     {
         $idCardData = null;
         $alreadyRegistered = null;
+        
     
         if ($request->has('idCard')) {
             $idCardData = User::find($request->idCard);
@@ -43,6 +45,8 @@ class ProfileController extends Controller
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
         }
+
+        $studentBatches = StudentBatches::with([])->paginate(3);
     
         return view('frontend.profile.dashboard', compact('idCardData', 'eventDetails', 'alreadyRegistered'));
     }

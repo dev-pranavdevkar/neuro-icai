@@ -59,7 +59,7 @@ class RazorpayPaymentController extends Controller
         // $eventRegistration = EventRegistration::with('eventDetails')->get(); // Assuming you have a relationship named eventDetails
         // return view('frontend.razorpayView', compact('eventRegistration'));
         $batchDetails = StudentBatches::with([])->paginate(3);
-        return view('frontend.razorpayView', compact('batchDetails'));
+        return view('frontend.students.batchDetails', compact('batchDetails'));
     }
 
     public function batchstore(Request $request)

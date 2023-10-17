@@ -110,8 +110,7 @@ class StudentsController extends Controller
             } else if (in_array('students', Auth::user()->roles->pluck('name')->toArray())) {
                 $isStudent = false;
             }
-            $totalAmount = $isStudent ? $batchDetails->event_price : $batchDetails->event_prices;
-
+            $totalAmount = $isStudent ? $batchDetails->fees : $batchDetails->fees;
             $newBatchRegistration = new EventRegistration();
             $newBatchRegistration->student_batche_id = $request->student_batche_id;
             $newBatchRegistration->user_id = $user;
@@ -125,7 +124,7 @@ class StudentsController extends Controller
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
                 $orderDetails = $api->order->create(array(
                     'receipt' => 'Inv-' . $newBatchRegistration->id,
-                    'amount' => intval($newBatchRegistration->total_amount) * 100, 'currency' => 'INR', 'notes' => array()
+                    'amount' => intval($newBatchRegistration->event_price) * 100, 'currency' => 'INR', 'notes' => array()
                 ));
                 $newBatchRegistration->razorpay_id = $orderDetails->id;
                 $newBatchRegistration->save();
