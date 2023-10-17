@@ -30,6 +30,7 @@ use App\Models\MembersMeeting;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManagerStatic as Image;
 use Carbon\Carbon;
+use Auth;
 class MetaDataController extends Controller
 {
     public function open()
@@ -789,70 +790,91 @@ class MetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-  public function getAllEventDetails(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'pageNo' => 'numeric',
-            'limit' => 'numeric',
-            'filter' => 'in:upcoming,past',
-            'event_start_date' => 'date_format:Y-m-d',
-            'event_end_date' => 'date_format:Y-m-d',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 400);
-        }
-        $currentDate = carbon::now('Asia/Kolkata');
-            $now = carbon::now();
-        $query = EventDetails::query()->whereNull('parent_event_id')
-        ->with(['children','location_details','event_images','event_video','event_presntation']);
-        if ($request->has('filter')) {
-            $filter = $request->filter;
-            if ($filter === 'upcoming') {
-                $query = $query->where('event_start_date', '>', $now);
+    public function getAllEventDetails(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+                'filter' => 'in:upcoming,past,ongoing,this_week,next_week',
+                'event_start_date' => 'date_format:Y-m-d',
+                'event_end_date' => 'date_format:Y-m-d',
+            ]);
+    
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            if ($filter === 'past') {
-                $query = $query->where('event_end_date', '<', $now);
-            }
-            if ($filter === 'ongoing') {
-                    $query->where('event_start_date', '<=', $currentDate)
-                        ->where('event_end_date', '>=', $currentDate);
+            $userId = Auth::user()->id;
+            $currentDate = carbon::now('Asia/Kolkata');
+                $now = carbon::now();
+                $currentWeekStart = $now->startOfWeek();
+                $currentWeekEnd = $now->endOfWeek();
+                $nextWeekStart = $currentWeekStart->copy()->addWeek();
+            $nextWeekEnd = $currentWeekEnd->copy()->addWeek();
+            $query = EventDetails::query()->whereNull('parent_event_id')
+            ->with(['children','location_details','event_images','event_video','event_presntation']);
+            if ($request->has('filter')) {
+                $filter = $request->filter;
+                if ($filter === 'upcoming') {
+                    $query = $query->where('event_start_date', '>', $now);
                 }
-        }
-        $count = $query->count();
-        if ($request->has('event_name')) {
-            $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
-        }
-        if ($request->has('event_fee')) {
-            $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
-        }
-        if ($request->has('event_start_date') && $request->has('event_end_date')) {
-            $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
-        }
-        if ($request->has('pageNo') && $request->has('limit')) {
-            $limit = $request->limit;
-            $pageNo = $request->pageNo;
-            $skip = $limit * $pageNo;
-            $query = $query->skip($skip)->limit($limit);
-        }
-            $data = $query->orderBy('id', 'DESC')->get();
-
-             if (count($data) > 0) {
-            foreach ($data as $event) {
-                $event->is_series_event = count($event->children) > 0;
-                $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+                if ($filter === 'past') {
+                    $query = $query->where('event_end_date', '<', $now);
+                }
+                if ($filter === 'ongoing') {
+                        $query->where('event_start_date', '<=', $currentDate)
+                            ->where('event_end_date', '>=', $currentDate);
+                }
+                if ($filter === 'this_week') {
+                    // Include events that have not yet started and are ongoing this week
+                    $query->where(function ($query) use ($currentWeekStart, $currentWeekEnd, $currentDate) {
+                        $query->where('event_start_date', '>', $currentDate)
+                            ->orWhere(function ($query) use ($currentDate) {
+                                $query->where('event_start_date', '<=', $currentDate)
+                                    ->where('event_end_date', '>=', $currentDate);
+                            });
+                    });
+                }
+                if ($filter === 'next_week') {
+                    $query->whereBetween('event_start_date', [$nextWeekStart, $nextWeekEnd]);
+                }
             }
-                $response['event_details'] = $data;
-                $response['count'] = $count;
-                return $this->sendResponse($response, 'Data Fetched Successfully', true);
-            } else {
-                return $this->sendResponse('No Data Available', [], false);
+            $count = $query->count();
+            if ($request->has('event_name')) {
+                $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
             }
-    } catch (Exception $e) {
-        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            if ($request->has('event_fee')) {
+                $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+            }
+            if ($request->has('event_start_date') && $request->has('event_end_date')) {
+                $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
+            }
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+                $data = $query->orderBy('id', 'DESC')->get();
+    
+                 if (count($data) > 0) {
+                foreach ($data as $event) {
+                    $event->is_series_event = count($event->children) > 0;
+                    $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+                    $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                    ->where('event_id', $event->id)
+                    ->exists();
+                }
+                    $response['event_details'] = $data;
+                    $response['count'] = $count;
+                    return $this->sendResponse($response, 'Data Fetched Successfully', true);
+                } else {
+                    return $this->sendResponse('No Data Available', [], false);
+                }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
     }
-}
     public function getEventDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {

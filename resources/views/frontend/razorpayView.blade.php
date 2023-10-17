@@ -258,9 +258,14 @@
 
                                                         @if (Auth::user())
                                                             @if ($eventDetails->event_start_date > now())
-                                                                <button id="payNow" class="btn btn-primary"
-                                                                    data-event="{{ $eventDetails->id }}">Pay
-                                                                    Now</button>
+                                                                @if(is_null($alreadyRegistered))
+                                                                    <button id="payNow" class="btn btn-primary"
+                                                                        data-event="{{ $eventDetails->id }}">Pay
+                                                                        Now</button>
+                                                                @else
+                                                                <button id="viewTickit" class="btn btn-primary"
+                                                                data-event="{{ $eventDetails->id }}">View Tickit</button>
+                                                                @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
                                                                     closed.</p>
@@ -407,6 +412,9 @@
 
 
     </div>
+
+
+    {{ $eventDetails['is_event_registered'] ?? 'Default Value' }}
 
 
 

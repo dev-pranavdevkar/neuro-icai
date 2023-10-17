@@ -83,6 +83,14 @@ p {
 	line-height: 25px;
 	margin: 0 0 15px 0;
 }
+.event-card-dashboard{
+	
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	border: 1px solid #182141;
+}
+.ticket-img-area{
+	background-color: #182141;
+}
 .associationImg{
 	display: inline-block;
     width: 100px;

@@ -39,7 +39,10 @@
                                 <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-three"
                                         role="tab">Change Password</a> </li>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-four"
-                                        role="tab">
+                                        role="tab">My Events</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
+                                        role="tab">My Batches</a> </li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#tab-six" role="tab">
                                         Logout</a> </li>
                             </ul>
 
@@ -64,7 +67,7 @@
                                         </div>
 
                                         <div class="row py-3">
-                                   
+
                                             <div class="col-lg-4 col-6">
                                                 <div class="card dashboard-card">
                                                     <div class="card-body">
@@ -151,7 +154,7 @@
                                             </div>
                                         </div>
 
-                                     
+
 
                                     </div>
 
@@ -164,7 +167,7 @@
                                         <div class="contact__form">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                              
+                                                    <h1>Edit Profile</h1>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,17 +205,49 @@
 
                                     </div>
                                     <!-- end tab-pane -->
-
-
-
-
-
                                     <div class="tab-pane fade" id="tab-four">
-                                        <h1>Logout Successfully</h1>
+                                        <h1>My Events</h1>
+                                        <div class="container">
+                                            <!-- Display Registered Events -->
+                                            @if ($alreadyRegistered->count() > 0)
+                                                <div class="row">
+                                                    @foreach ($alreadyRegistered as $registration)
+                                                        <div class="col-lg-6">
+                                                            <div class="card event-card-dashboard">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-3 ticket-img-area">
+                                                                        <a href="https://www.google.com">    <img src="{{ url('/frontend/img/ticket.png') }}" alt=""></a>
+                                                                        </div>
+                                                                        <div class="col-9">{{ $registration->event_details->event_name }}</div>
+                                                                    </div>
+                                                                  
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Add other event details as needed -->
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                {{ $alreadyRegistered->links() }} {{-- Display pagination links --}}
+                                            @else
+                                                <p>No registered events.</p>
+                                            @endif
+
+
+                                        </div>
                                     </div>
                                     <!-- end tab-pane -->
 
 
+                                    <div class="tab-pane fade" id="tab-five">
+                                        <h1>My Batches</h1>
+                                    </div>
+                                    <!-- end tab-pane -->
+                                    <div class="tab-pane fade" id="tab-six">
+                                        <h1>Logout Successfully</h1>
+                                    </div>
+                                    <!-- end tab-pane -->
 
                                 </div>
 

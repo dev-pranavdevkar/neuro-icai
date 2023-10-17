@@ -288,7 +288,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('userLogin', [WebAuthController::class, 'userLogin']);
     Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
-    Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
+    
     Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
     Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
@@ -317,6 +317,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     //add vaccancy
     Route::post('addVacancyDetails', [MetaDataController::class, 'addVacancyDetails']);
     Route::group(['middleware' => ['jwt.verify']], function () {
+        Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
         //EventRegistration
         Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
         //payment verification

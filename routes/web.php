@@ -115,7 +115,7 @@ Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->na
 Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verifyOtp');
 Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPassword'])->name('changeForgetPassword');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::get('dashboard',[WebAuthController::class,'dashboard'])->name('dashboard')->middleware('auth');
+Route::get('dashboard',[ProfileController::class,'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/event-details/{id}',[HomeController::class,'eventDetails'])->name('eventDetails');
 Route::post('/eventRegister',[HomeController::class,'eventRegister'])->name('eventRegister')->middleware(['auth']);
@@ -129,6 +129,8 @@ Route::post('/checkOrderRazorpayPaymentStatusforBatch', [StudentsController::cla
 Route::get('/profile/digitalIdCard',[ProfileController::class, 'digitalIdCard']);
 Route::get('/profile/editProfile',[ProfileController::class, 'editProfile']);
 Route::get('/profile/changePassword',[ProfileController::class, 'changePassword']);
+Route::post('/profile/changePassword', [ProfileController::class, 'changePassword']);
+
 
 
 // =============Rozerpay ==============

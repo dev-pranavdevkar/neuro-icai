@@ -77,7 +77,17 @@ class HomeController extends Controller
     public function eventDetails(Request $request, $id)
     {
         $eventDetails = EventDetails::with(['location_details', 'event_images', 'event_video', 'event_presntation'])->find($id);
-        return view('frontend.razorpayView', compact('eventDetails'));
+        $alreadyRegistered = null;
+        if(Auth::user()){
+            
+            $user = Auth::user();
+            $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
+                ->where('payment_status', 'like', "paid")->first();
+                // $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
+                // ->where('payment_status', 'like', "paid")->orderBy('id','DESC')->pagination(10);
+            
+        }
+        return view('frontend.razorpayView', compact(['eventDetails','alreadyRegistered']));
     }
 
     public function eventRegister(Request $request)
