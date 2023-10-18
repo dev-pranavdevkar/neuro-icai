@@ -138,3 +138,8 @@ Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'index']);
 Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'store'])->name('razorpay.payment.store');
 Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'batchindex']);
 Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'batchstore'])->name('razorpay.payment.store');
+
+
+Route::get('qrcode/{eventName}', function ($eventName) {
+    return QrCode::size(300)->generate($eventName);
+});

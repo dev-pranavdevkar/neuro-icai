@@ -105,7 +105,7 @@ return [
     | localized telephone numbers, street address information and more.
     |
     */
-    
+
 
     'faker_locale' => 'en_US',
 
@@ -164,6 +164,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -232,8 +233,11 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
-         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
 
     ],
+
+
 
 ];

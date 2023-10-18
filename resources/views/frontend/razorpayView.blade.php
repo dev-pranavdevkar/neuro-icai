@@ -537,6 +537,34 @@
 
 
 
+<button id="generateQrCodeBtn">Generate QR Code</button>
+
+   
+<script>
+    document.getElementById('generateQrCodeBtn').addEventListener('click', function() {
+        // Retrieve the event_id and event_name
+        var eventId = @json($eventDetails['id']);
+        var eventName = @json($eventDetails['event_name']);
+        var userLastName = @json(Auth::user()->last_name);
+        // Create an object with event_id and event_name
+        var qrData = {
+            event: {
+                event_id: eventId,
+                event_name: eventName
+            },
+            user: {
+               
+                last_name: userLastName
+            }
+        };
+        
+        // Convert the object to a JSON string
+        var qrDataString = JSON.stringify(qrData);
+
+        // Redirect to the 'qrcode' route with the event data as a parameter
+        window.location.href = '{{ url("qrcode") }}/' + encodeURIComponent(qrDataString);
+    });
+</script>
 
 
 </section>

@@ -87,6 +87,7 @@ class HomeController extends Controller
                 // ->where('payment_status', 'like', "paid")->orderBy('id','DESC')->pagination(10);
             
         }
+        
         return view('frontend.razorpayView', compact(['eventDetails','alreadyRegistered']));
     }
 

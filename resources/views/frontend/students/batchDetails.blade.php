@@ -55,6 +55,40 @@
                             toastr.error(data.message)
                             return
                         }
+                        let options = {
+                            "key": data.data.razorpay_api_key,
+                            "name": "ICAI Pune",
+                            "prefill": {
+                                "name": "{!! Auth::user()->name !!}",
+                                "contact": "{!! Auth::user()->mobile_no !!}",
+                                "email": "{!! Auth::user()->email == null ? 'no-reply@icai.in' : Auth::user()->email !!}"
+                            },
+                            "handler": function(response) {
+                                verifyRazorpayPayment(data.data['razorpay_order_id'], data.data
+                                    .system_order_id)
+                            },
+                            "notes": {
+                                "merchant_order_id": data.data.system_order_id,
+
+                            },
+                            "theme": {
+                                "color": "#99cc33"
+                            },
+                            "order_id": data.data['razorpay_order_id'],
+                        }
+                        options.theme.image_padding = false;
+                        var rzp = new Razorpay(options)
+                        console.log("shubham", rzp)
+                        rzp.open();
+                        rzp.on('payment.failed', function(response) {
+                            // alert(response.error.code);
+                            // alert(response.error.description);
+                            // alert(response.error.source);
+                            // alert(response.error.step);
+                            // alert(response.error.reason);
+                            // alert(response.error.metadata.order_id);
+                            // alert(response.error.metadata.payment_id);
+                        });
                         // ... (unchanged code) ...
                     },
                     error: function(xhr, status, error) {
