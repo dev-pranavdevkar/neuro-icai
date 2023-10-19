@@ -70,7 +70,8 @@ Route::get('/members/updatesForMembers/updatesDetails',[MembersController::class
 Route::get('/members/subscribeForSMSAlerts',[MembersController::class, 'subscribeForSMSAlerts']);
 Route::get('/members/membersFAQ',[MembersController::class, 'membersFAQ']);
 Route::get('/members/CPEStudyCircles',[MembersController::class, 'CPEStudyCircles']);
-
+Route::get('/members/membersNoticeboard',[MembersController::class, 'membersNoticeboard']);
+Route::get('/members/association/associations',[MembersController::class, 'associations']);
 
 
 // Students Dropdown Pages
@@ -85,7 +86,7 @@ Route::get('/students/AICITSS',[StudentsController::class, 'AICITSS']);
 Route::get('/students/ICITSSOrientationCourse',[StudentsController::class, 'ICITSSOrientationCourse']);
 Route::get('/students/advancedICITSSMCSCourse',[StudentsController::class, 'advancedICITSSMCSCourse']);
 Route::get('/students/libraryReadingRooms',[StudentsController::class, 'libraryReadingRooms']);
-Route::get('/students/studentNoticeboard',[StudentsController::class, 'studentNoticeboard']);
+
 Route::get('/students/studentFAQs',[StudentsController::class, 'studentFAQs']);
 Route::get('/students/batch',[StudentsController::class, 'batch']);
 Route::get('/batch-details/{id}',[StudentsController::class,'batchDetails'])->name('batchDetails');
@@ -114,16 +115,22 @@ Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->na
 Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verifyOtp');
 Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPassword'])->name('changeForgetPassword');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::get('dashboard',[WebAuthController::class,'dashboard'])->name('dashboard')->middleware('auth');
+Route::get('dashboard',[ProfileController::class,'dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/event-details/{id}',[HomeController::class,'eventDetails'])->name('eventDetails');
 Route::post('/eventRegister',[HomeController::class,'eventRegister'])->name('eventRegister')->middleware(['auth']);
 Route::post('/checkOrderRazorpayPaymentStatus',[HomeController::class,'checkOrderRazorpayPaymentStatus'])->name('checkOrderRazorpayPaymentStatus');
+Route::post('/batchRegister', [StudentsController::class, 'batchRegister'])
+    ->name('batchRegister')
+    ->middleware(['auth', 'web']);
 
+Route::post('/checkOrderRazorpayPaymentStatusforBatch', [StudentsController::class, 'checkOrderRazorpayPaymentStatusforBatch'])->name('checkOrderRazorpayPaymentStatusforBatch');
 // ===========Profile Routes ====================
 Route::get('/profile/digitalIdCard',[ProfileController::class, 'digitalIdCard']);
 Route::get('/profile/editProfile',[ProfileController::class, 'editProfile']);
 Route::get('/profile/changePassword',[ProfileController::class, 'changePassword']);
+Route::post('/profile/changePassword', [ProfileController::class, 'changePassword']);
+
 
 
 // =============Rozerpay ==============
@@ -131,3 +138,8 @@ Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'index']);
 Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'store'])->name('razorpay.payment.store');
 Route::get('/razorpay-payment', [RazorpayPaymentController::class, 'batchindex']);
 Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'batchstore'])->name('razorpay.payment.store');
+
+
+Route::get('qrcode/{eventName}', function ($eventName) {
+    return QrCode::size(300)->generate($eventName);
+});

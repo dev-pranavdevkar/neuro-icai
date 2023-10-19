@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    
+
     <title>ICAI | Home</title>
 
     <!-- Google Font -->
@@ -82,6 +84,10 @@
                             {{-- <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
                                     SMS Alerts </a></li> --}}
                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
+                                </a></li>
+                                <li><a href="{{ url('/members/membersNoticeboard') }}"> Members Noticeboard
+                                </a></li>
+                                <li><a href="{{ url('/members/association/associations') }}"> Associations
                                 </a></li>
 
                         </ul>
@@ -278,6 +284,10 @@
                                             {{-- <li><a href="{{ url('members/subscribeForSMSAlerts') }}"> Subscribe For
                                                     SMS Alerts </a></li> --}}
                                             <li><a href="{{ url('members/updatesForMembers') }}"> Updates for Members
+                                                </a></li>
+                                                <li><a href="{{ url('/members/membersNoticeboard') }}"> Members Noticeboard
+                                                </a></li>
+                                                <li><a href="{{ url('/members/association/associations') }}"> Associations
                                                 </a></li>
                                         </ul>
 

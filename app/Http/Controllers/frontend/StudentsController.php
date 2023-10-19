@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\EventRegistration;
 use App\Models\NewsLetterDetails;
 use Illuminate\Http\Request;
 use App\Models\StudentNoticeBoard;
 use App\Models\StudentBatches;
 use App\Models\LocationDetails;
-
+use Illuminate\Support\Facades\Validator;
+use Auth;
+use Razorpay\Api\Api;
 class StudentsController extends Controller
 {
     public function aboutPuneWICASA()
@@ -83,5 +86,90 @@ class StudentsController extends Controller
         return view('frontend.students.batchDetails', compact('batchDetails'));
     }
 
-    
+
+
+    public function batchRegister(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'student_batche_id' => 'required|integer|exists:student_batches,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $batchDetails = StudentBatches::find($request->student_batche_id);
+            $user = Auth::user()->id;
+            $batchRegistration = EventRegistration::where('student_batche_id', $request->student_batche_id)->where('user_id', $user)
+                ->where('payment_status', 'like', "paid")->first();
+            if (!is_null($batchRegistration)) {
+                return $this->sendResponse([], 'You are already registered to this batch', false);
+            }
+            $isStudent = false;
+            if (in_array('Student', Auth::user()->roles->pluck('name')->toArray())) {
+                $isStudent = true;
+            } else if (in_array('students', Auth::user()->roles->pluck('name')->toArray())) {
+                $isStudent = false;
+            }
+            $totalAmount = $isStudent ? $batchDetails->fees : $batchDetails->fees;
+            $newBatchRegistration = new EventRegistration();
+            $newBatchRegistration->student_batche_id = $request->student_batche_id;
+            $newBatchRegistration->user_id = $user;
+            $newBatchRegistration->gst_no = null;
+            $newBatchRegistration->legal_name = null;
+            $newBatchRegistration->attendance_status = null;
+            $newBatchRegistration->event_price = $totalAmount;
+            // $newBatchRegistration->total_amount = $totalAmount;
+            $newBatchRegistration->save();
+            if ($newBatchRegistration->save()) {
+                $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+                $orderDetails = $api->order->create(array(
+                    'receipt' => 'Inv-' . $newBatchRegistration->id,
+                    'amount' => intval($newBatchRegistration->event_price) * 100, 'currency' => 'INR', 'notes' => array()
+                ));
+                $newBatchRegistration->razorpay_id = $orderDetails->id;
+                $newBatchRegistration->save();
+                $response = [];
+                $response['system_order_id'] = $newBatchRegistration->id;
+                $response['razorpay_order_id'] = $newBatchRegistration->razorpay_id;
+                $response['razorpay_api_key'] = env('R_API_KEY');
+                return $this->sendResponse($response, 'Payment Initiated Successfully', true);
+            } else {
+                return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
+    }
+    public function checkOrderRazorpayPaymentStatusforBatch(Request $request)
+    {
+        try {
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'system_order_id' => 'required|numeric',
+                'razorpay_order_id' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $payment = BatchRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
+            if (is_null($payment)) {
+                return $this->sendResponse([], 'Wrong Payment Id', false);
+            }
+            if ($payment->payment_status == "paid") {
+                return $this->sendResponse([], 'Payment Already Done', false);
+            }
+            $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+            $razorpay_order = $api->order->fetch($request->razorpay_order_id);
+            if ($razorpay_order->status == 'paid' || true) {
+                $payment->payment_status = "paid";
+                $payment->save();
+            } else {
+                $payment->payment_status = "unpaid";
+                $payment->save();
+                return $this->sendResponse([], 'Payment Pending', false);
+            }
+            return $this->sendResponse([], 'Batch registration successfully', false);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 413);
+        }
+    }   
 }

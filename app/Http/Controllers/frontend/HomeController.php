@@ -13,15 +13,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Razorpay\Api\Api;
+use QrCode;
 
 class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $eventDetails = EventDetails::with([])->paginate(3);
+        $eventDetails = EventDetails::orderBy('created_at', 'desc')->paginate(4);
         $associationDetails = AssociationDetails::with([])->paginate(3);
-        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
-        $newsLetterDetails = NewsLetterDetails::with([])->paginate(3);
+        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(10);
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(6);
         $vacancyDetails = VacancyDetails::with([])->paginate(3);
         // ==================================================================================
         $eventData = EventDetails::with([])->get();
@@ -77,7 +78,20 @@ class HomeController extends Controller
     public function eventDetails(Request $request, $id)
     {
         $eventDetails = EventDetails::with(['location_details', 'event_images', 'event_video', 'event_presntation'])->find($id);
-        return view('frontend.razorpayView', compact('eventDetails'));
+        $alreadyRegistered = null;
+        $qrData = null;
+        if(Auth::user()){
+            
+            $user = Auth::user();
+            $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
+                ->where('payment_status', 'like', "paid")->first();
+                $qrData = QrCode::size(150)->generate($user->id.'_'.$eventDetails->id);
+                // $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
+                // ->where('payment_status', 'like', "paid")->orderBy('id','DESC')->pagination(10);
+            
+        }
+        
+        return view('frontend.razorpayView', compact(['eventDetails','alreadyRegistered','qrData']));
     }
 
     public function eventRegister(Request $request)
@@ -85,6 +99,7 @@ class HomeController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'event_id' => 'required|integer|exists:event_details,id',
+                
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());

@@ -31,7 +31,7 @@
                         <div class="row px-4 px-lg-0">
                             @if (isset($newsLetterDetails) && count($newsLetterDetails) > 0)
                                 @foreach ($newsLetterDetails as $newsLetter)
-                                    {{-- @if ($newsLetter['for_newsletter'] == 'members') --}}
+                                    @if ($newsLetter['for_newsletter'] == 'members')
                                     <!-- Add this condition -->
                                     <div class="col-lg-3 col-12 py-3">
                                         <div class="card newsletter-card w-10">
@@ -54,7 +54,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- @endif --}}
+                                    @endif
                                 @endforeach
                                 <div class="w-100">
                                     <div class="d-flex justify-content-center mt-5 w-100">

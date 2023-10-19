@@ -55,8 +55,10 @@
 
                                                 <th scope="col">Event Time:</th>
                                                 <td scope="col">
+                                                    {{ \Carbon\Carbon::parse($event['event_start_date'])->format('h:i A') }}
+                                                    To
                                                     {{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }}
-                                                    To 06:00 PM</td>
+                                                </td>
                                             </tr>
 
                                             <tr>
@@ -95,7 +97,8 @@
                                             <a href="{{route('eventDetails',['id'=>$event->id])}}"  class="btn btn-secondary">Details</a>
                                         </div> --}}
 
-                                        <div>
+                                        {{-- old button code is --}}
+                                        {{-- <div>
 
                                             <a
                                                 href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}">
@@ -103,7 +106,26 @@
 
                                                 </button>
                                             </a>
+                                        </div> --}}
+                                        {{-- ============================= --}}
+                                        <div>
+                                            @if (Auth::user())
+                                                @if ($event->is_user_registered)
+                                                    <button type="button" class="btn btn-success">Registered</button>
+                                                @else
+                                                    <a href="{{ route('eventDetails', ['id' => $event->id]) }}">
+                                                        <button type="button" class="btn btn-primary">Register</button>
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <a href="{{ url('/login') }}">
+                                                    <button type="button" class="btn btn-primary">Register</button>
+                                                </a>
+                                            @endif
                                         </div>
+                                        {{-- ======================================================== --}}
+
+                                        {{-- ========================================================== --}}
 
                                     </div>
 
@@ -112,6 +134,7 @@
                             {{-- ------------------------------------------------------------------------------------------- --}}
                         </div>
                     @endforeach
+
                     
          
                 </div>
@@ -151,6 +174,11 @@
                         Showing {{ $eventDetails->firstItem() }} to
                         {{ $eventDetails->lastItem() }} of
                         {{ $eventDetails->total() }} results
+
+
+                    <div class="d-flex justify-content-center d-none">
+                        {!! $eventDetails->links() !!}
+
                     </div>
                 </div>
             @else

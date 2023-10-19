@@ -18,38 +18,40 @@
                                 @csrf <!-- CSRF token -->
 
                                 <!-- Role Selection -->
-                                <div class="input-list ">
+                                <div class="input-list">
                                     <p>Register As</p>
                                     <div class="input-list-item radio d-flex">
-                                        <input class="radio-btn" type="radio" id="member" name="role"
-                                            value="member">
-                                        <p>Member</p>
+                                        <input class="radio-btn" type="radio" id="role_members" name="role"
+                                            value="members">
+                                        <label for="role_member">Member</label>
                                     </div>
                                     <div class="input-list-item d-flex">
-                                        <input class="radio-btn" type="radio" id="student" name="role"
+                                        <input class="radio-btn" type="radio" id="role_student" name="role"
                                             value="student">
-                                        <p>Student</p>
+                                        <label for="role_student">Student</label>
                                     </div>
                                 </div>
+
+
 
                                 <!-- Personal Information -->
                                 <div class="input-list">
                                     <div class="input-list-item">
-                                       
+
                                         <p>First Name</p>
                                         <input type="text" name="name" autocomplete="off">
                                         <div>
                                             <span id="name1" class="text-danger font-weight-bold"></span>
                                         </div>
                                         @if ($errors->has('name'))
-                                        <div class="alert-vsa text-danger ">
-                                            <ul>
-                                                @foreach ($errors->get('name') as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
+                                            <div class="alert-vsa text-danger ">
+                                                <ul>
+                                                    @foreach ($errors->get('name') as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
                                     </div>
 
 
@@ -60,14 +62,14 @@
                                             <span id="last_name1" class="text-danger font-weight-bold"></span>
                                         </div>
                                         @if ($errors->has('last_name'))
-                                        <div class="alert-vsa text-danger ">
-                                            <ul>
-                                                @foreach ($errors->get('last_name') as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
+                                            <div class="alert-vsa text-danger ">
+                                                <ul>
+                                                    @foreach ($errors->get('last_name') as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -77,28 +79,28 @@
                                         <p>Mobile Number</p>
                                         <input type="tel" pattern="[0-9]{10}" name="mobile_no" maxlength="10"
                                             autocomplete="off">
-                                            <span id="mobile_no" class="text-danger font-weight-bold span"></span>
-                                            @if ($errors->has('mobile_number'))
-                                                <div class="alert-vsa text-danger">
-                                                    <ul>
-                                                        @foreach ($errors->get('mobile_number') as $error)
-                                                            <li>{{ $error }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                            @endif
+                                        <span id="mobile_no" class="text-danger font-weight-bold span"></span>
+                                        @if ($errors->has('mobile_number'))
+                                            <div class="alert-vsa text-danger">
+                                                <ul>
+                                                    @foreach ($errors->get('mobile_number') as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
                                     </div>
 
 
                                     <div class="input-list-item">
                                         <p>Date Of Birth</p>
                                         <input type="date" name="date_of_birth" autocomplete="off">
-                                        
+
                                     </div>
                                 </div>
 
                                 <!-- Email and Password -->
-                                <div class="input-full-width">
+                                {{-- <div class="input-full-width">
                                     <p>Email ID</p>
                                     <input type="text" name="email"  autocomplete="off">
                                     <span id="email1" class="text-danger font-weight-bold span"></span>
@@ -111,6 +113,40 @@
                                             </ul>
                                         </div>
                                     @endif
+                                </div> --}}
+                                <div class="input-list">
+                                    <div class="input-list-item">
+                                        <p>Email ID</p>
+
+                                        <input type="email" id="email" name="email" required autocomplete="off">
+                                        <span id="email1" class="text-danger font-weight-bold span"></span>
+                                        @if ($errors->has('email'))
+                                            <div class="alert-vsa text-danger">
+                                                <ul>
+                                                    @foreach ($errors->get('email') as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                    <div class="input-list-item">
+                                        <p>Member ID/ Username</p>
+                                        <input type="text" id="generated_user_id" name="generated_user_id" required
+                                            autocomplete="off">
+                                        <span id="generated_user_id1" class="text-danger font-weight-bold span"></span>
+                                        @if ($errors->has('generated_user_id'))
+                                            <div class="alert-vsa text-danger">
+                                                <ul>
+                                                    @foreach ($errors->get('generated_user_id') as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+
+                                    </div>
                                 </div>
                                 <div class="input-list">
                                     <div class="input-list-item">
@@ -184,77 +220,77 @@
 
 <script type="text/javascript">
     function validation() {
-    
+
         var name = document.getElementById('name').value;
         var last_name = document.getElementById('last_name').value;
         var mobile_number = document.getElementById('mobile_number').value;
         var email = document.getElementById('email').value;
         // var photo = document.getElementById('photo').value;
-    
-
-
-
-            if (name == "") {
-
-                document.getElementById('name1').innerHTML = "*First Name is required";
-                return false;
-            }
-
-           
-
-            if (last_name == "") {
-
-                document.getElementById('last_name1').innerHTML = "*Last name Name is required";
-                return false;
-            }
-
-            if (mobile == "") {
-                document.getElementById('mobile_no').innerHTML = " *Please Enter Mobile Number";
-                return false;
-            }
-            if (mobile.length != 10) {
-                document.getElementById('mobile_no').innerHTML = " *Length of mobile number is not valid";
-                return false;
-            }
-            if (isNaN(mobile)) {
-                document.getElementById('mobile_no').innerHTML = " *Only numbers are accepted";
-                return false;
-            }
 
 
 
 
-            if (emailId == "") {
-                document.getElementById('email1').innerHTML = " *Please Enter Email id";
-                return false;
-            }
-            if (emailId.length < 10) {
-                document.getElementById('email1').innerHTML = " *Invalid Mail Id";
-                return false;
-            }
-            if (emailId.indexOf('@') <= 0) {
-                document.getElementById('email1').innerHTML = " *Invalid MailId";
-                return false;
-            }
+        if (name == "") {
 
-
-
-        
-
-          
-
-
-
-
-
-       
-
-
-            // if (photo == "") {
-            //     document.getElementById('photo1').innerHTML = " *Please Enter Adress";
-            //     return false;
-            // }
-
-           
+            document.getElementById('name1').innerHTML = "*First Name is required";
+            return false;
         }
+
+
+
+        if (last_name == "") {
+
+            document.getElementById('last_name1').innerHTML = "*Last name Name is required";
+            return false;
+        }
+
+        if (mobile == "") {
+            document.getElementById('mobile_no').innerHTML = " *Please Enter Mobile Number";
+            return false;
+        }
+        if (mobile.length != 10) {
+            document.getElementById('mobile_no').innerHTML = " *Length of mobile number is not valid";
+            return false;
+        }
+        if (isNaN(mobile)) {
+            document.getElementById('mobile_no').innerHTML = " *Only numbers are accepted";
+            return false;
+        }
+
+
+
+
+        if (emailId == "") {
+            document.getElementById('email1').innerHTML = " *Please Enter Email id";
+            return false;
+        }
+        if (emailId.length < 10) {
+            document.getElementById('email1').innerHTML = " *Invalid Mail Id";
+            return false;
+        }
+        if (emailId.indexOf('@') <= 0) {
+            document.getElementById('email1').innerHTML = " *Invalid MailId";
+            return false;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // if (photo == "") {
+        //     document.getElementById('photo1').innerHTML = " *Please Enter Adress";
+        //     return false;
+        // }
+
+
+    }
 </script>
