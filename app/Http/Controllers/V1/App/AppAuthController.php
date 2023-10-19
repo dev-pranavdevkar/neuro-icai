@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\V1\App;
 
 use App\Http\Controllers\Controller;
@@ -16,44 +17,14 @@ use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Auth;
 use Spatie\Permission\Models\Role;
- use Illuminate\Support\Str; // Import the Str facade
+use Illuminate\Support\Str; // Import the Str facade
 use App\Models\LocationDetails;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AppAuthController extends Controller
 {
-    // public function userLogin(Request $request)
-    // {
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'email' => 'required|email',
-    //             'password' => 'required|string|min:6',
 
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors());
-    //         }
-    //         $user = User::where('email', $request->email)->first();
-    //         if (!is_null($user)) {
-    //             if (Hash::check($request->password, $user->password)) {
-    //                 Auth::login($user);
-    //                 $getUser = User::query()->where('email', $request->email)->first();
-    //                 $getUser->save();
-    //                 $token = JWTAuth::fromUser($user);
-    //                 $response = ['token' => $token];
-    //                 $response['userData'] = $user;
-    //                 $response['permissions'] = $user->getAllPermissions();
-    //               //  $response['role'] = $user->roles->first();
-    //                 return $this->sendResponse($response, 'Login Success', true);
-    //             } else {
-    //                 return $this->sendError('Password mismatch', [], 422);
-    //             }
-    //         }
-    //     } catch (Exception $e) {
-    //         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
-    //     }
-    // }
-            public function editProfile(Request $request)
+    public function editProfile(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -65,24 +36,24 @@ class AppAuthController extends Controller
             $editUser = User::query()->where('id', $request->id)->first();
 
             if ($request->has('name')) {
-                $editUser->name=$request->name;
+                $editUser->name = $request->name;
             }
-              if ($request->has('last_name')) {
+            if ($request->has('last_name')) {
                 $editUser->last_name = $request->last_name;
             }
             if ($request->has('date_of_birth')) {
-                $editUser->date_of_birth=$request->date_of_birth;
+                $editUser->date_of_birth = $request->date_of_birth;
             }
             if ($request->has('mobile_no')) {
-                $editUser->mobile_no=$request->mobile_no;
+                $editUser->mobile_no = $request->mobile_no;
             }
             $editUser->save();
-             $editAddress = LocationDetails::query()->where('id', $editUser->location_id)->first();
+            $editAddress = LocationDetails::query()->where('id', $editUser->location_id)->first();
 
             if ($request->has('address_line_1')) {
-                $editAddress->address_line_1=$request->address_line_1;
+                $editAddress->address_line_1 = $request->address_line_1;
             }
-              if ($request->has('pincode')) {
+            if ($request->has('pincode')) {
                 $editAddress->pincode = $request->pincode;
             }
             $editAddress->save();
@@ -92,45 +63,45 @@ class AppAuthController extends Controller
         }
     }
     public function userLogin(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'credential' => 'required|string',
-            'password' => 'required|string|min:6',
-        ]);
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'credential' => 'required|string',
+                'password' => 'required|string|min:6',
+            ]);
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $user = User::where(function ($query) use ($request) {
-            $query->where('email', $request->credential)
-                ->orWhere('generated_user_id', $request->credential);
-        })->first();
-
-        if (!is_null($user)) {
-            if (Hash::check($request->password, $user->password)) {
-                Auth::login($user);
-                $getUser = User::query()->where('email', $user->email)->first();
-                    $location_id= $getUser->location_id;
-                $getUser->save();
-                $token = JWTAuth::fromUser($user);
-                $response = ['token' => $token];
-                $response['userData'] = $user;
-                $response['permissions'] = $user->getAllPermissions();
-                    $response['location_details'] = LocationDetails::query()->where('id', $location_id)->first();
-                //  $response['role'] = $user->roles->first();
-                return $this->sendResponse($response, 'Login Success', true);
-            } else {
-                return $this->sendError('Password mismatch', [], 422);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
             }
-        } else {
-            return $this->sendError('User not found', [], 404);
+
+            $user = User::where(function ($query) use ($request) {
+                $query->where('email', $request->credential)
+                    ->orWhere('generated_user_id', $request->credential);
+            })->first();
+
+            if (!is_null($user)) {
+                if (Hash::check($request->password, $user->password)) {
+                    Auth::login($user);
+                    $getUser = User::query()->where('email', $user->email)->first();
+                    $location_id = $getUser->location_id;
+                    $getUser->save();
+                    $token = JWTAuth::fromUser($user);
+                    $response = ['token' => $token];
+                    $response['userData'] = $user;
+                    $response['permissions'] = $user->getAllPermissions();
+                    $response['location_details'] = LocationDetails::query()->where('id', $location_id)->first();
+                    //  $response['role'] = $user->roles->first();
+                    return $this->sendResponse($response, 'Login Success', true);
+                } else {
+                    return $this->sendError('Password mismatch', [], 422);
+                }
+            } else {
+                return $this->sendError('User not found', [], 404);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
-    } catch (Exception $e) {
-        return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
     }
-}
 
     public function registerUser(Request $request)
     {
@@ -179,102 +150,49 @@ class AppAuthController extends Controller
             $token = JWTAuth::fromUser($newUser);
             $response = ['token' => $token];
             $response['userData'] = $newUser;
-             $response['location_details'] = LocationDetails::query()->where('id',$newUser->location_id)->first();
+            $response['location_details'] = LocationDetails::query()->where('id', $newUser->location_id)->first();
             return $this->sendResponse($response, 'Registered Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
 
-
-// public function registerUser(Request $request)
-// {
-//     try {
-//         $validator = Validator::make($request->all(), [
-//             'name' => 'required|string|max:255',
-//             'email' => 'required|string|email|max:255|unique:users',
-//             'password' => 'required|string|min:6|confirmed',
-//             'role' => 'required|string|in:student,members',
-//         ]);
-
-//         if ($validator->fails()) {
-//             return $this->sendError('Validation Error.', $validator->errors());
-//         }
-
-//         if ($request->role == 'SuperAdmin') {
-//             return $this->sendResponse([], 'Sorry, you can\'t be a super admin. It\'s our property', true);
-//         }
-
-//         $role = Role::where('name', $request->role)->first();
-
-//         if (!$role) {
-//             return $this->sendError('Invalid role.', [], 400);
-//         }
-
-//         // Generate the user ID
-//         $count = User::query()->count() + 1;
-//         $userId = substr(Str::slug($request->name), 0, 3) . substr(Str::slug($request->role), 0, 3) . str_pad($count, 3, '0', STR_PAD_LEFT);
-
-//         $newUser = new User();
-//         $newUser->password = Hash::make($request['password']);
-//         $newUser->name = $request->name;
-//         $newUser->email = $request->email;
-//         $newUser->last_name = $request->last_name;
-//         $newUser->date_of_birth = $request->date_of_birth;
-//         $newUser->mobile_no = $request->mobile_no;
-//         $newUser->otp = $request->otp;
-//         $newUser->assignRole($role);
-//         $newUser->generated_user_id = $userId; // Assign the generated user ID
-//         $newUser->save();
-
-//         $token = JWTAuth::fromUser($newUser);
-//         $response = ['token' => $token];
-//         $response['userData'] = $newUser;
-//         return $this->sendResponse($response, 'Registered Successfully', true);
-//     } catch (Exception $e) {
-//         return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
-//     }
-// }
-
-
-        public function forgetPassword(Request $request)
-        {
-            try{
-                $validator = Validator::make($request->all(), [
-                    'email' => 'required|string|email|max:255',
-                ]);
-                if ($validator->fails()) {
-                    return $this->sendError('Validation Error.', $validator->errors());
-                }
-
-                $user = User::where('email', $request->email)->first();
-                if (!$user) {
-                    return $this->sendError('Email Id does Not Exist', [], 403);
-                }
-
-                $otp = rand(1000, 9999);
-                $user->forget_password_otp = $otp;
-                $user->forget_password_timestamp = Carbon::now();
-                $user->save();
-
-                $to_name = $user->name;
-                $to_email = $user->email;
-
-                $data = array('otp' => $otp,'to_name' => $to_name);
-
-                Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
-
-                    $message->to($to_email, $to_name)
-                        ->subject('Otp For New Password');
-                    $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
-
-                });
-                 return $this->sendResponse([], 'Otp Send Successfully', true);
-
-            }catch(Exception $e){
-                return $this->sendError("Something went wrong",[$e->getMessage(),$e->getTrace()],500);
+    public function forgetPassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|string|email|max:255',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
             }
+
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return $this->sendError('Email Id does Not Exist', [], 403);
+            }
+
+            $otp = rand(1000, 9999);
+            $user->forget_password_otp = $otp;
+            $user->forget_password_timestamp = Carbon::now();
+            $user->save();
+
+            $to_name = $user->name;
+            $to_email = $user->email;
+
+            $data = array('otp' => $otp, 'to_name' => $to_name);
+
+            Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
+
+                $message->to($to_email, $to_name)
+                    ->subject('Otp For New Password');
+                $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
+            });
+            return $this->sendResponse([], 'Otp Send Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError("Something went wrong", [$e->getMessage(), $e->getTrace()], 500);
         }
+    }
     public function changeForgetPassword(Request $request)
     {
         try {
@@ -337,5 +255,4 @@ class AppAuthController extends Controller
 
         return response()->json(['message' => 'OTP verified successfully'], true);
     }
-
 }

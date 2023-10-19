@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 // use App\Http\Controllers\V1\Website\Role;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-
+use App\Models\EventRegistration;
 use App\Models\EventDetails;
 use App\Models\EventImages;
 use App\Models\EventPresentationPdf;
@@ -24,6 +24,7 @@ use App\Models\StudentNoticeBoard;
 use App\Models\VacancyDetails;
 use App\Models\AssociationDetails;
 use App\Models\OffersAssociation;
+
 class WebAuthController extends Controller
 {
 
@@ -36,7 +37,10 @@ class WebAuthController extends Controller
                 'name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
+                'mobile_no' => 'required|regex:/^[0-9]{0,255}$/|unique:users',
                 'password' => 'required|string|min:6|confirmed',
+                'generated_user_id' => 'required|string|max:255|unique:users',
+
                 // Add other validation rules as needed
             ]);
 
@@ -56,6 +60,7 @@ class WebAuthController extends Controller
             $newUser->date_of_birth = $request->date_of_birth;
             $newUser->mobile_no = $request->mobile_no;
             $newUser->otp = $request->otp;
+            $newUser->generated_user_id = $request->generated_user_id;
 
             // Assign roles based on user's role value
             $assignedRoles = [];
@@ -82,37 +87,41 @@ class WebAuthController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
+                'credential' => 'required|string',
                 'password' => 'required|string|min:6',
-
             ]);
+
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $user = User::where('email', $request->email)->first();
+
+            $user = User::where(function ($query) use ($request) {
+                $query->where('email', $request->credential)
+                    ->orWhere('generated_user_id', $request->credential);
+            })->first();
+
             if (!is_null($user)) {
                 if (Hash::check($request->password, $user->password)) {
                     Auth::login($user);
-                    $getUser = User::query()->where('email', $request->email)->first();
+                    $getUser = User::query()->where('email', $user->email)->first();
+                    $location_id = $getUser->location_id;
                     $getUser->save();
                     $token = JWTAuth::fromUser($user);
-                    $response = ['token' => $token, 'userData' => $user];
+                    $response = ['token' => $token];
+                    $response['userData'] = $user;
+                    $response['permissions'] = $user->getAllPermissions();
+                    // $response['location_details'] = LocationDetails::query()->where('id', $location_id)->first();
+                    //  $response['role'] = $user->roles->first();
                     // return $this->sendResponse($response, 'Login Success', true);
                     return redirect('/');
                 } else {
-                    return redirect()->route('login')
-                        ->withErrors(['error' => 'Password mismatch. Please try again.']);
-
+                    return $this->sendError('Password mismatch', [], 422);
                 }
             } else {
-                return redirect()->route('login')
-                    ->withErrors(['error' => 'User does not exist or user doesn\'t have access']);
-
+                return $this->sendError('User not found', [], 404);
             }
-        } catch (\Exception $e) {
-            return redirect()->route('login')
-                ->withErrors(['error' => 'Something Went Wrong'.$e->getMessage()]);
-
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
     public function forgetPassword(Request $request)
@@ -221,11 +230,11 @@ class WebAuthController extends Controller
 
     public function dashboard(Request $request)
     {
-        $idCardData= null;
-        if($request->has('idCard')){
+        $idCardData = null;
+        if ($request->has('idCard')) {
             $idCardData = User::find($request->idCard);
         }
-        return view('frontend.userSection.dashboard',compact('idCardData'));
+        return view('frontend.userSection.dashboard', compact('idCardData'));
     }
 
 
@@ -240,108 +249,122 @@ class WebAuthController extends Controller
 
     // Get ALl Home Page API
 
-public function getAllEventDetails(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'pageNo' => 'numeric',
-            'limit' => 'numeric',
-            'filter' => 'in:upcoming,past',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 400);
-        }
-        $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
-        if ($request->has('filter')) {
-            $filter = $request->filter;
-            if ($filter === 'upcoming') {
-                $query = $query->where('event_end_date', '>', date('Y-m-d'));
-            } elseif ($filter === 'past') {
-                $query = $query->where('event_end_date', '<', date('Y-m-d'));
-            }
-        }
+    public function getAllEventDetails(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+                'filter' => 'in:upcoming,past,ongoing,this_week,next_week',
+                'event_start_date' => 'date_format:Y-m-d',
+                'event_end_date' => 'date_format:Y-m-d',
+            ]);
 
-        if ($request->has('event_name')) {
-            $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
-        }
-        if ($request->has('event_start_date')) {
-            $query = $query->where('event_start_date', 'like', '%' . $request->event_start_date . '%');
-        }
-        if ($request->has('event_fee')) {
-            $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
-        }
-        $count = $query->count();
-        if ($request->has('pageNo') && $request->has('limit')) {
-            $limit = $request->limit;
-            $pageNo = $request->pageNo;
-            $skip = $limit * $pageNo;
-            $query = $query->skip($skip)->limit($limit);
-        }
-        $data = $query->orderBy('id', 'DESC')->get();
-        foreach ($data as $user) {
-            if ($user['id'] != null) {
-                $product = EventPresentationVideo::query()->where('event_id', $user['id'])->get();
-                $user['event_presentation_video'] = $product;
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-        }
-        foreach ($data as $user) {
-            if ($user['id'] != null) {
-                $product = EventImages::query()->where('event_id', $user['id'])->get();
-                $user['event_images'] = $product;
+            $userId = Auth::user()->id;
+            $currentDate = carbon::now('Asia/Kolkata');
+            $now = carbon::now();
+            $currentWeekStart = $now->startOfWeek();
+            $currentWeekEnd = $now->endOfWeek();
+            $nextWeekStart = $currentWeekStart->copy()->addWeek();
+            $nextWeekEnd = $currentWeekEnd->copy()->addWeek();
+            $query = EventDetails::query()->whereNull('parent_event_id')
+                ->with(['children', 'location_details', 'event_images', 'event_video', 'event_presntation']);
+            if ($request->has('filter')) {
+                $filter = $request->filter;
+                if ($filter === 'upcoming') {
+                    $query = $query->where('event_start_date', '>', $now);
+                }
+                if ($filter === 'past') {
+                    $query = $query->where('event_end_date', '<', $now);
+                }
+                if ($filter === 'ongoing') {
+                    $query->where('event_start_date', '<=', $currentDate)
+                        ->where('event_end_date', '>=', $currentDate);
+                }
+                if ($filter === 'this_week') {
+                    // Include events that have not yet started and are ongoing this week
+                    $query->where(function ($query) use ($currentWeekStart, $currentWeekEnd, $currentDate) {
+                        $query->where('event_start_date', '>', $currentDate)
+                            ->orWhere(function ($query) use ($currentDate) {
+                                $query->where('event_start_date', '<=', $currentDate)
+                                    ->where('event_end_date', '>=', $currentDate);
+                            });
+                    });
+                }
+                if ($filter === 'next_week') {
+                    $query->whereBetween('event_start_date', [$nextWeekStart, $nextWeekEnd]);
+                }
             }
-        }
-        foreach ($data as $user) {
-            if ($user['id'] != null) {
-                $product = EventPresentationPdf::query()->where('event_id', $user['id'])->get();
-                $user['event_presentation_pdf'] = $product;
+            $count = $query->count();
+            if ($request->has('event_name')) {
+                $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
             }
-        }
-        if (count($data) > 0) {
-            $response['event_details'] = $data;
-            // $response['LocationDetails']=$data;
-            // dd($response);
-            $response['count'] = $count;
+            if ($request->has('event_fee')) {
+                $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+            }
+            if ($request->has('event_start_date') && $request->has('event_end_date')) {
+                $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
+            }
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
 
-            // return redirect()->route('login.index');
-        } else {
-            return $this->sendResponse('No Data Available', [], false);
+            if (count($data) > 0) {
+                foreach ($data as $event) {
+                    $event->is_series_event = count($event->children) > 0;
+                    $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+                    $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                        ->where('event_id', $event->id)
+                        ->exists();
+                }
+                print_r($data);
+                $response['event_details'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-    } catch (Exception $e) {
-        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+    public function getAllNewLetterDetailsForStudent(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = NewsLetterDetails::query()->where('for_newsletter', 'student');
+
+            $count = $query->count();
+
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['news_letter_details'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
     }
 }
-public function getAllNewLetterDetailsForStudent(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'pageNo' => 'numeric',
-            'limit' => 'numeric',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 400);
-        }
-        $query = NewsLetterDetails::query()->where('for_newsletter', 'student');
-
-        $count = $query->count();
-
-        if ($request->has('pageNo') && $request->has('limit')) {
-            $limit = $request->limit;
-            $pageNo = $request->pageNo;
-            $skip = $limit * $pageNo;
-            $query = $query->skip($skip)->limit($limit);
-        }
-        $data = $query->orderBy('id', 'DESC')->get();
-        if (count($data) > 0) {
-            $response['news_letter_details'] = $data;
-            $response['count'] = $count;
-            return $this->sendResponse($response, 'Data Fetched Successfully', true);
-        } else {
-            return $this->sendResponse('No Data Available', [], false);
-        }
-    } catch (\Exception $e) {
-        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
-    }
-}
-
-}
-

@@ -1,8 +1,8 @@
 @extends('frontend.layouts.main')
 @section('main-container')
     <main class="bg-light">
-        <!-- Breadcrumb Section Begin -->
-        <div class="breadcrumb-option set-bg" data-setbg="{{ url('frontend/img/breadcrumb/breadcrumb-bg.jpg') }}">
+
+        {{-- <div class="breadcrumb-option set-bg" data-setbg="{{ url('frontend/img/breadcrumb/breadcrumb-bg.jpg') }}">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <!-- Breadcrumb Section End -->
+
         <section class="py-5 bg-dashboard">
             <div class="row m-0  bg-white">
                 <div class="col-lg-2 dashboard-menus">
@@ -39,7 +39,10 @@
                                 <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-three"
                                         role="tab">Change Password</a> </li>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-four"
-                                        role="tab">
+                                        role="tab">My Events</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
+                                        role="tab">My Batches</a> </li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#tab-six" role="tab">
                                         Logout</a> </li>
                             </ul>
 
@@ -48,7 +51,7 @@
                 </div>
                 <div class="col-lg-7  ">
 
-                    <!-- Edit Profile Begin -->
+
                     <section class="container ">
                         <section class="dashboard-content">
                             <div class="container">
@@ -64,7 +67,7 @@
                                         </div>
 
                                         <div class="row py-3">
-                                   
+
                                             <div class="col-lg-4 col-6">
                                                 <div class="card dashboard-card">
                                                     <div class="card-body">
@@ -151,7 +154,7 @@
                                             </div>
                                         </div>
 
-                                     
+
 
                                     </div>
 
@@ -159,17 +162,17 @@
 
 
 
-                                    <!-- end tab-pane -->
+
                                     <div class="tab-pane fade" id="tab-two">
                                         <div class="contact__form">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                              
+                                                    <h1>Edit Profile</h1>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- end tab-pane -->
+
 
 
 
@@ -201,17 +204,54 @@
                                         </div>
 
                                     </div>
-                                    <!-- end tab-pane -->
-
-
-
-
 
                                     <div class="tab-pane fade" id="tab-four">
+                                        <h1>My Events</h1>
+                                        <div class="container">
+
+                                            @if ($alreadyRegistered->count() > 0)
+                                                <div class="row">
+                                                    @foreach ($alreadyRegistered as $registration)
+                                                        <div class="col-lg-6">
+                                                            <div class="card event-card-dashboard">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-3 ticket-img-area">
+                                                                            <a href="https://www.google.com"> <img
+                                                                                    src="{{ url('/frontend/img/ticket.png') }}"
+                                                                                    alt=""></a>
+                                                                        </div>
+                                                                        <div class="col-9">
+                                                                            {{ $registration->event_details->event_name }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                {{ $alreadyRegistered->links() }}
+                                            @else
+                                                <p>No registered events.</p>
+                                            @endif
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="tab-pane fade" id="tab-five">
+                                        <h1>My Batches</h1>
+
+                                    </div>
+
+                                    <div class="tab-pane fade" id="tab-six">
                                         <h1>Logout Successfully</h1>
                                     </div>
-                                    <!-- end tab-pane -->
-
 
 
                                 </div>
@@ -228,7 +268,7 @@
 
                     <div class="card digitalIDCard">
                         <div class="card-body">
-                            {{-- Logo Image --}}
+
 
                             <div class="institute-section d-flex justify-content-between">
                                 <img class="logo-icai" src="{{ url('/frontend/img/icai.png') }}" alt="">
@@ -238,7 +278,7 @@
 
 
 
-                            {{-- Profile Picture --}}
+
                             <div class="scanner-section py-4">
                                 <div>
                                     <div class="d-flex justify-content-center">
@@ -256,7 +296,7 @@
                             </div>
 
 
-                            {{-- Personal Info --}}
+
                             <div class="info-section d-flex justify-content-center py-2">
                                 <ul>
                                     <li class="text-nowrap"><i class="fa fa-user" aria-hidden="true"></i>
@@ -276,6 +316,64 @@
 
                 </div>
             </div>
+        </section> --}}
+
+        <section class="container">
+            {{-- Profile Area Start --}}
+            <div class="py-3 d-flex justify-content-between algn-items-center">
+                <div class="d-flex algn-items-between algn-items-center">
+                    <div><img class="profile-img" src="" alt="Profile Img"></div>
+                    <div>
+                        <h5>Pranav Devkar</h5>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary">Primary</button>
+                </div>
+            </div>
+            {{-- Profile Area End --}}
+
+            {{-- Dashboard Menus And Content Area --}}
+            <div class="dashboardArea">
+                <div class="row top-border">
+                    <div class="col-lg-3 right-border">
+                        <div class=" h-100 py-3">
+                            <nav class="nav flex-column">
+                                <ul class="d-flex justify-content-start  nav nav-pills w-100" id="pills-tab" role="tablist">
+                                    <li class="nav-item w-100"> <a class="nav-link active" data-toggle="pill"
+                                            href="#tab-one"><i class="fa fa-tachometer"
+                                                aria-hidden="true"></i>Dashboard</a> </li>
+                                    <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-two"
+                                            role="tab"><i class="fa fa-user" aria-hidden="true"></i>My Profile</a>
+                                    </li>
+                                    <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-three"
+                                            role="tab"><i class="fa fa-calendar" aria-hidden="true"></i>Enrolled
+                                            Events</a> </li>
+                                    <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-four"
+                                            role="tab"><i class="fa fa-id-card" aria-hidden="true"></i>Digital ID
+                                            Card</a> </li>
+
+                                    <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-five"
+                                            role="tab"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Enrolled
+                                            Batches</a> </li>
+                                    <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-six"
+                                            role="tab"><i class="fa fa-users"
+                                                aria-hidden="true"></i>Association</a> </li>
+                             
+                                    <li class="nav-item w-100"><a class="nav-link" data-toggle="pill" href="#tab-eight"
+                                            role="tab"><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>
+                                    </li>
+                                    <li class="nav-item w-100"><a class="nav-link" data-toggle="pill" href="#tab-nine"
+                                            role="tab"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+                                    </li>
+                                </ul>
+
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-lg-9"></div>
+                </div>
+            </div>
         </section>
 
 
@@ -283,9 +381,6 @@
 
 
 
-        {{-- <div class="{{ isset(request()->idCard) ? 'd-block' : 'd-none' }}" id="IDCard">
- 
-    </div> --}}
 
 
 

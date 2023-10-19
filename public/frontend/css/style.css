@@ -84,56 +84,79 @@ p {
 	margin: 0 0 15px 0;
 }
 
+.border-left-dashed {
+	border-left: 1px dashed #182151;
+
+	height: 100%;
+}
+
+.associationImg {
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	border-radius: 100%;
+	object-fit: cover;
+	margin-top: -50px;
+}
+
 img {
 	max-width: 100%;
 }
-input[type=file]{
+
+input[type=file] {
 	padding-left: 0 !important;
 }
+
 input[type=file]::file-selector-button {
 	height: 50px;
-    border: none;
-    border-radius: 2px;
-    margin-right: 10px;
+	border: none;
+	border-radius: 2px;
+	margin-right: 10px;
 	background: #084cdf;
 	padding: 10px 40px;
 	/* border-radius: 10px; */
 	color: #fff;
 	cursor: pointer;
 	transition: background .2s ease-in-out;
-  }
-  
-  input[type=file]::file-selector-button:hover {
+}
+
+input[type=file]::file-selector-button:hover {
 	background: #0d45a5;
-  }
+}
+
 .blink {
 	animation: blinker 1.5s linear infinite;
 	color: red;
-  }
+}
 
-  @keyframes blinker {
+@keyframes blinker {
 	50% {
-	  opacity: 0;
+		opacity: 0;
 	}
-  }
-.hidden-div{
+}
+
+.hidden-div {
 	max-height: 500px !important;
-	overflow-y:hidden !important;
+	overflow-y: hidden !important;
 	position: relative;
-  }
-  .scrolling-content {
+}
+
+.scrolling-content {
 	position: absolute;
-	animation: scroll 10s linear infinite; /* Adjust the animation duration as needed */
+	animation: scroll 10s linear infinite;
+	/* Adjust the animation duration as needed */
 }
 
 @keyframes scroll {
 	from {
 		transform: translateY(0);
 	}
+
 	to {
 		transform: translateY(-100%);
 	}
 }
+
 .member-card {
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	height: 100%;
@@ -243,10 +266,10 @@ input[type=file]::file-selector-button {
 	padding-right: 0.5rem;
 }
 
-a:hover {
+/* a:hover {
     color: #0056b3 !important;
     text-decoration: underline;
-}
+} */
 /* -------------------------------------------------------------- */
 .text-nowrap {
 	text-wrap: nowrap;
@@ -618,13 +641,15 @@ td {
 	color: #283960;
 
 }
-.atSalesCounter .card{
+
+.atSalesCounter .card {
 	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 	border: none;
 	padding: 2rem;
 }
-.atSalesCounter .card .card-title{
-	margin-bottom:0;
+
+.atSalesCounter .card .card-title {
+	margin-bottom: 0;
 
 }
 
@@ -650,7 +675,7 @@ td {
 ul.fa-list-tender {
 	list-style: none;
 	padding-left: 1.5rem;
-	
+
 }
 
 ul.fa-list-tender li {
@@ -658,6 +683,7 @@ ul.fa-list-tender li {
 	margin-bottom: 15px;
 	border-bottom: 1px solid rgba(18, 21, 41, 0.2);
 }
+
 ul.fa-list-tender li a {
 	color: #323232;
 }
@@ -674,7 +700,7 @@ ul.fa-list-tender li::before {
 	/* Space between icon and list item */
 	font-size: 18px;
 	color: #283960;
-	
+
 	font-weight: 300;
 
 }
@@ -3771,8 +3797,9 @@ ol {
 	width: 150px;
 	object-fit: contain;
 }
+
 /* ==================================================================== */
-.dashboard-menus-section{
+.dashboard-menus-section {
 	border-radius: 10px;
 	border: none;
 	color: #fff;
@@ -3780,25 +3807,30 @@ ol {
 	top: 0;
 	border: 1px solid #3e4c6f;
 }
-.dashboard-menus{
+
+.dashboard-menus {
 	padding: 0;
 }
+
 .dashboard-menus .profile-section {
 
 	background: #3e4c6f;
-	padding:  0.5rem;
+	padding: 0.5rem;
 	width: 100%;
 
 
 }
-.dashboard-menus nav ul li{
+
+.dashboard-menus nav ul li {
 	width: 100%;
 }
-.dashboard-menus .profile-section h5{
+
+.dashboard-menus .profile-section h5 {
 	font-weight: 600;
 	font-size: 18px;
 }
-.dashboard-menus .profile-section .profile-pic{
+
+.dashboard-menus .profile-section .profile-pic {
 	height: 50px;
 	width: 50px;
 	border-radius: 100%;
@@ -3806,13 +3838,14 @@ ol {
 
 .dashboard-menus {
 	height: 100%;
-	
+
 }
 
 .dashboard-menus a {
 	margin: 0.5rem 0;
 }
-.bg-dashboard{
+
+.bg-dashboard {
 	background: #182143;
 }
 
@@ -3831,27 +3864,30 @@ ol {
 	font-weight: 400;
 	background: #3e4c6f;
 }
-.dashboard-menus{
+
+.dashboard-menus {
 	height: 70vh !important;
 	box-shadow: rgba(99, 99, 99, 0.2) 2px 0px 8px 0px;
 
 }
+
 .dashboard-content .contact__form {
 	padding: 0;
 	margin: 0;
 }
 
-.dashboard-content .contact__form__text{
+.dashboard-content .contact__form__text {
 	padding: 25px;
 	box-shadow: none;
-	
+
 }
 
-.dashboard-card{
+.dashboard-card {
 	margin: 10px 0;
 	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-	
+
 }
+
 /* ================================================================== */
 
 .profile-dropdown ul li .dropdown {
@@ -4654,3 +4690,51 @@ ol {
 	position: absolute;
 	bottom: 0;
 }
+
+
+/*=================== New Dashboard ====================== */
+.dashboardArea {
+	
+}
+
+.dashboardArea .top-border {
+	border-top: 1px solid #cdcfd5;
+}
+
+.dashboardArea .right-border {
+	border-right: 1px solid #cdcfd5;
+	padding: 0;
+}
+
+.dashboardArea .nav-pills .nav-link,
+.nav-pills .show>.nav-link {
+	font-size: 16px;
+    font-weight: 400;
+	color: #182141;
+}
+
+.dashboardArea .nav-pills .nav-link i,
+.nav-pills .show>.nav-link i {
+	font-size: 24px;
+	padding-right: 12px;
+    font-weight: 400;
+}
+
+.dashboardArea .nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+	background: #182141 !important;
+	color: #fff !important;
+	font-weight: 400;
+	border-radius: 0;
+}
+
+.dashboardArea .nav-pills .nav-link:hover,
+.nav-pills .show>.nav-link {
+	background: rgba(24, 33, 65, 0.1);
+
+	color: #182141;
+	font-weight: 400;
+	border-radius: 0;
+}
+
+/*======================================================== */
