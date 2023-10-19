@@ -318,7 +318,8 @@
             </div>
         </section> --}}
 
-        <section class="container">
+        <section class="">
+            <div class="container">
             {{-- Profile Area Start --}}
             <div class="py-3 d-flex justify-content-between algn-items-center">
                 <div class="d-flex justify-content-between algn-items-center">
@@ -327,7 +328,7 @@
                             src="{{ Auth::user()->profile_photo ? asset(Auth::user()->profile_photo) : url('/frontend/img/profile-user.png') }}"
                             alt="Profile Img">
                         <h5> {{ Auth::user()->name }} {{ Auth::user()->last_name }}</h5>
-
+                        
                     </div>
                     <div>
 
@@ -416,7 +417,7 @@
                                                                     <img src="{{ url('frontend/img/counter/register.png') }}"
                                                                         alt="">
                                                                     <div class="counter__number">
-                                                                        <h2 class="counter-add">2100</h2>
+                                                                        <h2 class="counter-add">{{ $numRegisteredEvents }}</h2>
                                                                     </div>
                                                                     <p>Registered Events</p>
                                                                 </div>
@@ -458,7 +459,7 @@
                                                                     <img src="{{ url('frontend/img/counter/register.png') }}"
                                                                         alt="">
                                                                     <div class="counter__number">
-                                                                        <h2 class="counter-add">2100</h2>
+                                                                        <h2 class="counter-add">{{ $numRegisteredEvents }}</h2>
                                                                     </div>
                                                                     <p>Registered Events</p>
                                                                 </div>
@@ -479,7 +480,7 @@
                                                                     <img src="{{ url('frontend/img/counter/batch.png') }}"
                                                                         alt="">
                                                                     <div class="counter__number">
-                                                                        <h2 class="counter-add">90</h2>
+                                                                        <h2 class="counter-add">{{ $numRegisteredBatches }}</h2>
                                                                         {{-- <span>+</span> --}}
                                                                     </div>
                                                                     <p>Registered Batches</p>
@@ -505,7 +506,75 @@
                                     </div>
 
                                     <div class="tab-pane fade" id="tab-two">
-                                        <h3 class="py-3">My Profile</h3>
+                                        <div class="d-flex  justify-content-between align-items-center ">
+                                            <h3 class="py-3">My Profile</h3>
+                                            <div>
+                                                <button type="button" class="btn btn-primary">Edit Profile</button>
+                                            </div>
+                                        </div>
+                                        <div>
+
+
+                                            <div class="row pb-5 d-flex justify-content-center align-items-center">
+                                                <div class="col-lg-6">
+
+                                                    <table class="w-100">
+                                                        <tr>
+                                                            <th>Role:</th>
+                                                            <td>{{ Auth::user()->roles->first()->name }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Membership ID:</th>
+                                                            <td>{{ Auth::user()->id }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Username: </th>
+                                                            <td>{{ Auth::user()->generated_user_id }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Name: </th>
+                                                            <td>{{ Auth::user()->name }} {{ Auth::user()->last_name }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Date Of Birth: </th>
+                                                            <td>{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('d/m/Y') }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Email ID:</th>
+                                                            <td>{{ Auth::user()->email }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Mobile Number:</th>
+                                                            <td>{{ Auth::user()->mobile_no }}</td>
+                                                        </tr>
+
+
+                                                    </table>
+
+
+
+
+
+
+
+
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div
+                                                        class="d-flex align-items-center justify-content-center profile-area">
+                                                        <img class="dashboard-my-profile-img"
+                                                            src="{{ Auth::user()->profile_photo ? asset(Auth::user()->profile_photo) : url('/frontend/img/profile-user.png') }}"
+                                                            alt="Profile Img">
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                     <div class="tab-pane fade" id="tab-three">
@@ -647,9 +716,13 @@
                                                                             </tr>
                                                                             <tr>
 
-                                                                                <th class="text-nowrap" scope="col">Download Tickit:</th>
+                                                                                <th class="text-nowrap" scope="col">
+                                                                                    Download Ticket:</th>
                                                                                 <td scope="col">
-                                                                                    <a class="ml-2" href="#">Click Here</a>
+                                                                                    <a class="ml-2 clickHere"
+                                                                                        href="{{ route('tickets', ['id' => $registration->event_details->id]) }}">Click
+                                                                                        Here</a>
+
                                                                                 </td>
 
 
@@ -658,7 +731,7 @@
 
                                                                         </tbody>
                                                                     </table>
-                                                                   
+
                                                                 </div>
                                                             </div>
 
@@ -676,7 +749,7 @@
                                     </div>
 
                                     <div class="tab-pane fade" id="tab-five">
-                                        <h3 class="py-3">Enrlled Batches</h3>
+                                        <h3 class="py-3">Enrolled Batches</h3>
                                     </div>
 
 
@@ -703,6 +776,7 @@
                     </div>
                 </div>
             </div>
+            </div>
         </section>
 
 
@@ -718,4 +792,5 @@
 
 
     </main>
+
 @endsection

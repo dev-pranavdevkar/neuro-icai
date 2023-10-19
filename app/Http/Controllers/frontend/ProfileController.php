@@ -29,7 +29,8 @@ class ProfileController extends Controller
     {
         $idCardData = null;
         $alreadyRegistered = null;
-        
+        $numRegisteredEvents = null;
+        $numRegisteredBatches = null;
     
         if ($request->has('idCard')) {
             $idCardData = User::find($request->idCard);
@@ -42,13 +43,25 @@ class ProfileController extends Controller
     
             $alreadyRegistered = EventRegistration::where('user_id', $user->id)
                 ->where('payment_status', 'like', 'paid')
+                ->whereNotNull('event_id') // Filter by events
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
+    
+            $numRegisteredEvents = EventRegistration::where('user_id', $user->id)
+                ->where('payment_status', 'like', 'paid')
+                ->count();
+    
+            $numRegisteredBatches = EventRegistration::where('user_id', $user->id)
+            ->where('payment_status', 'like', 'paid')
+            ->whereNotNull('student_batche_id') // Filter by batches
+            ->count();
         }
-
+    
         $studentBatches = StudentBatches::with([])->paginate(3);
     
-        return view('frontend.profile.dashboard', compact('idCardData', 'eventDetails', 'alreadyRegistered'));
+        return view('frontend.profile.dashboard', compact('idCardData', 'eventDetails', 'alreadyRegistered', 'numRegisteredEvents', 'numRegisteredBatches'));
     }
+    
+    
     
 }

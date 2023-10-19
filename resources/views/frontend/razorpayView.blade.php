@@ -144,7 +144,7 @@
                             <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-four"
                                     role="tab">Event Videos</a> </li>
                             <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
-                                    role="tab">Event Tickit</a> </li>
+                                    role="tab">Event Ticket</a> </li>
                         </ul>
 
                     </nav>
@@ -266,9 +266,9 @@
                                                                         data-event="{{ $eventDetails->id }}">Pay
                                                                         Now</button>
                                                                 @else
-                                                                    <button id="viewTickit" class="btn btn-primary"
+                                                                    <button id="viewTicket" class="btn btn-primary"
                                                                         data-event="{{ $eventDetails->id }}">View
-                                                                        Tickit</button>
+                                                                        Ticket</button>
                                                                 @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
@@ -499,8 +499,8 @@
                                         <div>
 
 
-                                            <button id="viewTickit" class="btn btn-primary"
-                                                data-event="{{ $eventDetails->id }}">Download Tickit</button>
+                                            <button id="viewTicket" class="btn btn-primary"
+                                                data-event="{{ $eventDetails->id }}">Download Ticket</button>
 
                                         </div>
 

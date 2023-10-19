@@ -180,4 +180,23 @@ class HomeController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 413);
         }
     }
+
+    public function tickets(Request $request, $id)
+    {
+        $eventDetails = EventDetails::with(['location_details', 'event_images', 'event_video', 'event_presntation'])->find($id);
+        $alreadyRegistered = null;
+        $qrData = null;
+        if(Auth::user()){
+            
+            $user = Auth::user();
+            $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
+                ->where('payment_status', 'like', "paid")->first();
+                $qrData = QrCode::size(150)->generate($user->id.'_'.$eventDetails->id);
+                // $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
+                // ->where('payment_status', 'like', "paid")->orderBy('id','DESC')->pagination(10);
+            
+        }
+        
+        return view('frontend.ticket', compact(['eventDetails','alreadyRegistered','qrData']));
+    }
 }
