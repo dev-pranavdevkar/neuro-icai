@@ -151,50 +151,58 @@ class WebMetaDataController extends Controller
         }
     }
 
-    public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
+    public function eventRegister(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_id' => 'nullable|integer|exists:event_details,id',
-                //  'student_batche_id' => 'nullable|integer|exists:event_details,id',
-                'gst_no' => 'required',
-                'legal_name' => 'required',
-                'event_price' => 'required|nullable',
-                'total_amount' => 'required|nullable',
+                'event_id' => 'required|integer|exists:event_details,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
+            $eventDetails = EventDetails::find($request->event_id);
+            $user = Auth::user();
+            $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
+                ->where('payment_status','like',"paid")->first();
+            if(!is_null($eventRegistration)){
+                return $this->sendResponse([],'You are already registered to this event',false);
+            }
+            $isMember = false;
+            if(in_array('members',Auth::user()->roles->pluck('name')->toArray())){
+                $isMember = true;
+            }else if(in_array('students',Auth::user()->roles->pluck('name')->toArray())){
+                $isMember = false;
+            }
+            $totalAmount = $isMember?$eventDetails->price_for_members:$eventDetails->price_for_students;
+
             $newEventRegistration = new EventRegistration();
-            $newEventRegistration->event_id = $request->event_id;
-            // $newEventRegistration->student_batche_id=$request->student_batche_id;
-            $newEventRegistration->user_id = Auth::user()->id;
-            $newEventRegistration->gst_no = $request->gst_no;
-            $newEventRegistration->legal_name = $request->legal_name;
-            $newEventRegistration->attendance_status = $request->attendance_status;
-            $newEventRegistration->event_price = $request->event_price;
-            $newEventRegistration->total_amount = $request->total_amount;
+            $newEventRegistration->event_id=$request->event_id;
+            $newEventRegistration->user_id=$user->id;
+            $newEventRegistration->gst_no=null;
+            $newEventRegistration->legal_name=null;
+            $newEventRegistration->attendance_status =null;
+            $newEventRegistration->event_price = $totalAmount;
+            $newEventRegistration->total_amount = $totalAmount;
             $newEventRegistration->save();
-            if ($newEventRegistration->save()) {
+            if($newEventRegistration->save()){
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $orderDetails = $api->order->create(array('receipt' => 'Inv-' . $newEventRegistration->id,
-                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes' => array()));
+                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
-                $response['system_order_id'] = $newEventRegistration->id;
-                $response['razorpay_order_id'] = $newEventRegistration->razorpay_id;
-                $response['razorpay_api_key'] = env('R_API_KEY');
-                return $this->sendResponse($response, 'Payment Initiated Successfully', true);
-            } else {
-                return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
+                $response['system_order_id']=$newEventRegistration->id;
+                $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
+                $response['razorpay_api_key']=env('R_API_KEY');
+                return $this->sendResponse($response, 'Payment Initiated Successfully',true);
+            }else{
+                return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
             }
-
-        } catch (Exception $e) {
+        }
+        catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
     public function paymentVerification(Request $request)
     {
         try {
@@ -241,11 +249,14 @@ class WebMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $user = Auth::user()->id;
-            if (auth()->user()->role !== 'member') {
+            $user = Auth::user()->name;
+            $data = auth()->user()->role;
+            // dd('sourabh');
+            if (auth()->user()->role !== 'members') {
                 return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
             }
             $newVacancy = new VacancyDetails();
+
             $newVacancy->position = $request->position;
             $newVacancy->comments = $request->comments;
             $newVacancy->experience = $request->experience;
@@ -259,7 +270,6 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
     public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -299,7 +309,6 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
     public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -450,6 +459,40 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-
+        public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'company_name' => 'required|string|max:255',
+                'company_email' => 'required|string|max:255',
+                'mobile_no' => 'required',
+                'company_logo' => 'required',
+                'address_line_1' => 'required|nullable|string|max:255',
+                'pincode' => 'required|nullable|string|max:255',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $NewLocationDetails = new LocationDetails();
+            $NewLocationDetails->address_line_1=$request->address_line_1;
+            $NewLocationDetails->pincode=$request->pincode;
+            $NewLocationDetails->save();
+            $newAssociationDetails = new AssociationDetails();
+            $newAssociationDetails->location_id=$NewLocationDetails->id;
+            $newAssociationDetails->company_name=$request->company_name;
+            $newAssociationDetails->company_email=$request->company_email;
+            $newAssociationDetails->mobile_no=$request->mobile_no;
+            if ($request->company_logo != "") {
+                if (!str_contains($request->company_logo, "http")) {
+                    $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo,$request->company_name);
+                }
+            }
+            $newAssociationDetails->save();
+            return $this->sendResponse([], 'Association Details added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
 
 }

@@ -166,47 +166,50 @@ class AppMetaDataController extends Controller
           return $this->sendError('Something went wrong', $e->getTrace(), 413);
       }
   }
-public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required|nullable',
-            'association_id' => 'required|nullable',
-            'created_by_user_id' => 'required|nullable',
-        ]);
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+ public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'association_id' => 'required|nullable',
+                'offers_association_id'=>'required|'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $user = Auth::user()->id;
+            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $user)
+            ->where('association_id',$request->association_id)
+            ->where('offers_association_id',$request->offers_association_id)
+            ->first();
+
+            if ($existingRegistration) {
+                return $this->sendError('User is already registered for an association offer.', [], 422);
+            }
+        $offer = OffersAssociation::query()->where('association_id', $request->association_id)
+        ->where('id',$request->offers_association_id)
+        ->first();
+
+        if (!$offer) {
+            return $this->sendError('Offer not found for this association.', [], 404);
         }
-        $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)->first();
-
-        if ($existingRegistration) {
-            return $this->sendError('User is already registered for an association.', [], 422);
-        }
-        $association = AssociationDetails::find($request->association_id);
-
-        if (!$association) {
-            return $this->sendError('Association not found.', [], 404);
-        }
-
-        $limit = (int) $association->limit;
-        $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)->count();
-
-        // Check if the association's limit is set and has reached its capacity
-        if ($registeredUsersCount >= $limit && $limit==$limit &&$limit!=$registeredUsersCount) {
+        $limit = (int) $offer->limits;
+        $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
+        ->where('offers_association_id',$request->offers_association_id)
+        ->count();
+        if ($registeredUsersCount >= $limit) {
             return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
         }
-        // Proceed with registering the user to the association
-        $newDetails = new RegisterToAssocitationDetails;
-        $newDetails->user_id = $request->user_id;
-        $newDetails->association_id = $request->association_id;
-        $newDetails->created_by_user_id = $request->created_by_user_id;
-        $newDetails->offers_association_id=$request->offers_association_id;
-        $newDetails->save();
-        return $this->sendResponse([], 'RegisterToAssocitationDetails Created Successfully.', true);
-    } catch (Exception $e) {
-        return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            $newDetails = new RegisterToAssocitationDetails;
+            $newDetails->user_id = $user;
+            $newDetails->association_id = $request->association_id;
+            //$newDetails->created_by_user_id = $request->created_by_user_id;
+            $newDetails->offers_association_id=$request->offers_association_id;
+            $newDetails->save();
+            return $this->sendResponse([], 'Offer Claim successfully.', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
     }
-}
 
 
 public function getUpcomingEvent(Request $request)
@@ -654,7 +657,7 @@ public function getUpcomingEvent(Request $request)
     //         return $this->sendError('Something went wrong', $e->getTrace(), 413);
     //     }
     // }
-        public function eventRegister(Request $request)
+    public function addEventRegistration(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -680,7 +683,6 @@ public function getUpcomingEvent(Request $request)
 
             $newEventRegistration = new EventRegistration();
             $newEventRegistration->event_id=$request->event_id;
-            $newEventRegistration->student_batche_id = $request->student_batche_id;
             $newEventRegistration->user_id=$user->id;
             $newEventRegistration->gst_no=null;
             $newEventRegistration->legal_name=null;
@@ -707,7 +709,8 @@ public function getUpcomingEvent(Request $request)
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-        public function paymentVerification(Request $request)
+
+    public function paymentVerification(Request $request)
         {
         try{
             $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
@@ -1036,35 +1039,45 @@ public function getUpcomingEvent(Request $request)
     }
 
 
-    public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
-  {
-      try {
-          $validator = Validator::make($request->all(), [
-          'user_id' => 'required|nullable',
-          'vacancy_id' => 'required|nullable',
-          'resume_pdf'=>'required|nullable',
-          ]);
-          if ($validator->fails()) {
-              return $this->sendError('Validation Error.', $validator->errors());
-          }
-          $newDetails = new ApplyForJob;
-      $newDetails->user_id = $request->user_id;
-      $newDetails->vacancy_id = $request->vacancy_id;
-
-      if ($request->resume_pdf != "") {
-        if (!str_contains($request->resume_pdf, "http")) {
-            $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf,$request->user_id);
+       public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                //   'user_id' => 'nullable|numeric|exists:users,id',
+                'vacancy_id' => 'required|numeric|exists:vacancy_details,id',
+                'name' => 'required|string',
+                'email' => 'required|email|string',
+                'resume_pdf' => 'required',
+                'experience' => 'nullable',
+                'qualification' => 'nullable',
+                'expected_package' => 'nullable',
+                'current_package' => 'nullable',
+                'notice_period_in_days' => 'nullable'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $newDetails = new ApplyForJob;
+            //   $newDetails->user_id = $request->user_id;
+            $newDetails->vacancy_id = $request->vacancy_id;
+            $newDetails->name = $request->name;
+            $newDetails->email = $request->email;
+            $newDetails->experience = $request->experience;
+            $newDetails->qualification = $request->qualification;
+            $newDetails->expected_package = $request->expected_package;
+            $newDetails->current_package = $request->current_package;
+            $newDetails->notice_period_in_days = $request->notice_period_in_days;
+            if ($request->resume_pdf != "") {
+                if (!str_contains($request->resume_pdf, "http")) {
+                    $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf, $request->name);
+                }
+            }
+            $newDetails->save();
+            return $this->sendResponse([], 'Apply for Job Successfully.', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-      $newDetails->save();
-
-                  return $this->sendResponse([],'Apply for Job Successfully.', true);
-
-        }
-      catch (Exception $e) {
-          return $this->sendError('Something went wrong', $e->getTrace(), 413);
-      }
-  }
 
  public function getStudentNoticeBoard(Request $request)
  {
@@ -1097,8 +1110,6 @@ public function getUpcomingEvent(Request $request)
             return $this->sendError($e->getMessage(), $e->getTrace(),500);
         }
 }
-
-
 public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\JsonResponse
 {
     try {
@@ -1244,7 +1255,7 @@ public function getEventRegistrationByUser(Request $request)
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
             $query = EventRegistration::query()->with(['event_details','user_details',
-            'paymentmode_details','voluntary_contribution_details'])
+            'paymentmode_details','voluntary_contribution_details','event_details.location_details'])
             ->where('user_id',Auth::user()->id);
              $query->whereNotNull('event_id');
             $count = $query->count();
@@ -1319,7 +1330,7 @@ public function getEventRegistrationByUser(Request $request)
             ->with(['event_details', 'user_details', 'paymentmode_details', 'voluntary_contribution_details'])
             ->where('user_id', Auth::user()->id)
             ->whereNotNull('event_id')
-            ->where('attendance_status', 1); // Filter by attendance_status equal to 1
+            ->where('attendance_status', 1);
 
              $query->whereNotNull('event_id');
             $count = $query->count();
@@ -1341,4 +1352,68 @@ public function getEventRegistrationByUser(Request $request)
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
+
+        public function getOfferRedimByUser(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = RegisterToAssocitationDetails::query()
+            ->where('user_id', Auth::user()->id)
+            ->with(['user_details','associatiomn_details','offers_association_details']);
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['offers'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+public function updateAttendance(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric|exists:users,id',
+            'event_id' => 'required|numeric|exists:offers,id'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $attendance = EventRegistration::where('user_id', $request->user_id)
+            ->where('event_id', $request->event_id)
+            ->first();
+
+        if (is_null($attendance)) {
+            return $this->sendResponse([], 'Attendance record not found', false);
+        }
+        if ($attendance->attendance !== 1) {
+            $attendance->attendance = 1;
+            $attendance->save();
+            return $this->sendResponse([], 'Attendance updated successfully', true);
+        } else {
+            return $this->sendResponse([], 'Attendance was already marked', true);
+        }
+    } catch (Exception $e) {
+        return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
+    }
+}
+
+
 }
