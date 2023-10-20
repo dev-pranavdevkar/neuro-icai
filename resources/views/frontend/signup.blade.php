@@ -15,22 +15,7 @@
                                 enctype="multipart/form-data">
 
 
-                                @csrf <!-- CSRF token -->
 
-                                <!-- Role Selection -->
-                                <div class="input-list">
-                                    <p>Register As</p>
-                                    <div class="input-list-item radio d-flex">
-                                        <input class="radio-btn" type="radio" id="role_members" name="role"
-                                            value="members">
-                                        <label for="role_member">Member</label>
-                                    </div>
-                                    <div class="input-list-item d-flex">
-                                        <input class="radio-btn" type="radio" id="role_student" name="role"
-                                            value="student">
-                                        <label for="role_student">Student</label>
-                                    </div>
-                                </div>
 
 
 
@@ -99,21 +84,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Email and Password -->
-                                {{-- <div class="input-full-width">
-                                    <p>Email ID</p>
-                                    <input type="text" name="email"  autocomplete="off">
-                                    <span id="email1" class="text-danger font-weight-bold span"></span>
-                                    @if ($errors->has('email'))
-                                        <div class="alert-vsa text-danger">
-                                            <ul>
-                                                @foreach ($errors->get('email') as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                </div> --}}
+
                                 <div class="input-list">
                                     <div class="input-list-item">
                                         <p>Email ID</p>
@@ -172,6 +143,138 @@
                                     </div>
                                 </div>
 
+                                @csrf <!-- CSRF token -->
+
+                                <!-- Role Selection -->
+                                <div class="input-list">
+                                    <p id="selectedRole">Register As</p>
+                                    <div class="input-list-item radio d-flex">
+                                        <input class="radio-btn" type="radio" id="role_member" name="role"
+                                            value="members" onclick="updateSelectedRole()">
+                                        <label for="role_member">Member</label>
+                                    </div>
+                                    <div class="input-list-item d-flex">
+                                        <input class="radio-btn" type="radio" id="role_student" name="role"
+                                            value="student" onclick="updateSelectedRole()">
+                                        <label for="role_student">Student</label>
+                                    </div>
+                                </div>
+                                <script>
+                                    function updateSelectedRole() {
+                                        var selectedRole = document.querySelector('input[name="role"]:checked').value;
+                                
+                                        // Toggle the visibility of firm details based on the selected role
+                                        var firmDetailsDiv = document.getElementById('firmDetails');
+                                        if (selectedRole === 'members') {
+                                            firmDetailsDiv.classList.remove('d-none');
+                                            firmDetailsDiv.classList.add('d-block');
+                                        } else {
+                                            firmDetailsDiv.classList.remove('d-block');
+                                            firmDetailsDiv.classList.add('d-none');
+                                        }
+                                    }
+                                </script>
+
+                                <div id="firmDetails" class="d-none">
+                                    <!-- Firm Information -->
+                                    <div class="input-list">
+                                        <div class="input-list-item w-100 pr-3">
+
+                                            <p>Firm Name</p>
+                                            <input type="text" name="firm_name" autocomplete="off">
+                                            <div>
+                                                <span id="firm_name1" class="text-danger font-weight-bold"></span>
+                                            </div>
+                                            @if ($errors->has('firm_name'))
+                                                <div class="alert-vsa text-danger ">
+                                                    <ul>
+                                                        @foreach ($errors->get('firm_name') as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+
+
+
+                                    </div>
+                                    <div class="input-list">
+                                        <div class="input-list-item">
+
+                                            <p>Contact Person Name</p>
+                                            <input type="text" name="contact_person_name" autocomplete="off">
+                                            <div>
+                                                <span id="contact_person_name1"
+                                                    class="text-danger font-weight-bold"></span>
+                                            </div>
+                                            @if ($errors->has('contact_person_name'))
+                                                <div class="alert-vsa text-danger ">
+                                                    <ul>
+                                                        @foreach ($errors->get('contact_person_name') as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+
+
+                                        <div class="input-list-item">
+                                            <p>Firm Contact Number</p>
+                                            <input type="tel" pattern="[0-9]{10}" name="contact_person_number"
+                                                maxlength="10" autocomplete="off">
+                                            <span id="contact_person_number"
+                                                class="text-danger font-weight-bold span"></span>
+                                            @if ($errors->has('contact_person_number'))
+                                                <div class="alert-vsa text-danger">
+                                                    <ul>
+                                                        @foreach ($errors->get('contact_person_number') as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="input-list">
+                                        <div class="input-list-item">
+
+                                            <p>Address</p>
+                                            <input type="text" name="address" autocomplete="off">
+                                            <div>
+                                                <span id="address1" class="text-danger font-weight-bold"></span>
+                                            </div>
+                                            @if ($errors->has('address'))
+                                                <div class="alert-vsa text-danger ">
+                                                    <ul>
+                                                        @foreach ($errors->get('address') as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+
+
+                                        <div class="input-list-item">
+                                            <p>PIN Code</p>
+                                            <input type="tel" pattern="[0-9]{6}" name="pincode" maxlength="6"
+                                                autocomplete="off">
+                                            <span id="pincode" class="text-danger font-weight-bold span"></span>
+                                            @if ($errors->has('pincode'))
+                                                <div class="alert-vsa text-danger">
+                                                    <ul>
+                                                        @foreach ($errors->get('pincode') as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                    </div>
+                                </div>
                                 <!-- Sign Up Button -->
                                 <button type="submit" id="signupButton" class="site-btn">Sign Up</button>
                                 <!-- Success Message -->

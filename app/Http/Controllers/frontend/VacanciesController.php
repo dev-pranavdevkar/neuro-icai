@@ -8,10 +8,12 @@ use Illuminate\Http\Request;
 
 class VacanciesController extends Controller
 {
-    public function submitVacancies()
+    public function submitVacancies(Request $request)
     {
-        return view('frontend.vacancies.submitVacancies');
+        $successMessage = $request->session()->get('success_message');
+        return view('frontend.vacancies.submitVacancies', ['successMessage' => $successMessage]);
     }
+    
 
     public function viewVacancies()
     {

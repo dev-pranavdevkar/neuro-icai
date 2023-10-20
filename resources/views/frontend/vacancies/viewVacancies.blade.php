@@ -89,18 +89,76 @@
 
                                                                 </div>
                                                                 <form action="#">
+                                                                    @csrf
+                                                                
                                                                     <div class="input-list">
-                                                                        <input type="text" placeholder="Your First name">
-                                                                        <input type="text" placeholder="Your Last name">
+                                                                        <input type="text" placeholder="Your First name" name="name">
+                                                                        <input type="text" placeholder="Your Last name" name="last_name">
                                                                     </div>
+                                                                
                                                                     <div class="input-list">
-                                                                        <input type="text"
-                                                                            placeholder="Your contact number">
-                                                                        <input type="text" placeholder="Your email Id">
+                                                                        <input type="text" placeholder="Your contact number" name="contact_number">
+                                                                        <input type="text" placeholder="Your email Id" name="email">
                                                                     </div>
-                                                                    <input type="file" name="uploadResume">
+                                                                
+                                                                    <input type="file" name="resume_pdf">
+                                                                
+                                                                    <!-- Experience Field -->
+                                                                    <div class="input-list">
+                                                                       
+                                                                        <select id="experience" name="experience" onchange="toggleExperienceField(this.value)">
+                                                                            <option value="" disabled selected>Select Experience</option>
+                                                                            @for ($i = 0; $i <= 10; $i++)
+                                                                                <option value="{{ $i }}">{{ $i }}</option>
+                                                                            @endfor
+                                                                        </select>
+                                                                    </div>
+                                                                
+                                                                    <!-- Hidden Fields (displayed only if experience is greater than 0) -->
+                                                                    <div id="experienceFields" style="display: none;">
+                                                                        <div class="input-list">
+                                                                            <input type="text" placeholder="Qualification" name="qualification">
+                                                                        </div>
+                                                                
+                                                                        <div class="input-list">
+                                                                            <input type="text" placeholder="Expected Package" name="expected_package">
+                                                                            <input type="text" placeholder="Current Package" name="current_package">
+                                                                            <input type="text" placeholder="Notice Period (in days)" name="notice_period">
+                                                                        </div>
+                                                                    </div>
+                                                                
                                                                     <button type="submit" class="site-btn">Submit</button>
                                                                 </form>
+                                                                
+                                                                @push('scripts')
+                                                                    <script>
+                                                                        function toggleExperienceField(value) {
+                                                                            var experienceFields = document.getElementById("experienceFields");
+                                                                
+                                                                            if (value !== "") {
+                                                                                experienceFields.style.display = "block";
+                                                                            } else {
+                                                                                experienceFields.style.display = "none";
+                                                                            }
+                                                                        }
+                                                                    </script>
+                                                                @endpush
+                                                                
+                                                                
+                                                                @push('scripts')
+                                                                    <script>
+                                                                        function toggleExperienceField(value) {
+                                                                            var experienceFields = document.getElementById("experienceFields");
+                                                                
+                                                                            if (value > 0) {
+                                                                                experienceFields.style.display = "block";
+                                                                            } else {
+                                                                                experienceFields.style.display = "none";
+                                                                            }
+                                                                        }
+                                                                    </script>
+                                                                @endpush
+                                                                
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">

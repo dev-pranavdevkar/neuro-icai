@@ -17,6 +17,7 @@
         </div>
     </div>
     <!-- Breadcrumb Section End -->
+
     <!-- Association Section Begin -->
     <section class="latest spad">
         <div class="testimonial spad ">
@@ -24,6 +25,15 @@
         </div>
         <div class="testimonial__carousel ">
             <div class="container">
+                @if (Auth::user() &&
+                        in_array(
+                            'members',
+                            Auth::user()->roles->pluck('name')->toArray()))
+                    <div class="row d-flex justify-content-end mb-5">
+                        <a href="{{ url('/members/association/addAssociations') }}" class="btn btn-primary">Add New
+                            Association</a>
+                    </div>
+                @endif
                 <div class="row ">
 
                     @if (isset($associations) && count($associations) > 0)

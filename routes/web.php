@@ -14,6 +14,7 @@ use App\Http\Controllers\frontend\VacanciesController;
 use App\Http\Controllers\frontend\DownloadsController;
 use App\Http\Controllers\frontend\ProfileController;
 use App\Http\Controllers\frontend\RazorpayPaymentController;
+use App\Http\Controllers\V1\Website\WebMetaDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,7 +73,7 @@ Route::get('/members/membersFAQ',[MembersController::class, 'membersFAQ']);
 Route::get('/members/CPEStudyCircles',[MembersController::class, 'CPEStudyCircles']);
 Route::get('/members/membersNoticeboard',[MembersController::class, 'membersNoticeboard']);
 Route::get('/members/association/associations',[MembersController::class, 'associations']);
-
+Route::get('/members/association/addAssociations',[MembersController::class, 'addAssociations']);
 
 // Students Dropdown Pages
 Route::get('/students/aboutPuneWICASA',[StudentsController::class, 'aboutPuneWICASA']);
@@ -99,6 +100,7 @@ Route::get('/eventsDetails/{id}', [EventsController::class, 'eventDetails']);
 
 // Vacancies Dropdown Pages
 Route::get('/vacancies/submitVacancies',[VacanciesController::class, 'submitVacancies']);
+Route::post('/vacancies/submitVacancies', [VacanciesController::class, 'submitVacancies'])->name('submitVacancies');
 Route::get('/vacancies/viewVacancies',[VacanciesController::class, 'viewVacancies']);
 Route::get('/vacancy-details/{id}',[VacanciesController::class,'vacancyDetails'])->name('vacancyDetails');
 
@@ -110,6 +112,7 @@ Route::get('/login',[LoginController::class, 'index']);
 Route::get('/signup',[SignupController::class, 'index']);
 Route::get('/forgetPassword',[ForgetPasswordController::class, 'index']);
 Route::post('/signup', [WebAuthController::class, 'registerUser'])->name('registerUser');
+Route::post('/addVacancyDetails', [WebMetaDataController::class, 'addVacancyDetails'])->name('addVacancyDetails');
 Route::post('/login', [WebAuthController::class, 'userLogin'])->name('userLogin');
 Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->name('forgetPassword');
 Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verifyOtp');

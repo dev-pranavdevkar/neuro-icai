@@ -29,54 +29,55 @@ use App\Mail\ForgetPasswordMail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+
 class WebMetaDataController extends Controller
 {
 
-// public function getLatestUpdate(Request $request)
-// {
-//     try {
-//         $validator = Validator::make($request->all(), [
-//             'limit' => 'numeric',
-//             'pageNo' => 'numeric',
-//         ]);
-//         if ($validator->fails()) {
-//             return $this->sendError('Validation Error.', $validator->errors());
-//         }
+    // public function getLatestUpdate(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'limit' => 'numeric',
+    //             'pageNo' => 'numeric',
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
 
-//         // Create queries for each table and select all columns
-//         $eventQuery = EventDetails::select('*')->addSelect(DB::raw("'Event' AS source"));
-//         $associationQuery = AssociationDetails::select('*')->addSelect(DB::raw("'Association' AS source"));
-//         $newsletterQuery = NewsLetterDetails::select('*')->addSelect(DB::raw("'Newsletter' AS source"));
-//         $noticeBoardQuery = StudentNoticeBoard::select('*')->addSelect(DB::raw("'NoticeBoard' AS source"));
+    //         // Create queries for each table and select all columns
+    //         $eventQuery = EventDetails::select('*')->addSelect(DB::raw("'Event' AS source"));
+    //         $associationQuery = AssociationDetails::select('*')->addSelect(DB::raw("'Association' AS source"));
+    //         $newsletterQuery = NewsLetterDetails::select('*')->addSelect(DB::raw("'Newsletter' AS source"));
+    //         $noticeBoardQuery = StudentNoticeBoard::select('*')->addSelect(DB::raw("'NoticeBoard' AS source"));
 
-//         // Combine the queries using union
-//         $combinedQuery = $eventQuery
-//             ->union($associationQuery)
-//             ->union($newsletterQuery)
-//             ->union($noticeBoardQuery);
+    //         // Combine the queries using union
+    //         $combinedQuery = $eventQuery
+    //             ->union($associationQuery)
+    //             ->union($newsletterQuery)
+    //             ->union($noticeBoardQuery);
 
-//         // Apply sorting and pagination
-//         $combinedQuery = $combinedQuery->orderBy('created_at', 'desc');
+    //         // Apply sorting and pagination
+    //         $combinedQuery = $combinedQuery->orderBy('created_at', 'desc');
 
-//         if ($request->has('pageNo') && $request->has('limit')) {
-//             $limit = $request->limit;
-//             $pageNo = $request->pageNo;
-//             $skip = $limit * ($pageNo - 1);
-//             $combinedQuery = $combinedQuery->skip($skip)->take($limit);
-//         }
+    //         if ($request->has('pageNo') && $request->has('limit')) {
+    //             $limit = $request->limit;
+    //             $pageNo = $request->pageNo;
+    //             $skip = $limit * ($pageNo - 1);
+    //             $combinedQuery = $combinedQuery->skip($skip)->take($limit);
+    //         }
 
-//         // Execute the combined query
-//         $results = $combinedQuery->get();
+    //         // Execute the combined query
+    //         $results = $combinedQuery->get();
 
-//         if ($results->count() > 0) {
-//             return $this->sendResponse(["member" => $results], 'Data fetch successfully');
-//         } else {
-//             return $this->sendResponse([], 'No data available', false);
-//         }
-//     } catch (Exception $e) {
-//         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
-//     }
-// }
+    //         if ($results->count() > 0) {
+    //             return $this->sendResponse(["member" => $results], 'Data fetch successfully');
+    //         } else {
+    //             return $this->sendResponse([], 'No data available', false);
+    //         }
+    //     } catch (Exception $e) {
+    //         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+    //     }
+    // }
 
     public function getLatestUpdate(Request $request)
     {
@@ -211,8 +212,10 @@ class WebMetaDataController extends Controller
             $newEventRegistration->save();
             if ($newEventRegistration->save()) {
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $orderDetails = $api->order->create(array('receipt' => 'Inv-' . $newEventRegistration->id,
-                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes' => array()));
+                $orderDetails = $api->order->create(array(
+                    'receipt' => 'Inv-' . $newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes' => array()
+                ));
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
@@ -223,7 +226,6 @@ class WebMetaDataController extends Controller
             } else {
                 return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
             }
-
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
@@ -276,9 +278,12 @@ class WebMetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $user = Auth::user()->id;
-            if (auth()->user()->role !== 'member') {
+            $userRole = auth()->user()->role;
+
+            if (!in_array('members', auth()->user()->roles->pluck('name')->toArray())) {
                 return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
             }
+
             $newVacancy = new VacancyDetails();
             $newVacancy->position = $request->position;
             $newVacancy->comments = $request->comments;
@@ -349,51 +354,51 @@ class WebMetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $NewLocationDetails = new LocationDetails();
-            $NewLocationDetails->address_line_1=$request->address_line_1;
-            $NewLocationDetails->pincode=$request->pincode;
+            $NewLocationDetails->address_line_1 = $request->address_line_1;
+            $NewLocationDetails->pincode = $request->pincode;
             $NewLocationDetails->save();
             $newDetails = new StudentBatches;
-            $newDetails->location_id=$NewLocationDetails->id;
+            $newDetails->location_id = $NewLocationDetails->id;
             $newDetails->batch_name = $request->batch_name;
             $newDetails->fees = $request->fees;
-            $newDetails->start_date=$request->start_date;
-            $newDetails->end_date=$request->end_date;
+            $newDetails->start_date = $request->start_date;
+            $newDetails->end_date = $request->end_date;
             $newDetails->batch_discription = $request->batch_discription;
             $newDetails->batch_cut_off_date = $request->batch_cut_off_date;
             $newDetails->batch_address = $request->batch_address;
-            $newDetails->early_bird_date=$request->early_bird_date;
+            $newDetails->early_bird_date = $request->early_bird_date;
             $newDetails->early_bird_fees = $request->early_bird_fees;
             $newDetails->save();
-            return $this->sendResponse([],' Student batches added successfully.', true);
-        }
-        catch (Exception $e) {
+            return $this->sendResponse([], ' Student batches added successfully.', true);
+        } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
+
     public function getStudentBatches(Request $request)
     {
-        try{
+        try {
             $validator = Validator::make($request->all(), [
-                'pageNo'=>'numeric',
-                'limit'=>'numeric',
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
             ]);
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(),400);
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
             $currentDate = carbon::now('Asia/Kolkata');
             $now = carbon::now();
             $query = StudentBatches::query()->with('location_details');
             if ($request->has('batch_name')) {
-                $query = $query->where('batch_name', 'like', '%' . $request->batch_name. '%');
+                $query = $query->where('batch_name', 'like', '%' . $request->batch_name . '%');
             }
             if ($request->has('start_date')) {
-                $query = $query->where('start_date', 'like', '%' . $request->start_date. '%');
+                $query = $query->where('start_date', 'like', '%' . $request->start_date . '%');
             }
             if ($request->has('end_date')) {
-                $query = $query->where('end_date', 'like', '%' . $request->end_date. '%');
+                $query = $query->where('end_date', 'like', '%' . $request->end_date . '%');
             }
             if ($request->has('fees')) {
-                $query = $query->where('fees', 'like', '%' . $request->fees. '%');
+                $query = $query->where('fees', 'like', '%' . $request->fees . '%');
             }
             if ($request->has('address_line_1')) {
                 $searchTerm = $request->input('address_line_1');
@@ -414,26 +419,27 @@ class WebMetaDataController extends Controller
                         ->where('end_date', '>=', $currentDate);
                 }
             }
-            $count=$query->count();
-            if($request->has('pageNo') && $request->has('limit')){
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
-                $skip = $limit*$pageNo;
-                $query= $query->skip($skip)->limit($limit);
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
             }
             $data = $query->get();
-            if(count($data)>0){
+            if (count($data) > 0) {
                 $response['data'] =  $data;
-                $response['count']=$count;
-                return $this->sendResponse($response,'Data Fetched Successfully', true);
-            }else{
-                return $this->sendResponse([],'No Data Available',false);
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse([], 'No Data Available', false);
             }
-        }catch (\Exception $e){
-            return $this->sendError($e->getMessage(), $e->getTrace(),500);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    public function getStudentBatchesById(Request $request):  \Illuminate\Http\JsonResponse
+
+    public function getStudentBatchesById(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -450,7 +456,7 @@ class WebMetaDataController extends Controller
         }
     }
 
-    public function getEventDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    public function getEventDetailsById(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -461,20 +467,20 @@ class WebMetaDataController extends Controller
             }
 
             $getEvent = EventDetails::query()->where('id', $request->id)->with(['location_details'])->first();
-            if($getEvent['id']!=null){
-                $product=EventPresentationVideo::query()->where('event_id',$getEvent['id'])
+            if ($getEvent['id'] != null) {
+                $product = EventPresentationVideo::query()->where('event_id', $getEvent['id'])
                     ->get();
-                $getEvent['event_video']=$product;
+                $getEvent['event_video'] = $product;
             }
-            if($getEvent['id']!=null){
-                $product=EventImages::query()->where('event_id',$getEvent['id'])
+            if ($getEvent['id'] != null) {
+                $product = EventImages::query()->where('event_id', $getEvent['id'])
                     ->get();
-                $getEvent['event_images']=$product;
+                $getEvent['event_images'] = $product;
             }
-            if($getEvent['id']!=null){
-                $product=EventPresentationPdf::query()->where('event_id',$getEvent['id'])
+            if ($getEvent['id'] != null) {
+                $product = EventPresentationPdf::query()->where('event_id', $getEvent['id'])
                     ->get();
-                $getEvent['event_prsentation']=$product;
+                $getEvent['event_prsentation'] = $product;
             }
 
             return $this->sendResponse([
@@ -484,6 +490,4 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-
-
 }

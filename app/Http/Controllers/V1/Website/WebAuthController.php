@@ -24,7 +24,8 @@ use App\Models\StudentNoticeBoard;
 use App\Models\VacancyDetails;
 use App\Models\AssociationDetails;
 use App\Models\OffersAssociation;
-
+use App\Models\Company;
+use App\Models\LocationDetails;
 class WebAuthController extends Controller
 {
 
@@ -40,20 +41,31 @@ class WebAuthController extends Controller
                 'mobile_no' => 'required|regex:/^[0-9]{0,255}$/|unique:users',
                 'password' => 'required|string|min:6|confirmed',
                 'generated_user_id' => 'required|string|max:255|unique:users',
-
-                // Add other validation rules as needed
             ]);
 
             if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator)->withInput();
+                return $this->sendError('Validation Error.', $validator->errors());
             }
 
             if ($request->role == 'SuperAdmin') {
-                return $this->sendResponse([], 'Sorry you can\'t be super admin. It\'s our property', true);
+                return $this->sendResponse([], 'Sorry, you can\'t be a super admin. It\'s our property', true);
             }
 
+            if ($request->role != 'student' && $request->role != 'members') {
+                return $this->sendError('Invalid role.', [], 400);
+            }
+            if (!empty($request->firm_name) || !empty($request->contact_person_name) || !empty($request->contact_person_number) || !empty($request->address) || !empty($request->pincode)) {
+                $newCompany = new Company();
+                $newCompany->firm_name = $request->firm_name;
+                $newCompany->contact_person_name = $request->contact_person_name;
+                $newCompany->contact_person_number = $request->contact_person_number;
+                $newCompany->address = $request->address;
+                $newCompany->pincode = $request->pincode;
+                $newCompany->save();
+            }
             $newUser = new User();
             $newUser->password = Hash::make($request['password']);
+            $newUser->company_id = isset($newCompany) ? $newCompany->id : null;
             $newUser->name = $request->name;
             $newUser->email = $request->email;
             $newUser->last_name = $request->last_name;
@@ -61,24 +73,19 @@ class WebAuthController extends Controller
             $newUser->mobile_no = $request->mobile_no;
             $newUser->otp = $request->otp;
             $newUser->generated_user_id = $request->generated_user_id;
-
-            // Assign roles based on user's role value
-            $assignedRoles = [];
-
-
-            $role = Role::query()->where('name', $request->role)->first();
+            $role = Role::where('name', $request->role)->first();
             $newUser->assignRole($role);
+            $newAddress = new LocationDetails;
+            $newAddress->address_line_1 = $request->address_line_1;
+            $newAddress->pincode = $request->pincode;
+            $newAddress->save();
+            $newUser->location_id = $newAddress->id;
             $newUser->save();
-
-            $userRoles = $newUser->roles->pluck('name');
             $token = JWTAuth::fromUser($newUser);
-            $response = ['token' => $token];
-            $response['userData'] = $newUser;
-            // $response['userRoles'] = $userRoles;
-            $response['assignedRoles'] = $assignedRoles;
-            // To keep on signUp Page
+            // $response = ['token' => $token];
+            // $response['userData'] = $newUser;
+            // $response['location_details'] = LocationDetails::query()->where('id', $newUser->location_id)->first();
             return redirect()->route('login');
-            // return $this->sendResponse($response, 'Registered Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }

@@ -59,5 +59,9 @@ class MembersController extends Controller
         $associations = AssociationDetails::with([])->paginate(10);
         return view('frontend.members.association.associations', compact('associations'));
     }
+    public function addAssociations()
+    {
+        return view('frontend.members.association.addAssociations');
+    }
 
 }

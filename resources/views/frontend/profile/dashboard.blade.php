@@ -510,6 +510,7 @@
                                             <h3 class="py-3">My Profile</h3>
                                             <div>
                                                 <button type="button" class="btn btn-primary">Edit Profile</button>
+                                                
                                             </div>
                                         </div>
                                         <div>
@@ -521,6 +522,7 @@
                                                     <table class="w-100">
                                                         <tr>
                                                             <th>Role:</th>
+                                                           {{ (auth()->user()->role )}}
                                                             <td>{{ Auth::user()->roles->first()->name }}</td>
                                                         </tr>
                                                         <tr>
