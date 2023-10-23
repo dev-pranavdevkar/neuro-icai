@@ -143,8 +143,8 @@
                                     role="tab">Event Images</a> </li>
                             <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-four"
                                     role="tab">Event Videos</a> </li>
-                            <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
-                                    role="tab">Event Ticket</a> </li>
+                            {{-- <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
+                                    role="tab">Event Ticket</a> </li> --}}
                         </ul>
 
                     </nav>
@@ -266,9 +266,10 @@
                                                                         data-event="{{ $eventDetails->id }}">Pay
                                                                         Now</button>
                                                                 @else
-                                                                    <button id="viewTicket" class="btn btn-primary"
-                                                                        data-event="{{ $eventDetails->id }}">View
-                                                                        Ticket</button>
+                                                                <a href="{{ route('tickets', ['id' => $eventDetails->id]) }}"  id="viewTicket">
+                                                                    <button class="btn btn-primary">View Ticket</button>
+                                                                </a>
+                                                                
                                                                 @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
@@ -538,7 +539,7 @@
 
 
 
-<button id="generateQrCodeBtn">Generate QR Code</button>
+{{-- <button id="generateQrCodeBtn">Generate QR Code</button> --}}
 
    
 <script>

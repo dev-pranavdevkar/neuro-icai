@@ -490,4 +490,55 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
+    public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'company_name' => 'required|string|max:255',
+                'company_email' => 'required|string|max:255',
+                'mobile_no' => 'required',
+                'company_logo' => 'required',
+                'address_line_1' => 'required|nullable|string|max:255',
+                'pincode' => 'required|nullable|string|max:255',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $NewLocationDetails = new LocationDetails();
+            $NewLocationDetails->address_line_1=$request->address_line_1;
+            $NewLocationDetails->pincode=$request->pincode;
+            $NewLocationDetails->save();
+            $newAssociationDetails = new AssociationDetails();
+            $newAssociationDetails->location_id=$NewLocationDetails->id;
+            $newAssociationDetails->company_name=$request->company_name;
+            $newAssociationDetails->company_email=$request->company_email;
+            $newAssociationDetails->mobile_no=$request->mobile_no;
+            if ($request->company_logo != "") {
+                if (!str_contains($request->company_logo, "http")) {
+                    $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo,$request->company_name);
+                }
+            }
+            $newAssociationDetails->save();
+            return $this->sendResponse([], 'Association Details added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
+    public function getAssociationDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:association_details,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getitems = AssociationDetails::query()->where('id', $request->id)->with(['location_details'])->first();
+            //$getOffersOfAssociation = OffersAssociation::query()->where('association_id', $request->id)->get();
+            return $this->sendResponse(["association_details" => $getitems], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
 }

@@ -44,6 +44,7 @@
             <a href="{{ url('/') }}"><img src="{{ url('frontend/img/logo.jpg') }}" alt=""></a>
         </div>
         <nav class="offcanvas__menu mobile-menu">
+            
             <ul>
                 {{-- <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li> --}}
                 <li class="active"><a href="{{ url('/') }}">Home</a></li>
@@ -142,6 +143,7 @@
                         </ul>
                     @endif
                 </li>
+              
                 {{-- <li><a href="{{ url('/') }}">Downloads</a>
                     <ul class="dropdown">
                         <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
@@ -151,6 +153,8 @@
                 </li> --}}
 
                 <li><a href="{{ url('/contact') }}">Contact Us</a></li>
+                
+                
                 {{-- <li><a href="{{ url('/help') }}">Help</a></li> --}}
             </ul>
         </nav>
@@ -604,33 +608,33 @@
 
             <li id="side-facebook">
                 <a class="social-btn" href="https://www.facebook.com/punewirc/">
-                    {{-- <span>Facebook</span> --}}
+                  
                     <i class="fa fa-facebook"></i>
                 </a>
             </li>
 
             <li id="side-twitter"><a class="social-btn" href="https://twitter.com/PuneICAI">
-                    {{-- <span>Twitter</span> --}}
+                   
                     <i class="fa fa-twitter"></i></a>
             </li>
 
             <li id="side-linkedin"><a class="social-btn" href="https://www.linkedin.com/in/puneicai/">
-                    {{-- <span>Linkedin</span> --}}
+                    
                     <i class="fa fa-linkedin"></i></a>
             </li>
 
             <li id="side-telegram"><a class="social-btn" href="https://t.me/PuneICAI">
-                    {{-- <span>Telegram</span> --}}
+                    
                     <i class="fa fa-telegram"></i></a>
             </li>
 
             <li id="side-whatsapp"><a class="social-btn" href="https://wa.me/918237266114">
-                    {{-- <span>Whatsapp</span> --}}
+               
                     <i class="fa fa-whatsapp"></i></a>
             </li>
 
             <li id="side-instagram"><a class="social-btn" href="https://instagram.com/puneicai">
-                    {{-- <span>Instagram</span> --}}
+                   
                     <i class="fa fa-instagram"></i></a>
             </li>
         </ul>

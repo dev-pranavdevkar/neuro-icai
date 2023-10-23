@@ -8,6 +8,7 @@ use App\Models\AssociationDetails;
 use App\Models\EventRegistration;
 use App\Models\StudentNoticeBoard;
 use App\Models\NewsLetterDetails;
+use App\Models\RegisterToAssocitationDetails;
 use App\Models\VacancyDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -199,4 +200,8 @@ class HomeController extends Controller
         
         return view('frontend.ticket', compact(['eventDetails','alreadyRegistered','qrData']));
     }
+
+
+
+
 }

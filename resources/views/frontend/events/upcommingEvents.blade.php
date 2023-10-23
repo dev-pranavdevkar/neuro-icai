@@ -135,8 +135,8 @@
                         </div>
                     @endforeach
 
-                    
-         
+
+
                 </div>
                 <div class="w-100">
                     <div class="d-flex justify-content-center mt-5 w-100">
@@ -163,8 +163,7 @@
                                     <a href="{{ $eventDetails->nextPageUrl() }}" rel="next"
                                         aria-label="@lang('pagination.next')">Next</a>
                                 @else
-                                    <span class="disabled" aria-disabled="true"
-                                        aria-label="@lang('pagination.next')">Next</span>
+                                    <span class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">Next</span>
                                 @endif
                             </li>
                         </ul>
@@ -176,13 +175,13 @@
                         {{ $eventDetails->total() }} results
 
 
-                    <div class="d-flex justify-content-center d-none">
-                        {!! $eventDetails->links() !!}
+                        <div class="d-flex justify-content-center d-none">
+                            {!! $eventDetails->links() !!}
 
+                        </div>
                     </div>
-                </div>
-            @else
-                <h1>No Data available.</h1>
+                @else
+                    <h1>No Data available.</h1>
             @endif
 
 

@@ -26,7 +26,7 @@
         <div class="testimonial__carousel ">
             <div class="container">
                 @if (Auth::user() &&
-                        in_array(
+                        in_array(   
                             'members',
                             Auth::user()->roles->pluck('name')->toArray()))
                     <div class="row d-flex justify-content-end mb-5">
@@ -42,7 +42,7 @@
                                 <div class="testimonial__item">
 
                                     <img class="associationImg" src={{ $association['company_logo'] }} alt="">
-                                    <h5>{{ $association['company_name'] }}</h5>
+                                    <a href="{{ url('/members/association/associationDetails/' . $association['id']) }}"> <h5>{{ $association['company_name'] }}</h5></a>
                                     {{-- <span>ICAI Pune</span> --}}
                                     <div class="posted-details">
                                         <ul class="d-flex justify-content-center">

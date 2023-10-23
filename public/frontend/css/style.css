@@ -90,6 +90,15 @@ p {
 	height: 100%;
 }
 
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff !important;
+    background-color: #182141;
+}
+
+.nav-pills .nav-link:hover, .nav-pills .nav-link:focus {
+	color: #182141;
+}
+
 
 .associationImg {
 	display: inline-block;
@@ -4213,6 +4222,32 @@ ol {
 /* Wide Mobile = 480px */
 
 @media only screen and (max-width: 767px) {
+
+	.side-social-media-apps ul li {
+
+		background-color: #283960;
+		padding: 10px 10px 10px 10px;
+		border-radius: 50% 0% 0% 50%;
+		margin-bottom: 10px;
+		font-size: 24px;
+		text-align: right;
+		vertical-align: middle;
+	
+	}
+	.side-social-media-apps ul li a {
+		
+		justify-content: center;
+		align-items: center;
+	}
+	.side-social-media-apps ul {
+		list-style: none;
+		position: fixed;
+		top: 50%;
+		left: auto;
+		right: 0;
+		transform: translateY(-50%);
+		z-index: 999;
+	}
 	.member-table-card {
 		white-space: nowrap;
 		/* Prevent text from wrapping */
