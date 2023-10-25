@@ -541,4 +541,71 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
+    public function getAllVacancyDetails(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = VacancyDetails::query()->with(['location_details','user_details','companyDetails']);
+
+        if ($request->has('firm_name')) {
+            $firmName = $request->input('firm_name');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($firmName) {
+                $companyQuery->where('firm_name', 'LIKE', "%{$firmName}%");
+            });
+        }
+        if ($request->has('pincode')) {
+            $pincode = $request->input('pincode');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($pincode) {
+                $companyQuery->where('pincode', 'LIKE', "%{$pincode}%");
+            });
+        }
+        if ($request->has('address')) {
+            $address = $request->input('address');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($address) {
+                $companyQuery->where('address', 'LIKE', "%{$address}%");
+            });
+        }
+            if ($request->has('position')) {
+                $Position = $request->input('position');
+                $query->where('position', 'LIKE', "%{$Position}%");
+            }
+            if ($request->has('experience')) {
+                $Experience = $request->input('experience');
+                $query->where('experience', 'LIKE', "%{$Experience}%");
+            }
+        if ($request->has('company_email')) {
+            $email = $request->input('company_email');
+            $query->whereHas('companyDetails', function ($companyQuery) use ($email) {
+                $companyQuery->where('company_email', 'LIKE', "%{$email}%");
+            });
+        }
+
+
+            $currentDate = date('Y-m-d');
+            $query->where('expiry_date', '>=', $currentDate);
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['vacancy_details'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available',false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    } 
 }

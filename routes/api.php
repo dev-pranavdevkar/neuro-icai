@@ -292,7 +292,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
     Route::get('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
-    Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    Route::get('getAllVacancyDetails', [WebMetaDataController::class, 'getAllVacancyDetails']);
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
     Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
     Route::get('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);

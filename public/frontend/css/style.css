@@ -83,6 +83,13 @@ p {
 	line-height: 25px;
 	margin: 0 0 15px 0;
 }
+.noticeboard-bottom-btn{
+	/* position: absolute !important;
+	left: 50% !important;
+	transform: translateX(-50%) !important;
+	bottom: 50px !important;
+	 */
+}
 
 .border-left-dashed {
 	border-left: 1px dashed #182151;
@@ -4301,6 +4308,7 @@ ol {
 		position: relative !important;
 		bottom: 0;
 	}
+	
 
 	.footer__widget h5 {
 		margin-bottom: 5px;

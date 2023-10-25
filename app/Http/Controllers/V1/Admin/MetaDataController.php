@@ -1895,7 +1895,8 @@ class MetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-    }    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    }  
+      public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
