@@ -41,7 +41,7 @@
                             <p class="last_para">Unfortunately, many graphic design firms who position themselves as
                                 advertising agencies believe that branding your corporate identity is all about
                                 developing great looking visual solutions.</p>
-                            <a href="#" class="primary-btn">Contact Us</a>
+                            <a href="{{ url('/contact') }}" class="primary-btn">Contact Us</a>
                         </div>
                     </div>
                 </div>
@@ -76,26 +76,6 @@
     </section>
     <!-- About End -->
 
-    @if (!empty($latestUpdates['data']['latest_update']))
-
-    <div class="latest-updates">
-        <h2>Latest Updates:</h2>
-        <ul>
-            {{-- Loop through the 'latest_update' data --}}
-            @foreach ($latestUpdates['data']['latest_update'] as $update)
-                <li>
-                    {{-- Display relevant update information --}}
-                    Type: {{ $update['type'] }}
-                    Title: {{ $update['title'] }}
-                    {{-- Add other properties based on your data structure --}}
-                </li>
-            @endforeach
-        </ul>
-    </div>
-
-@else
-    {{-- If no 'latest_update' available --}}
-    <h1>No latest updates available.</h1>
-@endif
+   
 
 @endsection

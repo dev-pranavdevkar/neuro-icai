@@ -146,19 +146,19 @@
                             </li>
                         </ul>
                     </div>
-
+{{-- 
                     <div class="text-center mt-2 w-100">
                         Showing {{ $batchs->firstItem() }} to
                         {{ $batchs->lastItem() }} of
                         {{ $batchs->total() }} results
-                    </div>
+                    </div> --}}
                 </div>
             @else
-<<<<<<< HEAD
+
                 <h1>No Data available.</h1>
-=======
+
                 <h1>No Batches details available.</h1>
->>>>>>> 648e0e776a1a7dc4d1c4485b90a01feec0d44098
+
             @endif
 
 

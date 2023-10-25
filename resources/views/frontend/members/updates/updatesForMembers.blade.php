@@ -40,16 +40,24 @@
                                             <ul>
                                                 
                                                 @foreach ($combinedData as $update)
-                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><a
-                                                            href="https://maps.app.goo.gl/LDaHDH3XSHSPAF3Q6" class="">
-                                                            @if (isset($update->title))
-                                                                {{ $update->title }}
-                                                            @elseif(isset($update->event_name))
-                                                                {{ $update->event_name }}
-                                                            @elseif(isset($update->association_name))
-                                                                {{ $update->association_name }}
-                                                            @endif
-                                                        </a>
+                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>
+                                                              {{-- Determine the link based on the type of update --}}
+                                                              @if (isset($update->title))
+                                                              <a href=" {{ $update->upload_newsletter_pdf ?? ($update->notice_board_pdf ?? url('/')) }}"
+                                                                  class="">
+                                                                  {{ $update->title }}
+                                                              </a>
+                                                          @elseif(isset($update->event_name))
+                                                              <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}"
+                                                                  class="">
+                                                                  {{ $update->event_name }}
+                                                              </a>
+                                                          @elseif(isset($update->association_name))
+                                                              <a href="{{ url('/members/association/associations') }}"
+                                                                  class="">
+                                                                  {{ $update->association_name }}
+                                                              </a>
+                                                          @endif
                                                     </li>
                                                 @endforeach
 

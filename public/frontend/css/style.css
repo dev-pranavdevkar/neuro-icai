@@ -173,7 +173,7 @@ input[type=file]::file-selector-button:hover {
 		transform: translateY(-100%);
 	}
 }
-<<<<<<< HEAD
+
 .pagination-cell {
     border: 1px solid #ddd;
     padding:10px 15px;
@@ -184,15 +184,23 @@ input[type=file]::file-selector-button:hover {
     color: #182141;
 	font-weight: 400;
 }
+.pagination-cell a:hover {
+    text-decoration: none;
+    color: #182141;
+	font-weight: 400;
+}
 
 .pagination-cell.active {
     background-color: #182141;
-    color: #fff;
+    color: #fff !important;
 	border: 1px solid #182141;
 }
 
-=======
->>>>>>> 648e0e776a1a7dc4d1c4485b90a01feec0d44098
+.pagination-cell.active a{
+	color: #fff;
+}
+
+
 
 .member-card {
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -289,6 +297,9 @@ input[type=file]::file-selector-button:hover {
 	color: #000;
 }
 
+.study-circle .col-lg-4{
+	border:1px solid #dee2e6!important; ;
+}
 .download-btn {
 	color: #fff !important;
 	padding: 0.5rem 1rem !important;

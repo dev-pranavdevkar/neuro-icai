@@ -17,7 +17,7 @@
         </div>
     </div>
     <!-- Breadcrumb Section End -->
-    <section class="loan-services study-circle spad">
+    <section class="loan-services  spad">
         <div class="container">
             @if (isset($memberNoticeBoard) && count($memberNoticeBoard) > 0)
                 <div class="row d-flex justify-content-between">
@@ -82,10 +82,10 @@
                         </ul>
                     </div>
 
-                    <div class="text-center mt-2 w-100">
+                    {{-- <div class="text-center mt-2 w-100">
                         Showing {{ $memberNoticeBoard->firstItem() }} to {{ $memberNoticeBoard->lastItem() }} of
                         {{ $memberNoticeBoard->total() }} results
-                    </div>
+                    </div> --}}
                 </div>
             @else
                 <h1>No Data available.</h1>

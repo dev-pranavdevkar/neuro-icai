@@ -169,7 +169,7 @@
                         </ul>
                     </div>
 
-                    <div class="text-center mt-2 w-100">
+                    {{-- <div class="text-center mt-2 w-100">
                         Showing {{ $eventDetails->firstItem() }} to
                         {{ $eventDetails->lastItem() }} of
                         {{ $eventDetails->total() }} results
@@ -179,7 +179,7 @@
                             {!! $eventDetails->links() !!}
 
                         </div>
-                    </div>
+                    </div> --}}
                 @else
                     <h1>No Data available.</h1>
             @endif

@@ -19,12 +19,12 @@
     <!-- Breadcrumb Section End -->
     <section class="loan-services study-circle spad">
         <div class="container">
-            <div class="row d-flex justify-content-between">
+            <div class="row  d-flex justify-content-between">
                 {{-- 1 --}}
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE CAMP CPE STUDY CIRCLE</h5>
                             </div>
@@ -68,7 +68,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE CENTRAL CPE STUDY CIRCLE</h5>
                             </div>
@@ -112,7 +112,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE CITY CPE STUDY CIRCLE</h5>
                             </div>
@@ -157,7 +157,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE DECCAN CPE STUDY CIRCLE</h5>
                             </div>
@@ -200,8 +200,8 @@
                 {{-- 5 --}}
                 <div class="col-lg-4 py-3 ">
 
-                    <div class="">
-                        <div class="row">
+                    <div class="  d-flex align-items-center">
+                        <div class="row   ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE WEST CPE STUDY CIRCLE</h5>
                             </div>
@@ -231,7 +231,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">SARASBAUG CPE STUDY CIRCLE</h5>
                             </div>
@@ -275,7 +275,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE NORTH CPE STUDY CIRCLE</h5>
                             </div>
@@ -319,7 +319,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">PUNE EAST CPE STUDY CIRCLE</h5>
                             </div>
@@ -358,12 +358,18 @@
                     </div>
 
                 </div>
-                <div class="col-lg-4 py-3 "></div>
+                <div class="col-lg-4 py-3 ">
+                    <div class="h-100">
+                        <div class="row  h-100">
+                          
+                        </div>
+                    </div>
+                </div>
                 {{-- 9 --}}
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">Agri Equipment Industry CPE Study Circle for Members in Industry of ICAI</h5>
                             </div>
@@ -393,7 +399,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">Kharadi Magarpatta (Industry) CPE Study Circle for Members in Industry of ICAI</h5>
                             </div>
@@ -423,7 +429,7 @@
                 <div class="col-lg-4 py-3 ">
 
                     <div class="">
-                        <div class="row">
+                        <div class="row ">
                             <div class="col-lg-12 ">
                                 <h5 class="">Pune CPE Study Circle of Credit Suisse Services India Private Ltd. for Members in Industry of ICAI</h5>
                             </div>

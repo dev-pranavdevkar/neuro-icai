@@ -115,7 +115,7 @@
                                     </div>
                                 </div>
                                 <div class="col-8">
-                                    <h4>CA Yashwant KasarYashwant Kasar</h4>
+                                    <h4>CA Yashwant Kasar</h4>
                                     <p>Regional Council Member, WIRC of ICAI</p>
                                   
                                 </div>

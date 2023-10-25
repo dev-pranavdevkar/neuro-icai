@@ -27,7 +27,7 @@ class MembersController extends Controller
     }
     public function puneMembersNewsletter()
     {
-        $newsLetterDetails = NewsLetterDetails::with([])->paginate(4);
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(12);
         return view('frontend.members.puneMembersNewsletter', compact('newsLetterDetails'));
     }
 
@@ -55,7 +55,7 @@ class MembersController extends Controller
     }
     public function membersNoticeboard()
     {
-        $memberNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
+        $memberNoticeBoard = StudentNoticeBoard::with([])->paginate(10);
         return view('frontend.members.membersNoticeboard', compact('memberNoticeBoard'));
     }
 

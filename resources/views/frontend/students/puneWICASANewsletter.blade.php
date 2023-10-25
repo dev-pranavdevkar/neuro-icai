@@ -90,12 +90,12 @@
                                     </li>
                                 </ul>
                             </div>
-        
+{{--         
                             <div class="text-center mt-2 w-100">
                                 Showing {{ $newsLetterDetails->firstItem() }} to
                                 {{ $newsLetterDetails->lastItem() }} of
                                 {{ $newsLetterDetails->total() }} results
-                            </div>
+                            </div> --}}
                         </div>
                     @else
                         <h1>No Data available.</h1>

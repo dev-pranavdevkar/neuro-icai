@@ -39,16 +39,23 @@
                                             <ul>
 
                                                 @foreach ($combinedData as $update)
-                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><a
-                                                            href="https://maps.app.goo.gl/LDaHDH3XSHSPAF3Q6" class="">
-                                                            @if (isset($update->title))
+                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>              {{-- Determine the link based on the type of update --}}
+                                                        @if (isset($update->title))
+                                                            <a href=" {{ $update->upload_newsletter_pdf ?? ($update->notice_board_pdf ?? url('/')) }}"
+                                                                class="">
                                                                 {{ $update->title }}
-                                                            @elseif(isset($update->event_name))
+                                                            </a>
+                                                        @elseif(isset($update->event_name))
+                                                            <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}"
+                                                                class="">
                                                                 {{ $update->event_name }}
-                                                            @elseif(isset($update->association_name))
+                                                            </a>
+                                                        @elseif(isset($update->association_name))
+                                                            <a href="{{ url('/members/association/associations') }}"
+                                                                class="">
                                                                 {{ $update->association_name }}
-                                                            @endif
-                                                        </a>
+                                                            </a>
+                                                        @endif
                                                     </li>
                                                 @endforeach
 
@@ -56,56 +63,53 @@
 
 
                                         </div>
-                                        <div>
-                                            <div class="d-flex justify-content-center mt-5 w-100">
-                                                <ul class="pagination">
-                                                    <li class="pagination-cell">
-                                                        @if ($combinedData->onFirstPage())
-                                                            <span class="disabled" aria-disabled="true"
-                                                                aria-label="@lang('pagination.previous')">Previous</span>
-                                                        @else
-                                                            <a href="{{ $combinedData->previousPageUrl() }}" rel="prev"
-                                                                aria-label="@lang('pagination.previous')">Previous</a>
-                                                        @endif
-                                                    </li>
-
-                                                    @for ($i = max(1, $combinedData->currentPage() - 5); $i <= min($combinedData->lastPage(), $combinedData->currentPage() + 5); $i++)
-                                                        <li
-                                                            class="pagination-cell {{ $combinedData->currentPage() == $i ? 'active text-white' : '' }}">
-                                                            <a href="{{ $combinedData->url($i) }}">{{ $i }}</a>
-                                                        </li>
-                                                    @endfor
-
-                                                    <li class="pagination-cell">
-                                                        @if ($combinedData->hasMorePages())
-                                                            <a href="{{ $combinedData->nextPageUrl() }}" rel="next"
-                                                                aria-label="@lang('pagination.next')">Next</a>
-                                                        @else
-                                                            <span class="disabled" aria-disabled="true"
-                                                                aria-label="@lang('pagination.next')">Next</span>
-                                                        @endif
-                                                    </li>
-                                                </ul>
-                                            </div>
-
-                                            <div class="text-center mt-2 w-100">
-                                                Showing {{ $combinedData->firstItem() }} to
-                                                {{ $combinedData->lastItem() }} of
-                                                {{ $combinedData->total() }} results
-                                            </div>
-                                        </div>
+                                    
                                     @else
                                         <h1>No Data available.</h1>
                                     @endif
                                 </div>
-
+                           
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div>
+                    <div class="d-flex justify-content-center mt-5 w-100">
+                        <ul class="pagination">
+                            <li class="pagination-cell">
+                                @if ($combinedData->onFirstPage())
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.previous')">Previous</span>
+                                @else
+                                    <a href="{{ $combinedData->previousPageUrl() }}" rel="prev"
+                                        aria-label="@lang('pagination.previous')">Previous</a>
+                                @endif
+                            </li>
 
+                            @for ($i = max(1, $combinedData->currentPage() - 5); $i <= min($combinedData->lastPage(), $combinedData->currentPage() + 5); $i++)
+                                <li
+                                    class="pagination-cell {{ $combinedData->currentPage() == $i ? 'active text-white' : '' }}">
+                                    <a href="{{ $combinedData->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
 
+                            <li class="pagination-cell">
+                                @if ($combinedData->hasMorePages())
+                                    <a href="{{ $combinedData->nextPageUrl() }}" rel="next"
+                                        aria-label="@lang('pagination.next')">Next</a>
+                                @else
+                                    <span class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">Next</span>
+                                @endif
+                            </li>
+                        </ul>
+                    </div>
+
+                    {{-- <div class="text-center mt-2 w-100">
+                        Showing {{ $combinedData->firstItem() }} to {{ $combinedData->lastItem() }} of
+                        {{ $combinedData->total() }} results
+                    </div> --}}
+                </div>
 
 
 

@@ -180,7 +180,7 @@
                     </div>
 
 
-<<<<<<< HEAD
+
                 </div>
                 <div class="w-100">
                     <div class="d-flex justify-content-center mt-5 w-100">
@@ -214,13 +214,12 @@
                         </ul>
                     </div>
 
-                    <div class="text-center mt-2 w-100">
+                    {{-- <div class="text-center mt-2 w-100">
                         Showing {{ $vacancyDetails->firstItem() }} to
                         {{ $vacancyDetails->lastItem() }} of
                         {{ $vacancyDetails->total() }} results
-                    </div>
-=======
->>>>>>> 648e0e776a1a7dc4d1c4485b90a01feec0d44098
+                    </div> --}}
+
                 </div>
             @else
                 <h1>No Data available.</h1>
