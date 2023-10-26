@@ -299,6 +299,24 @@ class WebMetaDataController extends Controller
         }
     }
 
+
+    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:vacancy_details,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details', 'user_details','companyDetails'])->first();
+            return $this->sendResponse(["vacancy" => $getitems], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+
+
     public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
     {
         try {

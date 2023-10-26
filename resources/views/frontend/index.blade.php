@@ -631,7 +631,7 @@
                                 </p>
                             </div>
                             <div class="pt-lg-5 pt-4 text-center ">
-                                <a href="{{ url('/members/updatesForMembers') }}" class="primary-btn">View More</a>
+                                <a href="{{ url('/members/membersNoticeboard') }}" class="primary-btn">View More</a>
                             </div>
                         </div>
                     </div>
@@ -859,9 +859,7 @@
                                             GST, TDS, etc.</p>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary"
-                                            data-toggle="modal" data-target="#applyJob">View
-                                            Details</a>
+                                        <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}" class="btn btn-primary">View Details</a>
                                     </div>
 
                                 </div>
@@ -878,7 +876,7 @@
 
 
             <div class="py-4 text-center ">
-                <a href="#" class="primary-btn">View More</a>
+                <a href="{{ url('/vacancies/viewVacancies') }}" class="primary-btn">View More</a>
             </div>
 
 
