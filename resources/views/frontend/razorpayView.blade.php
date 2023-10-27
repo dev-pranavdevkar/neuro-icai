@@ -110,7 +110,7 @@
                         if (data['success']) {
                             toastr.success('You have registered successfully. Please go to my events section.');
                         }
-                        toastr.error(data.message)
+                        toastr.success(data.message)
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
@@ -164,9 +164,6 @@
                                                 <h5 class="card-title">{{ $eventDetails['event_name'] }}</h5>
 
                                                 <table class="table ">
-
-
-
                                                     <tbody>
                                                         <tr>
 
@@ -200,27 +197,6 @@
 
 
                                                         </tr>
-
-                                                        <tr>
-
-                                                            <th scope="col">Event Fee:</th>
-                                                            <td scope="col">
-
-                                                                <span>For Members: ₹
-                                                                    {{ $eventDetails['price_for_members'] }}</span><br>
-                                                                <span>For Students: ₹
-                                                                    {{ $eventDetails['price_for_students'] }}
-                                                                </span><br>
-                                                                <span>For Others: ₹ {{ $eventDetails['event_fee'] }}
-                                                                </span><br>
-
-                                                            </td>
-
-
-
-                                                        </tr>
-
-
                                                         <tr>
                                                             <th scope="col">Location:</th>
                                                             <td scope="col">
@@ -231,28 +207,52 @@
                                                                 {{ $eventDetails['location_details']['country'] }}-{{ $eventDetails['location_details']['pincode'] }}
                                                             </td>
                                                         </tr>
-
                                                         <tr>
-                                                            <th scope="col">Event Videos</th>
-                                                            <td>
-                                                                <div class="row">
 
-                                                                    @foreach ($eventDetails['event_video'] as $video)
-                                                                        <div class="col-lg-3">
-                                                                            <a href="{{ $video['video_link'] }}"
-                                                                                alt="">{{ $video['video_link'] }}</a>
-                                                                        </div>
-                                                                    @endforeach
-                                                                </div>
+                                                            <th scope="col">Event Fee:</th>
+                                                            <td scope="col">
+                                                                @if (
+                                                                    !Auth::user() ||
+                                                                        (Auth::user() &&
+                                                                            in_array(
+                                                                                'members',
+                                                                                Auth::user()->roles->pluck('name')->toArray())))
+                                                                    <span>For Members: ₹
+                                                                        {{ $eventDetails['price_for_members'] }}</span><br>
+                                                                @endif
+
+                                                                @if (
+                                                                    !Auth::user() ||
+                                                                        (Auth::user() &&
+                                                                            in_array(
+                                                                                'student',
+                                                                                Auth::user()->roles->pluck('name')->toArray())))
+                                                                    <span>For Students: ₹
+                                                                        {{ $eventDetails['price_for_students'] }}</span><br>
+                                                                @endif
+
+                                                                @if (!Auth::user())
+                                                                    <span>For Others: ₹
+                                                                        {{ $eventDetails['event_fee'] }}</span><br>
+                                                                @endif
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <th scope="col">Offer:</th>
+                                                            <td scope="col">
+                                                                <b class="blink">If you Paid Before
+                                                                    {{ \Carbon\Carbon::parse($eventDetails['early_bird_date'])->format('d-M-Y') }}:
+                                                                    <br />
+                                                                    For Students: ₹
+                                                                    {{ $eventDetails['early_bird_non_member_fees'] }}
+                                                                    For Members: ₹
+                                                                    {{ $eventDetails['early_bird_member_fees'] }} </b>
 
 
+                                                            </td>
 
 
-
-
-
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                                 <div class="d-flex justify-content-center">
@@ -266,10 +266,11 @@
                                                                         data-event="{{ $eventDetails->id }}">Pay
                                                                         Now</button>
                                                                 @else
-                                                                <a href="{{ route('tickets', ['id' => $eventDetails->id]) }}"  id="viewTicket">
-                                                                    <button class="btn btn-primary">View Ticket</button>
-                                                                </a>
-
+                                                                    <a href="{{ route('tickets', ['id' => $eventDetails->id]) }}"
+                                                                        id="viewTicket">
+                                                                        <button class="btn btn-primary">View
+                                                                            Ticket</button>
+                                                                    </a>
                                                                 @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
@@ -418,7 +419,8 @@
 
                                                 </div>
                                                 <div class="col-lg-7">
-                                                    <h5 class="card-title tex-left">{{ $eventDetails['event_name'] }}</h5>
+                                                    <h5 class="card-title tex-left">{{ $eventDetails['event_name'] }}
+                                                    </h5>
                                                     <table class="table ">
 
 
@@ -481,8 +483,8 @@
 
                                                         <p class="text-center">{{ $eventDetails['event_name'] }}</p>
                                                         <div class="d-flex justify-content-center">
-                                                        {{ $qrData }}
-                                                    </div>
+                                                            {{ $qrData }}
+                                                        </div>
                                                         <p class="text-center">{{ $eventDetails['event_name'] }}</p>
                                                     </div>
 
@@ -539,34 +541,34 @@
 
 
 
-{{-- <button id="generateQrCodeBtn">Generate QR Code</button> --}}
+    {{-- <button id="generateQrCodeBtn">Generate QR Code</button> --}}
 
 
-<script>
-    document.getElementById('generateQrCodeBtn').addEventListener('click', function() {
-        // Retrieve the event_id and event_name
-        var eventId = @json($eventDetails['id']);
-        var eventName = @json($eventDetails['event_name']);
-        var userLastName = @json(Auth::user()->last_name);
-        // Create an object with event_id and event_name
-        var qrData = {
-            event: {
-                event_id: eventId,
-                event_name: eventName
-            },
-            user: {
+    <script>
+        document.getElementById('generateQrCodeBtn').addEventListener('click', function() {
+            // Retrieve the event_id and event_name
+            var eventId = @json($eventDetails['id']);
+            var eventName = @json($eventDetails['event_name']);
+            var userLastName = @json(Auth::user()->last_name);
+            // Create an object with event_id and event_name
+            var qrData = {
+                event: {
+                    event_id: eventId,
+                    event_name: eventName
+                },
+                user: {
 
-                last_name: userLastName
-            }
-        };
+                    last_name: userLastName
+                }
+            };
 
-        // Convert the object to a JSON string
-        var qrDataString = JSON.stringify(qrData);
+            // Convert the object to a JSON string
+            var qrDataString = JSON.stringify(qrData);
 
-        // Redirect to the 'qrcode' route with the event data as a parameter
-        window.location.href = '{{ url("qrcode") }}/' + encodeURIComponent(qrDataString);
-    });
-</script>
+            // Redirect to the 'qrcode' route with the event data as a parameter
+            window.location.href = '{{ url('qrcode') }}/' + encodeURIComponent(qrDataString);
+        });
+    </script>
 
 
 </section>

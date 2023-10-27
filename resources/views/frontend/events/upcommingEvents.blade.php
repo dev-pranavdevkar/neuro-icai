@@ -24,7 +24,8 @@
         <div class="container">
             @if (isset($eventDetails) && count($eventDetails) > 0)
                 <div class="row">
-
+              
+                
                     @foreach ($eventDetails as $event)
                         <div class="col-lg-6 py-3">
                             {{-- ------------------------------------------------------------------------------------------- --}}
@@ -79,6 +80,20 @@
                                                     <span>For Others: ₹ {{ $event['event_fee'] }} </span><br>
 
                                                 </td>
+
+                                                <tr>
+                                                    <th scope="col">Offer:</th>
+                                                    <td scope="col">
+                                                        <b class="blink">If you Paid Before
+                                                            {{ \Carbon\Carbon::parse($event['early_bird_date'])->format('d-M-Y') }}: <br/>
+                                                            For Students: ₹ {{ $event['early_bird_non_member_fees'] }} For Members: ₹ {{ $event['early_bird_member_fees'] }} </b>
+    
+    
+                                                    </td>
+    
+    
+    
+                                                </tr>
 
 
 

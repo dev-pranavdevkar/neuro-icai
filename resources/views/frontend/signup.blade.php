@@ -17,20 +17,6 @@
 
 
 
-                                <!-- Role Selection -->
-                                <div class="input-list">
-                                    <p>Register As</p>
-                                    <div class="input-list-item radio d-flex">
-                                        <input class="radio-btn" type="radio" id="role_members" name="role"
-                                            value="members">
-                                        <label for="role_member">Member</label>
-                                    </div>
-                                    <div class="input-list-item d-flex">
-                                        <input class="radio-btn" type="radio" id="role_student" name="role"
-                                            value="student">
-                                        <label for="role_student">Student</label>
-                                    </div>
-                                </div>
 
 
 
@@ -234,7 +220,20 @@
                                             @endif
                                         </div>
 
-
+                                        <div class="input-list-item">
+                                            <p>Firm Email ID</p>
+                                            <input type="email" name="company_email" autocomplete="off">
+                                            <span id="company_email" class="text-danger font-weight-bold span"></span>
+                                            @if ($errors->has('company_email'))
+                                                <div class="alert-vsa text-danger">
+                                                    <ul>
+                                                        @foreach ($errors->get('company_email') as $error)
+                                                            <li>{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </div>
                                         <div class="input-list-item">
                                             <p>Firm Contact Number</p>
                                             <input type="tel" pattern="[0-9]{10}" name="contact_person_number"
@@ -412,3 +411,6 @@
 
     }
 </script>
+
+
+

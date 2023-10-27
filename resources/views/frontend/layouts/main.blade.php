@@ -196,7 +196,7 @@
                                 <li id="user-dropdown" class="dropdown">
                                     @if (Auth::user())
                                         {{-- ------------------- --}}
-                                        <div class="header__nav ">
+                                        <div class=" ">
                                             <div class="header__menu profile-dropdown">
                                                 <ul>
 

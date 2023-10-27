@@ -12,9 +12,8 @@
                         @if (session()->has('success'))
                             <h2>Thank You,<br /> you have successfully submitted the application form to us.</h2>
                         @else
-                            <form id="addApplyJob" action="{{ route('addApplyJob', ['id' => $id]) }}" method="POST"
-                                enctype="multipart/form-data" onsubmit="return validation()">
-                                @csrf
+                        <form id="addApplyJob" action="{{ route('addApplyJob', ['id' => $id, 'vacancy_id' => $vacancyDetails['id']]) }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                            @csrf
                                 <!-- Personal Information -->
                                 <div class="input-list">
                                     <div class="input-list-item w-100 pr-3">
@@ -84,41 +83,31 @@
                                     </div>
                                 </div>
 
-                                @csrf <!-- CSRF token -->
+                                <!-- CSRF token -->
+                                @csrf
 
-                                <!-- ... Your existing HTML code ... -->
+                                <!-- Your existing HTML code -->
 
                                 <script>
                                     function updateExperienceDetailsVisibility(selectedExperience) {
                                         var experienceDetailsDiv = document.getElementById('experienceDetails');
-                                        var noticePeriodInput = document.querySelector('input[name="notice_period_in_days"]');
-                                        var currentPackageInput = document.querySelector('input[name="current_package"]');
-                                        var expectedPackageInput = document.querySelector('input[name="expected_package"]');
-
+                                        var experienceDetailsVisibleInput = document.getElementById('experienceDetailsVisible');
+                                
                                         if (parseInt(selectedExperience) > 0) {
-                                            experienceDetailsDiv.classList.remove('d-none');
-                                            experienceDetailsDiv.classList.add('d-block');
-
-                                            // Enable the required attribute for these fields
-                                            noticePeriodInput.setAttribute('required', 'required');
-                                            currentPackageInput.setAttribute('required', 'required');
-                                            expectedPackageInput.setAttribute('required', 'required');
+                                            experienceDetailsDiv.style.display = 'block';
+                                            experienceDetailsVisibleInput.value = '1';
                                         } else {
-                                            experienceDetailsDiv.classList.remove('d-block');
-                                            experienceDetailsDiv.classList.add('d-none');
-
-                                            // Disable the required attribute for these fields
-                                            noticePeriodInput.removeAttribute('required');
-                                            currentPackageInput.removeAttribute('required');
-                                            expectedPackageInput.removeAttribute('required');
+                                            experienceDetailsDiv.style.display = 'none';
+                                            experienceDetailsVisibleInput.value = '0';
                                         }
                                     }
                                 </script>
 
-                                <!-- ... Your existing HTML code ... -->
 
 
-                                <div id="experienceDetails" class="d-none">
+                                <!-- Your existing HTML code -->
+
+                                <div id="experienceDetails">
                                     <!-- Firm Information -->
                                     <div class="input-list">
                                         <div class="input-list-item">
