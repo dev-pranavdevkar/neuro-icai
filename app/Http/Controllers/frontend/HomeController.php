@@ -18,13 +18,26 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $eventDetails = EventDetails::with([])->paginate(3);
+        $eventDetails = EventDetails::orderBy('created_at', 'desc')->paginate(4);
         $associationDetails = AssociationDetails::with([])->paginate(3);
-        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
-        $newsLetterDetails = NewsLetterDetails::with([])->paginate(3);
+        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(10);
+        $newsLetterDetails = NewsLetterDetails::with([])->paginate(6);
         $vacancyDetails = VacancyDetails::with([])->paginate(3);
+        // ==================================================================================
+        $eventData = EventDetails::with([])->get();
+        $associationData = AssociationDetails::with([])->get();
+        $newsletterData = NewsLetterDetails::with([])->get();
+        $noticeBoardData = StudentNoticeBoard::with([])->get();
 
-        return view('frontend.index', compact('eventDetails', 'associationDetails', 'studentNoticeBoard', 'newsLetterDetails', 'vacancyDetails'));
+        $combinedData = $eventData
+        ->concat($associationData)
+        ->concat($newsletterData)
+        ->concat($noticeBoardData)
+        ->sortByDesc('created_at')
+        ->take(10); // Take only the first 10 items
+
+        // ==================================================================================
+        return view('frontend.index', compact('eventDetails', 'associationDetails', 'studentNoticeBoard', 'newsLetterDetails', 'vacancyDetails','combinedData'));
     }
     public function contact()
     {
@@ -150,5 +163,4 @@ class HomeController extends Controller
             return $this->sendError( $e->getMessage(),$e->getTrace(),413);
         }
     }
-
 }

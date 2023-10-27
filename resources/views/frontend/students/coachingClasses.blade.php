@@ -27,8 +27,8 @@
                             <div class="row">
                                 <div class="col-lg-3 d-flex align-items-center justify-content-center">
                                     <div class="member-card-img">
-                                        <img src="{{ url('frontend/img/icai.png') }}"
-                                            alt="">
+                                        <img src="{{ $association['company_logo'] ?? url('frontend/img/icai.png') }}" alt="">
+
                                     </div>
                                 </div>
                                 <div class="col-lg-8">
