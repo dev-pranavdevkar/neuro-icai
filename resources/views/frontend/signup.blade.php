@@ -222,10 +222,8 @@
 
                                         <div class="input-list-item">
                                             <p>Firm Email ID</p>
-                                            <input type="email"  name="company_email"
-                                                 autocomplete="off">
-                                            <span id="company_email"
-                                                class="text-danger font-weight-bold span"></span>
+                                            <input type="email" name="company_email" autocomplete="off">
+                                            <span id="company_email" class="text-danger font-weight-bold span"></span>
                                             @if ($errors->has('company_email'))
                                                 <div class="alert-vsa text-danger">
                                                     <ul>
@@ -413,3 +411,6 @@
 
     }
 </script>
+
+
+

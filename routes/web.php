@@ -111,7 +111,7 @@ Route::get('/vacancies/viewVacancies', [VacanciesController::class, 'viewVacanci
 Route::get('/vacancy-details/{id}', [VacanciesController::class, 'vacancyDetails'])->name('vacancyDetails');
 Route::get('/applyJob/{id}', [VacanciesController::class, 'applyJob'])->name('applyJob');
 // Corrected route definition
-Route::post('/applyJob/{id}', [V1\Website\WebMetaDataController::class, 'addApplyJob'])->name('addApplyJob');
+Route::match(['get', 'post'], '/apply-job/{id}', [WebMetaDataController::class, 'addApplyJob'])->name('addApplyJob');
 
 // Downloads Dropdown Pages
 Route::get('/downloads/presentations', [DownloadsController::class, 'presentations']);

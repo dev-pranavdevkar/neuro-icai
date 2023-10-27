@@ -46,10 +46,10 @@
                                                                 {{ $update->title }}
                                                             </a>
                                                         @elseif(isset($update->event_name))
-                                                            <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}"
-                                                                class="">
-                                                                {{ $update->event_name }}
-                                                            </a>
+                                                        <a href="{{ Auth::user() ? route('eventDetails', ['id' => $update->id]) : url('/login') }}"
+                                                            class="">
+                                                            {{ $update->event_name }}
+                                                        </a>
                                                         @elseif(isset($update->association_name))
                                                             <a href="{{ url('/members/association/associations') }}"
                                                                 class="">
