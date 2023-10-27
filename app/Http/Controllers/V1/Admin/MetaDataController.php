@@ -154,15 +154,34 @@ class MetaDataController extends Controller
 
 //         return '/BroacherPdf/' . $imageName;
 //     }
-    public function saveEventPresentationPdf($image): string
-    {
-        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('PresentationPdf/');
-        if (env('APP_ENV') == 'prod') {
-                    $destinationPath = public_path('PresentationPdf/' . $imageName);
-                }
-        $image->move($destinationPath, $image_name);
-        return '/PresentationPdf/' . $image_name;
+    // public function saveEventPresentationPdf($image): string
+    // {
+    //     $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+    //     $destinationPath = public_path('PresentationPdf/');
+    //     if (env('APP_ENV') == 'prod') {
+    //                 $destinationPath = public_path('PresentationPdf/' . $imageName);
+    //             }
+    //     $image->move($destinationPath, $image_name);
+    //     return '/PresentationPdf/' . $image_name;
+    // }
+    public function saveEventPresentationPdf($file){
+        $pdfContent = base64_decode($file);
+        $fileName = Str::uuid().'.PresentationPdf';
+        $basePath = public_path('\\PresentationPdf\\');
+        if(env('APP_ENV')=='prod'){
+            $basePath =  public_path('/PresentationPdf/');
+        }
+        if(!is_dir($basePath)){
+            mkdir($basePath, 0755, true);
+        }
+        if(env('APP_ENV')=='prod'){
+            $destinationPath =  public_path('/PresentationPdf/'.$fileName);
+        }else{
+            $destinationPath = public_path('\\PresentationPdf\\'.$fileName);
+        }
+        file_put_contents($destinationPath,$pdfContent);
+        return '/PresentationPdf/'.$fileName;
+
     }
 
     // public function saveEventPresentationVideo($image, $productName)
@@ -647,7 +666,7 @@ class MetaDataController extends Controller
     public function addEventDetails(Request $request)
     {
         try {
-             $request->merge(['eventsData' => json_decode($request->eventsData, true)]);
+            $request->merge(['eventsData' => json_decode($request->eventsData, true)]);
 
             // return $this->sendError('Validation Error.', $request->all());
             $validator = Validator::make($request->all(), [
@@ -658,7 +677,7 @@ class MetaDataController extends Controller
                 'eventsData.*.event_end_date' => 'required|date',
                 'eventsData.*.event_cut_off_date' => 'required|date',
                 'eventsData.*.event_fee' => 'required',
-                //'price_for_students' => 'required',
+               // 'price_for_students' => 'required',
                 'eventsData.*.price_for_members' => 'required',
                 'eventsData.*.early_bird_date' => 'nullable|date',
                 'eventsData.*.early_bird_non_member_fees' => 'nullable|numeric',
@@ -695,22 +714,24 @@ class MetaDataController extends Controller
                     $newEventDetails->event_cut_off_date = $eventData['event_cut_off_date'];
                     $newEventDetails->event_fee = $eventData['event_fee'];
                     $newEventDetails->price_for_members = $eventData['price_for_members'];
+                    $newEventDetails->price_for_students = $eventData['price_for_students'];
                     $newEventDetails->early_bird_date = $eventData['early_bird_date'];
                     $newEventDetails->early_bird_non_member_fees = $eventData['early_bird_non_member_fees'];
                     $newEventDetails->early_bird_member_fees = $eventData['early_bird_member_fees'];
+                    $newEventDetails->parent_event_id = null;
+                    if (isset($eventData['parent_event_id'])) {
+                        $parentEventId = $eventData['parent_event_id'];
+                    }
                     if ($parentEventId === null) {
+
                         $newEventDetails->parent_event_id = null;
                         $newEventDetails->save();
                         $parentEventId = $newEventDetails->id;
                     } else {
+
                         $newEventDetails->parent_event_id = $parentEventId;
                         $newEventDetails->save();
-                    }
-                    if (isset($eventData['parent_event_id'])) {
-                        $parentEvent = EventDetails::find($eventData['parent_event_id']);
-                        if ($parentEvent) {
-                            $newEventDetails->parent_event()->associate($parentEvent);
-                        }
+
                     }
                     $newEventDetails->save();
                     $eventCounter+=1;
@@ -720,7 +741,7 @@ class MetaDataController extends Controller
                             $newEventImages->event_id = $newEventDetails->id;
                             if ($eachimages != "") {
                                 if (!str_contains($eachimages, "http")) {
-                                    $newEventImages->event_images = $this->saveEventImage($eachimages);
+                                    $newEventImages->event_images = $this->saveFile($eachimages);
                                 }
                             }
                             $newEventImages->save();
@@ -752,7 +773,6 @@ class MetaDataController extends Controller
                         }
                     }
                     }
-
                     if (is_array($request->event_images) || is_object($request->event_images)) {
                         foreach ($request->event_images as $eachimages) {
                             $newEventImages = new EventImages();
@@ -786,95 +806,75 @@ class MetaDataController extends Controller
             }
 
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
+
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-    public function getAllEventDetails(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'pageNo' => 'numeric',
-                'limit' => 'numeric',
-                'filter' => 'in:upcoming,past,ongoing,this_week,next_week',
-                'event_start_date' => 'date_format:Y-m-d',
-                'event_end_date' => 'date_format:Y-m-d',
-            ]);
-    
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(), 400);
-            }
-            $userId = Auth::user()->id;
-            $currentDate = carbon::now('Asia/Kolkata');
-                $now = carbon::now();
-                $currentWeekStart = $now->startOfWeek();
-                $currentWeekEnd = $now->endOfWeek();
-                $nextWeekStart = $currentWeekStart->copy()->addWeek();
-            $nextWeekEnd = $currentWeekEnd->copy()->addWeek();
-            $query = EventDetails::query()->whereNull('parent_event_id')
-            ->with(['children','location_details','event_images','event_video','event_presntation']);
-            if ($request->has('filter')) {
-                $filter = $request->filter;
-                if ($filter === 'upcoming') {
-                    $query = $query->where('event_start_date', '>', $now);
-                }
-                if ($filter === 'past') {
-                    $query = $query->where('event_end_date', '<', $now);
-                }
-                if ($filter === 'ongoing') {
-                        $query->where('event_start_date', '<=', $currentDate)
-                            ->where('event_end_date', '>=', $currentDate);
-                }
-                if ($filter === 'this_week') {
-                    // Include events that have not yet started and are ongoing this week
-                    $query->where(function ($query) use ($currentWeekStart, $currentWeekEnd, $currentDate) {
-                        $query->where('event_start_date', '>', $currentDate)
-                            ->orWhere(function ($query) use ($currentDate) {
-                                $query->where('event_start_date', '<=', $currentDate)
-                                    ->where('event_end_date', '>=', $currentDate);
-                            });
-                    });
-                }
-                if ($filter === 'next_week') {
-                    $query->whereBetween('event_start_date', [$nextWeekStart, $nextWeekEnd]);
-                }
-            }
-            $count = $query->count();
-            if ($request->has('event_name')) {
-                $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
-            }
-            if ($request->has('event_fee')) {
-                $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
-            }
-            if ($request->has('event_start_date') && $request->has('event_end_date')) {
-                $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
-            }
-            if ($request->has('pageNo') && $request->has('limit')) {
-                $limit = $request->limit;
-                $pageNo = $request->pageNo;
-                $skip = $limit * $pageNo;
-                $query = $query->skip($skip)->limit($limit);
-            }
-                $data = $query->orderBy('id', 'DESC')->get();
-    
-                 if (count($data) > 0) {
-                foreach ($data as $event) {
-                    $event->is_series_event = count($event->children) > 0;
-                    $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
-                    $event->is_user_registered = EventRegistration::where('user_id', $userId)
-                    ->where('event_id', $event->id)
-                    ->exists();
-                }
-                    $response['event_details'] = $data;
-                    $response['count'] = $count;
-                    return $this->sendResponse($response, 'Data Fetched Successfully', true);
-                } else {
-                    return $this->sendResponse('No Data Available', [], false);
-                }
-        } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+  public function getAllEventDetails(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'filter' => 'in:upcoming,past',
+            'event_start_date' => 'date_format:Y-m-d',
+            'event_end_date' => 'date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
+        $currentDate = carbon::now('Asia/Kolkata');
+            $now = carbon::now();
+        $query = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation']);
+        if ($request->has('filter')) {
+            $filter = $request->filter;
+            if ($filter === 'upcoming') {
+                $query = $query->where('event_start_date', '>', $now);
+            }
+            if ($filter === 'past') {
+                $query = $query->where('event_end_date', '<', $now);
+            }
+            if ($filter === 'ongoing') {
+                    $query->where('event_start_date', '<=', $currentDate)
+                        ->where('event_end_date', '>=', $currentDate);
+                }
+        }
+        $count = $query->count();
+        if ($request->has('event_name')) {
+            $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
+        }
+        if ($request->has('event_fee')) {
+            $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+        }
+        if ($request->has('event_start_date') && $request->has('event_end_date')) {
+            $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
+        }
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+            $data = $query->orderBy('id', 'DESC')->get();
+
+             if (count($data) > 0) {
+            foreach ($data as $event) {
+                $event->is_series_event = count($event->children) > 0;
+                $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            }
+                $response['event_details'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
+}
     public function getEventDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
@@ -1032,23 +1032,9 @@ class MetaDataController extends Controller
             $validator = Validator::make($request->all(), [
                 'company_name' => 'required|string|max:255',
                 'company_email' => 'required|string|max:255',
-                'start_date' => 'required|date',
-                'end_date' => 'required|date',
                 'mobile_no' => 'required',
-                'limits' => 'required',
-                // 'location_id' => 'required|integer|exists:location_details,id',
                 'company_logo' => 'required',
-                'benifits' => 'required|string|nullable',
-                // 'offers_pdf'=>'required|nullable',
-                // 'images'=>'required|nullable',
-                "offers"=>'array',
-                "offers.*.offers"=>'string',
-                "offers.*.discount"=>'string',
                 'address_line_1' => 'required|nullable|string|max:255',
-                'address_line_2' => 'nullable|string|max:255',
-                'city' => 'required|nullable|string|max:255',
-                'state' => 'required|nullable|string|max:255',
-                'country' => 'required|nullable|string|max:255',
                 'pincode' => 'required|nullable|string|max:255',
             ]);
             if ($validator->fails()) {
@@ -1056,55 +1042,19 @@ class MetaDataController extends Controller
             }
             $NewLocationDetails = new LocationDetails();
             $NewLocationDetails->address_line_1=$request->address_line_1;
-            $NewLocationDetails->address_line_2=$request->address_line_2;
-            $NewLocationDetails->city=$request->city;
-            $NewLocationDetails->state=$request->state;
-            $NewLocationDetails->country=$request->country;
             $NewLocationDetails->pincode=$request->pincode;
             $NewLocationDetails->save();
             $newAssociationDetails = new AssociationDetails();
             $newAssociationDetails->location_id=$NewLocationDetails->id;
             $newAssociationDetails->company_name=$request->company_name;
             $newAssociationDetails->company_email=$request->company_email;
-            $newAssociationDetails->start_date=$request->start_date;
-            $newAssociationDetails->end_date=$request->end_date;
             $newAssociationDetails->mobile_no=$request->mobile_no;
-            $newAssociationDetails->limits=$request->limits;
-            // $newAssociationDetails->location_id=$request->location_id;
-            $newAssociationDetails->benifits = $request->benifits;
             if ($request->company_logo != "") {
                 if (!str_contains($request->company_logo, "http")) {
                     $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo,$request->company_name);
                 }
             }
-            if ($request->offers_pdf != "") {
-                if (!str_contains($request->offers_pdf, "http")) {
-                    $newAssociationDetails->offers_pdf = $this->saveOffersPdf($request->offers_pdf,$request->company_name);
-                }
-            }
-            if ($request->images != "") {
-                if (!str_contains($request->images, "http")) {
-                    $newAssociationDetails->images = $this->saveAssociationImage($request->images,$request->company_name);
-                }
-            }
             $newAssociationDetails->save();
-
-            // foreach($request->offers as $eachoffers){
-            //     $newOffer=new OffersAssociation();
-            //     $newOffer->association_id=$newAssociationDetails->id;
-            //     $newOffer->offers=$eachoffers['offers'];
-            //     $newOffer->discount=$eachoffers['discount'];
-            //     $newOffer->save();
-
-            // }
-
-            foreach ($request->offers as $eachoffers) {
-                $newOffer = new OffersAssociation();
-                $newOffer->association_id = $newAssociationDetails->id;
-                $newOffer->offers = $eachoffers['offers'];
-                $newOffer->discount = $eachoffers['discount'];
-                $newOffer->save();
-            }
             return $this->sendResponse([], 'Association Details added successfully', true);
         }
         catch (Exception $e) {
@@ -1187,36 +1137,12 @@ class MetaDataController extends Controller
             if ($request->has('company_email')) {
                 $editAssociationDetails->company_email=$request->company_email;
             }
-            if ($request->has('start_date')) {
-                $editAssociationDetails->start_date=$request->start_date;
-            }
-            if ($request->has('end_date')) {
-                $editAssociationDetails->end_date=$request->end_date;
-            }
             if ($request->has('mobile_no')) {
                 $editAssociationDetails->mobile_no=$request->mobile_no;
-            }   if ($request->has('limits')) {
-                $editAssociationDetails->limits=$request->limits;
             }
-            //  if ($request->has('location_id')) {
-            //     $editAssociationDetails->location_id=$request->location_id;
-            // }
             if ($request->company_logo != "") {
                 if (!str_contains($request->company_logo, "http")) {
                     $editAssociationDetails->company_logo = $this->saveFile($request->company_logo, $request->company_name);
-                }
-            }
-            if($request->has('benifits')){
-				$editAssociationDetails->benifits = $request->benifits;
-			}
-            if ($request->offers_pdf != "") {
-                if (!str_contains($request->offers_pdf, "http")) {
-                    $editAssociationDetails->offers_pdf = $this->saveOffersPdf($request->offers_pdf,$request->company_name);
-                }
-            }
-            if ($request->images != "") {
-                if (!str_contains($request->images, "http")) {
-                    $editAssociationDetails->images = $this->saveAssociationImage($request->images,$request->company_name);
                 }
             }
             $editAssociationDetails->save();
@@ -1224,41 +1150,10 @@ class MetaDataController extends Controller
             if ($request->has('address_line_1')) {
                 $editLocation->address_line_1=$request->address_line_1;
             }
-            if ($request->has('address_line_2')) {
-                $editLocation->address_line_2=$request->address_line_2;
-            }
-            if ($request->has('city')) {
-                $editLocation->city=$request->city;
-            }
-            if ($request->has('state')) {
-                $editLocation->state=$request->state;
-            }
-            if ($request->has('country')) {
-                $editLocation->country=$request->country;
-            }
             if ($request->has('pincode')) {
                 $editLocation->pincode=$request->pincode;
             }
             $editLocation->save();
-            $arraYOfNewAssociationId = [];
-            foreach ($request->offers as $eachoffers) {
-                // $editOffer = OffersAssociation::query()->where('association_id', $editAssociationDetails->id) ->where('id', $eachoffers['association_id'])->firstOrNew();
-                $editOffer = OffersAssociation::query()
-                // ->where('association_id', $editAssociationDetails->id)
-                ->where('id', $editAssociationDetails->association_id)
-                ->firstOrNew();
-                // $editOffer = OffersAssociation::query()->where('association_id');
-                if(is_null($editOffer)){
-                    $editOffer = new OffersAssociation();
-                }
-                $editOffer->association_id = $editAssociationDetails->id;
-                $editOffer->offers = $eachoffers['offers']; // No need for ['offers']
-                $editOffer->discount = $eachoffers['discount']; // No need for ['discount']
-                $editOffer->save();
-                array_push($arraYOfNewAssociationId,$editOffer->id);
-            }
-            $OfferDelete = OffersAssociation::whereNotIn('id',$arraYOfNewAssociationId)->where('association_id',$editAssociationDetails->id)->delete();
-
 
             return $this->sendResponse([], 'Association Details updated successfully');
         } catch (Exception $e) {
@@ -1289,7 +1184,7 @@ class MetaDataController extends Controller
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
                 'limit' => 'numeric',
-                'association_id' => 'required|integer|exists:register_to_association,association_id',
+                'association_id' => 'required|integer|exists:association_details,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
@@ -1873,8 +1768,6 @@ class MetaDataController extends Controller
                 $companyQuery->where('company_email', 'LIKE', "%{$email}%");
             });
         }
-
-
             $currentDate = date('Y-m-d');
             $query->where('expiry_date', '>=', $currentDate);
             $count = $query->count();
@@ -2034,8 +1927,19 @@ class MetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
             $query = EventRegistration::query()->where('event_id',$request->event_id)
-            ->with(['event_details','user_details',
-            'voluntary_contribution_details']);
+            ->with(['user_details',
+            ]);
+            if ($request->has('name')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
+            });
+        }
+
+        if ($request->has('email')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('email', 'like', '%' . $request->email . '%');
+            });
+        }
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -2068,8 +1972,18 @@ public function getAllUserAttendTheEvent(Request $request)
         $query = EventRegistration::query()
             ->where('event_id', $request->event_id)
             ->where('attendance_status', 1)
-            ->with(['event_details', 'user_details', 'voluntary_contribution_details']);
+            ->with(['user_details']);
+        if ($request->has('name')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
+            });
+        }
 
+        if ($request->has('email')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('email', 'like', '%' . $request->email . '%');
+            });
+        }
         $count = $query->count();
         if ($request->has('pageNo') && $request->has('limit')) {
             $limit = $request->limit;
@@ -2224,40 +2138,44 @@ public function getAllUserAttendTheEvent(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required|nullable',
-                'association_id' => 'required|nullable',
-                'created_by_user_id' => 'required|nullable',
+                'association_id' => 'required|exists:association_details,id',
+                'offers_association_id'=>'required|exists:offers_association,id'
             ]);
-
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-
-            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)->first();
+            $user = Auth::user()->id;
+            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $user)
+            ->where('association_id',$request->association_id)
+            ->where('offers_association_id',$request->offers_association_id)
+            ->first();
 
             if ($existingRegistration) {
-                return $this->sendError('User is already registered for an association.', [], 422);
+                return $this->sendError('User is already registered for an association offer.', [], 422);
             }
-            $association = AssociationDetails::find($request->association_id);
-            if (!$association) {
-                return $this->sendError('Association not found.', [], 404);
-            }
-            $limit = (int) $association->limit;
-            $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)->count();
-            // Check if the association's limit is set and has reached its capacity
-            if ($registeredUsersCount >= $limit && $limit==$limit &&$limit!=$registeredUsersCount) {
-                return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
-            }
-            // Proceed with registering the user to the association
+        $offer = OffersAssociation::query()->where('association_id', $request->association_id)
+        ->where('id',$request->offers_association_id)
+        ->first();
+
+        if (!$offer) {
+            return $this->sendError('Offer not found for this association.', [], 404);
+        }
+        $limit = (int) $offer->limits;
+        $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
+        ->where('offers_association_id',$request->offers_association_id)
+        ->count();
+        if ($registeredUsersCount >= $limit) {
+            return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
+        }
             $newDetails = new RegisterToAssocitationDetails;
-            $newDetails->user_id = $request->user_id;
+            $newDetails->user_id = $user;
             $newDetails->association_id = $request->association_id;
-            $newDetails->created_by_user_id = $request->created_by_user_id;
+            //$newDetails->created_by_user_id = $request->created_by_user_id;
             $newDetails->offers_association_id=$request->offers_association_id;
             $newDetails->save();
-            return $this->sendResponse([], 'Register to associtation details created successfully.', true);
+            return $this->sendResponse([], 'Offer Claim successfully.', true);
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
   public function getRegisterToAssocitationDetails(Request $request){
@@ -2270,7 +2188,7 @@ public function getAllUserAttendTheEvent(Request $request)
 			return $this->sendError('Validation Error.', $validator->errors(),400);
 		}
 		$query = RegisterToAssocitationDetails::query()->with(['user_details','association_details',
-        'created_by_user_details','offers_association_details']);;
+        'created_by_user_details','offers_association_details']);
 		$count=$query->count();
 		if($request->has('pageNo') && $request->has('limit')){
 			$limit = $request->limit;
@@ -2488,6 +2406,23 @@ public function getAllUserAttendTheEvent(Request $request)
               return $this->sendError('Validation Error.', $validator->errors(), 400);
           }
           $query = ApplyForJob::query()->where('vacancy_id', $request->vacancy_id)->with(['user_details']);
+           if ($request->has('name')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
+            });
+        }
+
+        if ($request->has('email')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('email', 'like', '%' . $request->email . '%');
+            });
+        }
+
+        if ($request->has('mobile_number')) {
+            $query->whereHas('user_details', function ($q) use ($request) {
+                $q->where('mobile_no', 'like', '%' . $request->mobile_number . '%');
+            });
+        }
           $count = $query->count();
           if ($request->has('pageNo') && $request->has('limit')) {
               $limit = $request->limit;
@@ -2724,7 +2659,7 @@ public function getAllUserAttendTheEvent(Request $request)
 			$skip = $limit*$pageNo;
 			$query= $query->skip($skip)->limit($limit);
 		}
-		$data = $query->get();
+		$data = $query->orderBy('id', 'DESC')->get();
 		if(count($data)>0){
 			$response['notice_board'] =  $data;
 			$response['count']=$count;
@@ -3423,7 +3358,7 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $query = User::role('members');
+            $query = User::role('members')->with(['company']);
             if ($request->has('name')) {
                 $FirstName = $request->input('name');
                 $query->where('name', 'LIKE', "%{$FirstName}%");
@@ -3577,6 +3512,69 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
+    public function getAllAssociationOffers(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'association_id' => 'required|numeric|exists:association_details,id',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+            $query = OffersAssociation::query()
+                ->where('association_id', $request->association_id);
+
+
+        $count = $query->count();
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+        $data = $query->orderBy('id', 'DESC')->get();
+        if (count($data) > 0) {
+            $response['offers'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data fetched successfully', true);
+        } else {
+            return $this->sendResponse([], 'No Data Available', false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
+public function updateAttendance(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric|exists:users,id',
+            'event_id' => 'required|numeric|exists:event_details,id'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $attendance = EventRegistration::where('user_id', $request->user_id)
+            ->where('event_id', $request->event_id)
+            ->first();
+
+        if (is_null($attendance)) {
+            return $this->sendResponse([], 'Attendance record not found', false);
+        }
+        if ($attendance->attendance_status !== 1) {
+            $attendance->attendance_status = 1;
+            $attendance->save();
+            return $this->sendResponse([], 'Attendance updated successfully', true);
+        } else {
+            return $this->sendResponse([], 'Attendance was already marked', true);
+        }
+    } catch (Exception $e) {
+        return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
+    }
+}
 
     public function addMemberMeetings(Request $request): \Illuminate\Http\JsonResponse
     {

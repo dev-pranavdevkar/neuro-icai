@@ -24,25 +24,19 @@ use App\Models\StudentNoticeBoard;
 use App\Models\VacancyDetails;
 use App\Models\AssociationDetails;
 use App\Models\OffersAssociation;
-
 class WebAuthController extends Controller
 {
-
-
-
-    public function registerUser(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'mobile_no' => 'required|regex:/^[0-9]{0,255}$/|unique:users',
-                'password' => 'required|string|min:6|confirmed',
-                'generated_user_id' => 'required|string|max:255|unique:users',
-
-                // Add other validation rules as needed
-            ]);
+   public function registerUser(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'mobile_no' => 'required|regex:/^[0-9]{0,255}$/|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'generated_user_id' => 'required|string|max:255|unique:users',
+        ]);
 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
@@ -115,13 +109,19 @@ class WebAuthController extends Controller
                     // return $this->sendResponse($response, 'Login Success', true);
                     return redirect('/');
                 } else {
-                    return $this->sendError('Password mismatch', [], 422);
+                    return redirect()->route('login')
+                        ->withErrors(['error' => 'Password mismatch. Please try again.']);
+
                 }
             } else {
-                return $this->sendError('User not found', [], 404);
+                return redirect()->route('login')
+                    ->withErrors(['error' => 'User does not exist or user doesn\'t have access']);
+
             }
-        } catch (Exception $e) {
-            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        } catch (\Exception $e) {
+            return redirect()->route('login')
+                ->withErrors(['error' => 'Something Went Wrong'.$e->getMessage()]);
+
         }
     }
     public function forgetPassword(Request $request)
@@ -133,7 +133,6 @@ class WebAuthController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 return $this->sendError('Email Id does Not Exist', [], 403);
@@ -142,15 +141,11 @@ class WebAuthController extends Controller
             $user->forget_password_otp = $otp;
             $user->forget_password_timestamp = Carbon::now();
             $user->save();
-
             $to_name = $user->name;
             $to_email = $user->email;
             // dd($to_email);
-
             $data = array('otp' => $otp, 'to_name' => $to_name);
-
             Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
-
                 $message->to($to_email, $to_name)
                     ->subject('Otp For New Password');
                 $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
@@ -177,23 +172,17 @@ class WebAuthController extends Controller
             if (!$user) {
                 return $this->sendError('Email Id does Not Exist', [], 200);
             }
-
-
             $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
             $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
             $time_diff = $to->diffInMinutes($from);
             if ($time_diff > 5) {
                 return $this->sendError('Time Limit Expired', [], 200);
             }
-
             if ($user->forget_password_otp != $request->otp) {
                 return $this->sendError('Invalid Otp ! ', [], 200);
             }
-
             $user->password = Hash::make($request->new_password);
             $user->save();
-
             return $this->sendResponse([], 'Password Changed Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
@@ -209,13 +198,10 @@ class WebAuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
         }
-
         $user = User::where('email', $request->email)->first();
-
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
         $userOtp = User::where('id', $user->id)->first();
 
         if (!$userOtp || $userOtp->otp !== $request->otp) {
@@ -236,17 +222,6 @@ class WebAuthController extends Controller
         }
         return view('frontend.userSection.dashboard', compact('idCardData'));
     }
-
-
-
-
-
-
-
-
-
-
-
     // Get ALl Home Page API
 
     public function getAllEventDetails(Request $request)
@@ -368,3 +343,4 @@ class WebAuthController extends Controller
         }
     }
 }
+

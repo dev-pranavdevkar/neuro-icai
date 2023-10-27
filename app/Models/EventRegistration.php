@@ -16,7 +16,7 @@ class EventRegistration extends Model
         return $this->belongsTo(User::class,'user_id');
     }
     public function paymentmode_details(){
-        return $this->belongsTo(paymentMode::class,'payment_mode_id');
+        return $this->belongsTo(PaymentMode::class,'payment_mode_id');
     }
     public function voluntary_contribution_details(){
         return $this->belongsTo(VoluntaryContribution::class,'voluntary_contribution_id');

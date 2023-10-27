@@ -95,6 +95,9 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         //get all user attend to the event
         Route::get('getAllUserAttendTheEvent', [MetaDataController::class, 'getAllUserAttendTheEvent']);
 
+        //attendance
+        Route::post('updateAttendance', [MetaDataController::class, 'updateAttendance']);
+
         //get all upcoming event
         Route::get('getAllUpcomingEvent', [MetaDataController::class, 'getAllUpcomingEvent']);
 
@@ -115,6 +118,9 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         Route::get('getOffersToAssociationById', [MetaDataController::class, 'getOffersToAssociationById']);
         Route::get('getOffersToAssociation', [MetaDataController::class, 'getOffersToAssociation']);
         Route::delete('deleteOffersToAssociation', [MetaDataController::class, 'deleteOffersToAssociation']);
+
+        //offers
+        Route::get('getAllAssociationOffers', [MetaDataController::class, 'getAllAssociationOffers']);
 
         //NewsLetterDetails
         Route::post('addNewsLetterForStudent', [MetaDataController::class, 'addNewsLetterForStudent']);
@@ -242,7 +248,7 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
 
             // EventDetails
             Route::get('getUpcomingEvent', [AppMetaDataController::class, 'getUpcomingEvent']);
-
+            Route::get('getAllEventDetails', [AppMetaDataController::class, 'getAllEventDetails']);
 
             Route::get('getEventCount', [AppMetaDataController::class, 'getEventCount']);
             Route::get('getEventAndAssociation', [AppMetaDataController::class, 'getEventAndAssociation']);
@@ -251,6 +257,16 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
 
             //EventRegistration
             Route::post('addEventRegistration', [AppMetaDataController::class, 'addEventRegistration']);
+            //get event register by  user
+            Route::get('getEventRegistrationByUser', [AppMetaDataController::class, 'getEventRegistrationByUser']);
+
+            //get offer redim by user
+            Route::get('getOfferRedimByUser', [AppMetaDataController::class, 'getOfferRedimByUser']);
+
+            //get Event Attend By User
+            Route::get('getEventAttendentByUser', [AppMetaDataController::class, 'getEventAttendentByUser']);
+
+
             //payment verification
             Route::post('paymentVerification', [AppMetaDataController::class, 'paymentVerification']);
 
@@ -279,6 +295,8 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
             //Student Notice Board
             Route::get('getStudentNoticeBoard', [AppMetaDataController::class, 'getStudentNoticeBoard']);
             Route::get('getStudentNoticeBoardById', [AppMetaDataController::class, 'getStudentNoticeBoardById']);
+            //get latest update
+            Route::get('getLatestUpdate', [AppMetaDataController::class, 'getLatestUpdate']);
         }
     );
 });
@@ -288,11 +306,11 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('userLogin', [WebAuthController::class, 'userLogin']);
     Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
-    
+    Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
     Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
     Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
-    Route::get('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
+    Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
     Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
     Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
@@ -314,8 +332,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
     Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
     Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
-    //add vaccancy
-    Route::post('addVacancyDetails', [MetaDataController::class, 'addVacancyDetails']);
+
     Route::group(['middleware' => ['jwt.verify']], function () {
         Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
         //EventRegistration
@@ -329,8 +346,3 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
        // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
     });
 });
-
-
-
-
-
