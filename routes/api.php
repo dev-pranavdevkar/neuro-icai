@@ -68,7 +68,7 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         //user
         Route::get('getAllStudent', [MetaDataController::class, 'getAllStudent']);
         Route::get('getAllMember', [MetaDataController::class, 'getAllMember']);
-
+        Route::get('getMemberById', [MetaDataController::class, 'getMemberById']);
         //company
         Route::post('addComapny', [MetaDataController::class, 'addComapny']);
         Route::post('editCompany', [MetaDataController::class, 'editCompany']);
@@ -162,8 +162,10 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         Route::get('getAllEventRegistration', [MetaDataController::class, 'getAllEventRegistration']);
         Route::delete('deleteEventRegistration', [MetaDataController::class, 'deleteEventRegistration']);
 
-    //student registration
-    Route::get('getAllStudentBatchRegistration', [MetaDataController::class, 'getAllStudentBatchRegistration']);
+        //student registration
+        Route::get('getAllStudentBatchRegistration', [MetaDataController::class, 'getAllStudentBatchRegistration']);
+        //attendance
+        Route::get('getAllUsersAttendToBatchs', [MetaDataController::class, 'getAllUsersAttendToBatchs']);
 
 
         //RegisterToAssociation
@@ -257,8 +259,15 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
 
             //EventRegistration
             Route::post('addEventRegistration', [AppMetaDataController::class, 'addEventRegistration']);
-            //get event register by  user
+
+            //get batches registered by user
             Route::get('getEventRegistrationByUser', [AppMetaDataController::class, 'getEventRegistrationByUser']);
+
+            //batch registration
+            Route::post('addStudentBatchRegistration', [AppMetaDataController::class, 'addStudentBatchRegistration']);
+
+            //get event register by  user
+            Route::get('getBatchesByUser', [AppMetaDataController::class, 'getBatchesByUser']);
 
             //get offer redim by user
             Route::get('getOfferRedimByUser', [AppMetaDataController::class, 'getOfferRedimByUser']);
@@ -308,11 +317,13 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
     Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
     Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
-    Route::get('getAllAssociationDetails', [WebAuthController::class, 'getAllAssociationDetails']);
+     Route::get('getAllAssociationDetails', [WebMetaDataController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
     Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
-    Route::get('getAllVacancyDetails', [WebAuthController::class, 'getAllVacancyDetails']);
+    Route::get('getAllVacancyDetails', [WebMetaDataController::class, 'getAllVacancyDetails']);
+    Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
+    Route::get('getAssociationDetailsById', [WebMetaDataController::class, 'getAssociationDetailsById']);
 
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
@@ -334,7 +345,8 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
         //payment verification
         Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
-
+        //get vaccancy as per role
+        Route::get('getAllVacancyDetailsAsPerRole', [WebAuthController::class, 'getAllVacancyDetailsAsPerRole']);
         //association
         Route::post('addAssociationDetails', [WebMetaDataController::class, 'addAssociationDetails']);
 
