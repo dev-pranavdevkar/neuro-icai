@@ -284,13 +284,13 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
             Route::get('getAssociationDetailsById', [AppMetaDataController::class, 'getAssociationDetailsById']);
             Route::post('addAssociationDetails', [AppMetaDataController::class, 'addAssociationDetails']);
 
-        //vaccancy
-         Route::post('addVacancyDetails', [AppMetaDataController::class, 'addVacancyDetails']);
-        //NewsLetters
-        Route::get('getAllNewsLetters', [AppMetaDataController::class, 'getAllNewsLetters']);
-        Route::get('getNewsLetterDetailsById', [AppMetaDataController::class, 'getNewsLetterDetailsById']);
-        Route::get('getAllNewLetterDetailsForStudent', [AppMetaDataController::class, 'getAllNewLetterDetailsForStudent']);
-        Route::get('getAllNewLetterDetailsForMembers', [AppMetaDataController::class, 'getAllNewLetterDetailsForMembers']);
+            //vaccancy
+            Route::post('addVacancyDetails', [AppMetaDataController::class, 'addVacancyDetails']);
+            //NewsLetters
+            Route::get('getAllNewsLetters', [AppMetaDataController::class, 'getAllNewsLetters']);
+            Route::get('getNewsLetterDetailsById', [AppMetaDataController::class, 'getNewsLetterDetailsById']);
+            Route::get('getAllNewLetterDetailsForStudent', [AppMetaDataController::class, 'getAllNewLetterDetailsForStudent']);
+            Route::get('getAllNewLetterDetailsForMembers', [AppMetaDataController::class, 'getAllNewLetterDetailsForMembers']);
 
             //batches
             Route::get('getStudentBatches', [MetaDataController::class, 'getStudentBatches']);
@@ -324,6 +324,12 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
     Route::get('getEventDetailsById', [WebMetaDataController::class, 'getEventDetailsById']);
     Route::get('getAssociationDetailsById', [WebMetaDataController::class, 'getAssociationDetailsById']);
+    Route::get('getVacancyDetailsById', [WebMetaDataController::class, 'getVacancyDetailsById']);
+    Route::get('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
+    Route::get('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+    //Member Meetings
+    Route::get('getAllMemmbersMeeting', [WebMetaDataController::class, 'getAllMemmbersMeeting']);
+    Route::get('getMembersMeetingById', [WebMetaDataController::class, 'getMembersMeetingById']);
 
     //get latest update
     Route::get('getLatestUpdate', [WebMetaDataController::class, 'getLatestUpdate']);
@@ -339,16 +345,15 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
 
     Route::group(['middleware' => ['jwt.verify']], function () {
-        //add vaccancy
-    Route::post('addVacancyDetails', [WebMetaDataController::class, 'addVacancyDetails']);
+        Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
         //EventRegistration
         Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
         //payment verification
         Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
-        //get vaccancy as per role
-        Route::get('getAllVacancyDetailsAsPerRole', [WebAuthController::class, 'getAllVacancyDetailsAsPerRole']);
-        //association
-        Route::post('addAssociationDetails', [WebMetaDataController::class, 'addAssociationDetails']);
-
+        // Student Batches
+        Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
+        Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
+        Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
+       // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
     });
 });

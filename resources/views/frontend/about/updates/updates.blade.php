@@ -18,112 +18,59 @@
     </div>
     <!-- Breadcrumb Section End -->
     <!-- Letest Updates Section Begin -->
-    <section class="home-about bg-light spad">
+    <section class="loan-services spad">
         <div class="container">
-            <div class="row mt-5">
-                
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                                <a class="readMore" href="/updates/updatesDetails">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                              <a class="readMore" href="/updates/updatesDetails">Read More</a>
+            <div class="row d-flex justify-content-center">
+                {{-- 1 --}}
+                <div class="col-lg-12 py-3 ">
+                    <div class="card member-card p-4 HomeupdatesCard">
+                        <div class="card-body " style="border: 1px solid #909090">
+                            <div class="row">
+                                <div class="col-lg-3 d-flex align-items-center justify-content-center">
+                                    <div class="member-card-img">
+                                        <img src="{{ url('frontend/img/updatelogo.png') }}" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-8">
+                                    <h4>Latest Updates Are:</h4>
+
+                                    <div class="">
+                                        @if (isset($combinedData) && count($combinedData) > 0)
+                                            <ul>
+                                                
+                                                @foreach ($combinedData as $update)
+                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i><a
+                                                            href="https://maps.app.goo.gl/LDaHDH3XSHSPAF3Q6" class="">
+                                                            @if (isset($update->title))
+                                                                {{ $update->title }}
+                                                            @elseif(isset($update->event_name))
+                                                                {{ $update->event_name }}
+                                                            @elseif(isset($update->association_name))
+                                                                {{ $update->association_name }}
+                                                            @endif
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+
+                                            </ul>
+                                          
+                                        @endif
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
                 </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                              <a class="readMore" href="/updates/updatesDetails">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
-                <div class="col-lg-3 py-3 py-lg-0">
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                    <div class="card events-card">
-                        <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-3.jpg') }}"
-                            alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Sub Regional Conference in Shegaon</h5>
-                            <div class="">
-                                <ul class="events">
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>25-08-2023 To
-                                            26-08-2023
-                                        </a></li>
-                                    <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM To 06:00 PM
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="text-center">
-                              <a class="readMore" href="/updates/updatesDetails">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ------------------------------------------------------------------------------------------- --}}
-                </div>
+
+
+
+
+
+
+
             </div>
-         
-
-
         </div>
-
     </section>
-    <!-- Letest Updates Section End -->
+
 @endsection

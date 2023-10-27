@@ -26,11 +26,11 @@ use App\Models\AnnualReports;
 use Illuminate\Support\Str;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\MembersMeeting;
 use Illuminate\Validation\Rule;
 use Intervention\Image\ImageManagerStatic as Image;
 use Carbon\Carbon;
 use Auth;
-
 class MetaDataController extends Controller
 {
     public function open()
@@ -119,6 +119,16 @@ class MetaDataController extends Controller
                 }
         $image->move($destinationPath, $image_name);
         return '/studentnoticeboard/' . $image_name;
+    }
+    public function saveMemberMeetingPdf($image): string
+    {
+        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('membersMeetingPdf/');
+        if (env('APP_ENV') == 'prod') {
+                    $destinationPath = public_path('membersMeetingPdf/' . $imageName);
+                }
+        $image->move($destinationPath, $image_name);
+        return '/membersMeetingPdf/' . $image_name;
     }
     public function saveStudentNoticeBoardLogo($image): string
     {
@@ -1225,7 +1235,7 @@ class MetaDataController extends Controller
             $newNewsLetterDetails->save();
             return $this->sendResponse([], 'News letter added successfully', true);
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
@@ -1765,7 +1775,7 @@ class MetaDataController extends Controller
             } else {
                 return $this->sendResponse([],'No Data Available',false);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
@@ -1781,7 +1791,7 @@ class MetaDataController extends Controller
 
             $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details','user_details','companyDetails'])->first();
             return $this->sendResponse(["vacancy_details" => $getitems], 'Data fetch successfully', true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
@@ -1812,7 +1822,7 @@ class MetaDataController extends Controller
 			}
             $editVacancy->save();
             return $this->sendResponse([], 'Vacancy Details updated successfully');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
@@ -3680,5 +3690,125 @@ public function updateAttendance(Request $request)
         return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
     }
 }
+
+    public function addMemberMeetings(Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'tittle' => 'required',
+                'meeting_pdf' => 'required',
+                'meeting_date'=>'required|date'
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $newItem = new MembersMeeting();
+            $newItem->tittle =$request->tittle;
+            $newItem->meeting_date=$request->meeting_date;
+
+            if ($request->meeting_pdf != "") {
+                if (!str_contains($request->meeting_pdf, "http")) {
+                    $newItem->meeting_pdf = $this->saveMemberMeetingPdf($request->meeting_pdf,$request->title);
+                }
+            }
+            $newItem->save();
+            return $this->sendResponse([], 'Member meeting added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+        }
+    }
+
+    public function getAllMemmbersMeeting(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = MembersMeeting::query();
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['members_meetings'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+    public function getMembersMeetingById(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:members_meetings,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getitems = MembersMeeting::query()->where('id', $request->id)->first();
+            return $this->sendResponse(["members_meetings" => $getitems], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+    public function editMembersMeeting(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:members_meetings,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $editMembersMeeting = MembersMeeting::query()->where('id', $request->id)->first();
+
+            if ($request->has('tittle')) {
+                $editMembersMeeting->tittle=$request->tittle;
+            }
+             if ($request->has('meeting_date')) {
+                $editMembersMeeting->meeting_date=$request->meeting_date;
+            }
+            if ($request->meeting_pdf != "") {
+                if (!str_contains($request->meeting_pdf, "http")) {
+                    $editMembersMeeting->meeting_pdf = $this->saveNewsLetterPdf($request->meeting_pdf, $request->tittle);
+                }
+            }
+            $editMembersMeeting->save();
+            return $this->sendResponse([], 'Memmbers meetings updated successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+
+   public function deleteMemmberMeetings(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:members_meetings,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $deleteCompany = MembersMeeting::query()
+            ->where('id', $request->id)->first();
+            $deleteCompany->delete();
+            return $this->sendResponse([],'Members Meetings deleted successfully', true);
+        } catch (\Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
+    }
 
 }

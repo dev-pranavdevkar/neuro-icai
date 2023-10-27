@@ -14,3 +14,14 @@ yarn-error.log
 /.idea
 /.vscode
 *.zip
+/public/BroacherPdf/
+/public/EventImage/
+/public/AssociationImages/
+/public/EventPresentationVideo/
+/public/NewsLetterPdf/
+/public/bannerimage/
+/public/annual-report/
+/public/CompanyLogo/
+/public/OffersPdf/
+/public/PresentationPdf/
+/public/ResumePdf/

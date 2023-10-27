@@ -22,7 +22,7 @@
 
                             <div class="input-full-width">
                                 <p>Username/Email Id</p>
-                                <input name="email" type="text">
+                                <input name="credential" type="text">
                             </div>
                             <div class="input-full-width">
                                 <label for="password">Password</label>

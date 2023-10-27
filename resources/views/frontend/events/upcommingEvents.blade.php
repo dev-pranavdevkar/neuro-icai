@@ -40,23 +40,33 @@
                                             <tr>
 
                                                 <th scope="col">Event Start Date:</th>
-                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-M-Y') }}</td>
+                                                <td scope="col">
+                                                    {{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-M-Y') }}
+                                                </td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event End Date:</th>
-                                                <td scope="col"> {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-M-Y') }}</td>
+                                                <td scope="col">
+                                                    {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-M-Y') }}
+                                                </td>
                                             </tr>
                                             <tr>
 
                                                 <th scope="col">Event Time:</th>
-                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }} To 06:00 PM</td>
+                                                <td scope="col">
+                                                    {{ \Carbon\Carbon::parse($event['event_start_date'])->format('h:i A') }}
+                                                    To
+                                                    {{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }}
+                                                </td>
                                             </tr>
 
                                             <tr>
 
                                                 <th scope="col">Cut off Date:</th>
-                                                <td scope="col">{{ \Carbon\Carbon::parse($event['event_cut_off_date'])->format('d-M-Y h:i A') }}</td>
+                                                <td scope="col">
+                                                    {{ \Carbon\Carbon::parse($event['event_cut_off_date'])->format('d-M-Y h:i A') }}
+                                                </td>
                                             </tr>
                                             <tr>
 
@@ -82,19 +92,40 @@
 
                                         </tbody>
                                     </table>
-                                    <div class="d-flex justify-content-between">
-                                        <div>
+                                    <div class="d-flex justify-content-end">
+                                        {{-- <div>
                                             <a href="{{route('eventDetails',['id'=>$event->id])}}"  class="btn btn-secondary">Details</a>
-                                        </div>
+                                        </div> --}}
 
-                                        <div>
+                                        {{-- old button code is --}}
+                                        {{-- <div>
 
-                                            <a href="{{ Auth::user() ? route('eventDetails',['id'=>$event->id]) : url('/login') }}">
+                                            <a
+                                                href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}">
                                                 <button type="button" class="btn btn-primary">Register
 
                                                 </button>
                                             </a>
+                                        </div> --}}
+                                        {{-- ============================= --}}
+                                        <div>
+                                            @if (Auth::user())
+                                                @if ($event->is_user_registered)
+                                                    <button type="button" class="btn btn-success">Registered</button>
+                                                @else
+                                                    <a href="{{ route('eventDetails', ['id' => $event->id]) }}">
+                                                        <button type="button" class="btn btn-primary">Register</button>
+                                                    </a>
+                                                @endif
+                                            @else
+                                                <a href="{{ url('/login') }}">
+                                                    <button type="button" class="btn btn-primary">Register</button>
+                                                </a>
+                                            @endif
                                         </div>
+                                        {{-- ======================================================== --}}
+
+                                        {{-- ========================================================== --}}
 
                                     </div>
 
@@ -104,6 +135,9 @@
                         </div>
                     @endforeach
 
+                    <div class="d-flex justify-content-center d-none">
+                        {!! $eventDetails->links() !!}
+                    </div>
                 </div>
             @else
                 <h1>No event details available.</h1>

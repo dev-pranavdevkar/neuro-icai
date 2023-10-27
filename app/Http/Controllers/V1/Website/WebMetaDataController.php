@@ -151,6 +151,41 @@ class WebMetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
+    public function getStudentNoticeBoard(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = StudentNoticeBoard::query()->where('type', 'student');
+            $count = $query->count();
+            if ($request->has('title')) {
+                $query = $query->where('title', 'like', '%' . $request->title . '%');
+            }
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->get();
+            if (count($data) > 0) {
+                $response['notice_board'] =  $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+
+
     public function eventRegister(Request $request)
     {
         try {
