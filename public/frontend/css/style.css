@@ -4263,10 +4263,10 @@ ol {
 		font-size: 24px;
 		text-align: right;
 		vertical-align: middle;
-	
+
 	}
 	.side-social-media-apps ul li a {
-		
+
 		justify-content: center;
 		align-items: center;
 	}
@@ -4332,7 +4332,7 @@ ol {
 		position: relative !important;
 		bottom: 0;
 	}
-	
+
 
 	.footer__widget h5 {
 		margin-bottom: 5px;
@@ -4783,7 +4783,7 @@ ol {
 
 /*=================== New Dashboard ====================== */
 .dashboardArea {
-	
+
 }
 .profile-area .dashboard-profile-img{
 	width: 45px;

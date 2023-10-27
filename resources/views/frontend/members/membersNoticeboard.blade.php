@@ -22,7 +22,7 @@
             @if (isset($memberNoticeBoard) && count($memberNoticeBoard) > 0)
                 <div class="row d-flex justify-content-between">
                     {{-- 1 --}}
-                  
+
                     @foreach ($memberNoticeBoard as $studentNotice)
                     @if ($studentNotice['type'] == 'members')
                         <div class="col-lg-4 my-3 ">
@@ -49,7 +49,7 @@
                         </div>
                         @endif
                     @endforeach
-                 
+
                 </div>
                 <div>
                     <div class="d-flex justify-content-center mt-5 w-100">

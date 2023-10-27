@@ -113,8 +113,8 @@
                         </div>
                     @endforeach
 
-             
-                </div>  
+
+                </div>
                 <div class="w-100">
                     <div class="d-flex justify-content-center mt-5 w-100">
                         <ul class="pagination">
@@ -146,7 +146,7 @@
                             </li>
                         </ul>
                     </div>
-{{-- 
+{{--
                     <div class="text-center mt-2 w-100">
                         Showing {{ $batchs->firstItem() }} to
                         {{ $batchs->lastItem() }} of

@@ -13,15 +13,11 @@ class VacancyDetails extends Model
     public function location_details(){
         return $this->belongsTo(LocationDetails::class,'location_id');
     }
-         public function companyDetails(){
+        public function companyDetails(){
         return $this->belongsTo(Company::class,'company_id');
     }
 
     public function user_details(){
         return $this->belongsTo(User::class,'created_by_vacancy_user_id');
     }
-
-
-
-
 }

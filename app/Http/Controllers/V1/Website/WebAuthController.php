@@ -24,48 +24,30 @@ use App\Models\StudentNoticeBoard;
 use App\Models\VacancyDetails;
 use App\Models\AssociationDetails;
 use App\Models\OffersAssociation;
-use App\Models\Company;
-use App\Models\LocationDetails;
 class WebAuthController extends Controller
 {
-
-
-
-    public function registerUser(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'mobile_no' => 'required|regex:/^[0-9]{0,255}$/|unique:users',
-                'password' => 'required|string|min:6|confirmed',
-                'generated_user_id' => 'required|string|max:255|unique:users',
-            ]);
+   public function registerUser(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'mobile_no' => 'required|regex:/^[0-9]{0,255}$/|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'generated_user_id' => 'required|string|max:255|unique:users',
+        ]);
 
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
+                return redirect()->back()->withErrors($validator)->withInput();
             }
 
             if ($request->role == 'SuperAdmin') {
-                return $this->sendResponse([], 'Sorry, you can\'t be a super admin. It\'s our property', true);
+                return $this->sendResponse([], 'Sorry you can\'t be super admin. It\'s our property', true);
             }
 
-            if ($request->role != 'student' && $request->role != 'members') {
-                return $this->sendError('Invalid role.', [], 400);
-            }
-            if (!empty($request->firm_name) || !empty($request->contact_person_name) || !empty($request->contact_person_number) || !empty($request->address) || !empty($request->pincode)) {
-                $newCompany = new Company();
-                $newCompany->firm_name = $request->firm_name;
-                $newCompany->contact_person_name = $request->contact_person_name;
-                $newCompany->contact_person_number = $request->contact_person_number;
-                $newCompany->address = $request->address;
-                $newCompany->pincode = $request->pincode;
-                $newCompany->save();
-            }
             $newUser = new User();
             $newUser->password = Hash::make($request['password']);
-            $newUser->company_id = isset($newCompany) ? $newCompany->id : null;
             $newUser->name = $request->name;
             $newUser->email = $request->email;
             $newUser->last_name = $request->last_name;
@@ -73,19 +55,24 @@ class WebAuthController extends Controller
             $newUser->mobile_no = $request->mobile_no;
             $newUser->otp = $request->otp;
             $newUser->generated_user_id = $request->generated_user_id;
-            $role = Role::where('name', $request->role)->first();
+
+            // Assign roles based on user's role value
+            $assignedRoles = [];
+
+
+            $role = Role::query()->where('name', $request->role)->first();
             $newUser->assignRole($role);
-            $newAddress = new LocationDetails;
-            $newAddress->address_line_1 = $request->address_line_1;
-            $newAddress->pincode = $request->pincode;
-            $newAddress->save();
-            $newUser->location_id = $newAddress->id;
             $newUser->save();
+
+            $userRoles = $newUser->roles->pluck('name');
             $token = JWTAuth::fromUser($newUser);
-            // $response = ['token' => $token];
-            // $response['userData'] = $newUser;
-            // $response['location_details'] = LocationDetails::query()->where('id', $newUser->location_id)->first();
+            $response = ['token' => $token];
+            $response['userData'] = $newUser;
+            // $response['userRoles'] = $userRoles;
+            $response['assignedRoles'] = $assignedRoles;
+            // To keep on signUp Page
             return redirect()->route('login');
+            // return $this->sendResponse($response, 'Registered Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
@@ -122,13 +109,19 @@ class WebAuthController extends Controller
                     // return $this->sendResponse($response, 'Login Success', true);
                     return redirect('/');
                 } else {
-                    return $this->sendError('Password mismatch', [], 422);
+                    return redirect()->route('login')
+                        ->withErrors(['error' => 'Password mismatch. Please try again.']);
+
                 }
             } else {
-                return $this->sendError('User not found', [], 404);
+                return redirect()->route('login')
+                    ->withErrors(['error' => 'User does not exist or user doesn\'t have access']);
+
             }
-        } catch (Exception $e) {
-            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        } catch (\Exception $e) {
+            return redirect()->route('login')
+                ->withErrors(['error' => 'Something Went Wrong'.$e->getMessage()]);
+
         }
     }
     public function forgetPassword(Request $request)
@@ -140,7 +133,6 @@ class WebAuthController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-
             $user = User::where('email', $request->email)->first();
             if (!$user) {
                 return $this->sendError('Email Id does Not Exist', [], 403);
@@ -149,15 +141,11 @@ class WebAuthController extends Controller
             $user->forget_password_otp = $otp;
             $user->forget_password_timestamp = Carbon::now();
             $user->save();
-
             $to_name = $user->name;
             $to_email = $user->email;
             // dd($to_email);
-
             $data = array('otp' => $otp, 'to_name' => $to_name);
-
             Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
-
                 $message->to($to_email, $to_name)
                     ->subject('Otp For New Password');
                 $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
@@ -184,23 +172,17 @@ class WebAuthController extends Controller
             if (!$user) {
                 return $this->sendError('Email Id does Not Exist', [], 200);
             }
-
-
             $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
             $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
             $time_diff = $to->diffInMinutes($from);
             if ($time_diff > 5) {
                 return $this->sendError('Time Limit Expired', [], 200);
             }
-
             if ($user->forget_password_otp != $request->otp) {
                 return $this->sendError('Invalid Otp ! ', [], 200);
             }
-
             $user->password = Hash::make($request->new_password);
             $user->save();
-
             return $this->sendResponse([], 'Password Changed Successfully', true);
         } catch (Exception $e) {
             return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
@@ -216,13 +198,10 @@ class WebAuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
         }
-
         $user = User::where('email', $request->email)->first();
-
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-
         $userOtp = User::where('id', $user->id)->first();
 
         if (!$userOtp || $userOtp->otp !== $request->otp) {
@@ -243,17 +222,6 @@ class WebAuthController extends Controller
         }
         return view('frontend.userSection.dashboard', compact('idCardData'));
     }
-
-
-
-
-
-
-
-
-
-
-
     // Get ALl Home Page API
 
     public function getAllEventDetails(Request $request)
@@ -375,3 +343,4 @@ class WebAuthController extends Controller
         }
     }
 }
+

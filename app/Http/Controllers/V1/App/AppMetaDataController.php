@@ -68,228 +68,271 @@ class AppMetaDataController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-    }
-    public function saveCompanyLogo($image): string
-    {
-        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('CompanyLogo/');
-        if (env('APP_ENV') == 'prod') {
-            $destinationPath = public_path('CompanyLogo/' . $imageName);
+  }
+  public function saveCompanyLogo($image): string
+  {
+      $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+      $destinationPath = public_path('CompanyLogo/');
+      if (env('APP_ENV') == 'prod') {
+                  $destinationPath = public_path('CompanyLogo/' . $imageName);
+              }
+      $image->move($destinationPath, $image_name);
+      return '/CompanyLogo/' . $image_name;
+  }
+  public function saveOffersPdf($image): string
+  {
+      $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+      $destinationPath = public_path('OffersPdf/');
+      if (env('APP_ENV') == 'prod') {
+                  $destinationPath = public_path('OffersPdf/' . $imageName);
+              }
+      $image->move($destinationPath, $image_name);
+      return '/OffersPdf/' . $image_name;
+  }
+  public function saveAssociationImage($image): string
+  {
+      $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+      $destinationPath = public_path('AssociationImages/');
+      if (env('APP_ENV') == 'prod') {
+                  $destinationPath = public_path('AssociationImages/' . $imageName);
+              }
+      $image->move($destinationPath, $image_name);
+      return '/AssociationImages/' . $image_name;
+  }
+  public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
+  {
+      try {
+          $validator = Validator::make($request->all(), [
+            //   'company_name' => 'required|string|max:255',
+            //   'company_email' => 'required|string|max:255',
+            //   'start_date' => 'required|date',
+            //   'end_date' => 'required|date',
+            //   'mobile_no' => 'required',
+            //   'limits' => 'required',
+
+            //   'location_id' => 'required|integer|exists:location_details,id',
+
+            //   'company_logo' => 'required',
+            //   'benifits' => 'required|string|nullable',
+            //   'offers_pdf'=>'required|nullable',
+            //   'images'=>'required|nullable',
+              "offers"=>'array',
+              "offers.*.offers"=>'string',
+              "offers.*.discount"=>'string'
+          ]);
+          if ($validator->fails()) {
+              return $this->sendError('Validation Error.', $validator->errors());
+          }
+          $newAssociationDetails = new AssociationDetails();
+          $newAssociationDetails->company_name=$request->company_name;
+          $newAssociationDetails->company_email=$request->company_email;
+          $newAssociationDetails->start_date=$request->start_date;
+          $newAssociationDetails->end_date=$request->end_date;
+          $newAssociationDetails->mobile_no=$request->mobile_no;
+          $newAssociationDetails->limits=$request->limits;
+          $newAssociationDetails->location_id=$request->location_id;
+          $newAssociationDetails->benifits = $request->benifits;
+          if ($request->company_logo != "") {
+              if (!str_contains($request->company_logo, "http")) {
+                  $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo,$request->company_name);
+              }
+          }
+          if ($request->offers_pdf != "") {
+              if (!str_contains($request->offers_pdf, "http")) {
+                  $newAssociationDetails->offers_pdf = $this->saveOffersPdf($request->offers_pdf,$request->company_name);
+              }
+          }
+          if ($request->images != "") {
+              if (!str_contains($request->images, "http")) {
+                  $newAssociationDetails->images = $this->saveAssociationImage($request->images,$request->company_name);
+              }
+          }
+          $newAssociationDetails->save();
+
+        //   foreach($request->offers as $eachoffers){
+        //       $newOffer=new OffersAssociation();
+        //       $newOffer->association_id=$newAssociationDetails->id;
+        //       $newOffer->offers=$eachoffers['offers'];
+        //       $newOffer->discount=$eachoffers['discount'];
+        //       $newOffer->save();
+        //   }
+          foreach ($request->offers as $eachoffers) {
+            $newOffer = new OffersAssociation();
+            $newOffer->association_id = $newAssociationDetails->id;
+            $newOffer->offers = $eachoffers['offers'];
+            $newOffer->discount = $eachoffers['discount'];
+            $newOffer->save();
         }
-        $image->move($destinationPath, $image_name);
-        return '/CompanyLogo/' . $image_name;
-    }
-    public function saveOffersPdf($image): string
-    {
-        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('OffersPdf/');
-        if (env('APP_ENV') == 'prod') {
-            $destinationPath = public_path('OffersPdf/' . $imageName);
-        }
-        $image->move($destinationPath, $image_name);
-        return '/OffersPdf/' . $image_name;
-    }
-    public function saveAssociationImage($image): string
-    {
-        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
-        $destinationPath = public_path('AssociationImages/');
-        if (env('APP_ENV') == 'prod') {
-            $destinationPath = public_path('AssociationImages/' . $imageName);
-        }
-        $image->move($destinationPath, $image_name);
-        return '/AssociationImages/' . $image_name;
-    }
-    public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
+          return $this->sendResponse([], 'Association Details added successfully', true);
+      }
+      catch (Exception $e) {
+          return $this->sendError('Something went wrong', $e->getTrace(), 413);
+      }
+  }
+ public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
-                //   'company_name' => 'required|string|max:255',
-                //   'company_email' => 'required|string|max:255',
-                //   'start_date' => 'required|date',
-                //   'end_date' => 'required|date',
-                //   'mobile_no' => 'required',
-                //   'limits' => 'required',
-
-                //   'location_id' => 'required|integer|exists:location_details,id',
-
-                //   'company_logo' => 'required',
-                //   'benifits' => 'required|string|nullable',
-                //   'offers_pdf'=>'required|nullable',
-                //   'images'=>'required|nullable',
-                "offers" => 'array',
-                "offers.*.offers" => 'string',
-                "offers.*.discount" => 'string'
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
-            }
-            $newAssociationDetails = new AssociationDetails();
-            $newAssociationDetails->company_name = $request->company_name;
-            $newAssociationDetails->company_email = $request->company_email;
-            $newAssociationDetails->start_date = $request->start_date;
-            $newAssociationDetails->end_date = $request->end_date;
-            $newAssociationDetails->mobile_no = $request->mobile_no;
-            $newAssociationDetails->limits = $request->limits;
-            $newAssociationDetails->location_id = $request->location_id;
-            $newAssociationDetails->benifits = $request->benifits;
-            if ($request->company_logo != "") {
-                if (!str_contains($request->company_logo, "http")) {
-                    $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo, $request->company_name);
-                }
-            }
-            if ($request->offers_pdf != "") {
-                if (!str_contains($request->offers_pdf, "http")) {
-                    $newAssociationDetails->offers_pdf = $this->saveOffersPdf($request->offers_pdf, $request->company_name);
-                }
-            }
-            if ($request->images != "") {
-                if (!str_contains($request->images, "http")) {
-                    $newAssociationDetails->images = $this->saveAssociationImage($request->images, $request->company_name);
-                }
-            }
-            $newAssociationDetails->save();
-
-            //   foreach($request->offers as $eachoffers){
-            //       $newOffer=new OffersAssociation();
-            //       $newOffer->association_id=$newAssociationDetails->id;
-            //       $newOffer->offers=$eachoffers['offers'];
-            //       $newOffer->discount=$eachoffers['discount'];
-            //       $newOffer->save();
-            //   }
-            foreach ($request->offers as $eachoffers) {
-                $newOffer = new OffersAssociation();
-                $newOffer->association_id = $newAssociationDetails->id;
-                $newOffer->offers = $eachoffers['offers'];
-                $newOffer->discount = $eachoffers['discount'];
-                $newOffer->save();
-            }
-            return $this->sendResponse([], 'Association Details added successfully', true);
-        } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
-        }
-    }
-    public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'user_id' => 'required|nullable',
                 'association_id' => 'required|nullable',
-                'created_by_user_id' => 'required|nullable',
+                'offers_association_id'=>'required|'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)->first();
+            $user = Auth::user()->id;
+            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $user)
+            ->where('association_id',$request->association_id)
+            ->where('offers_association_id',$request->offers_association_id)
+            ->first();
 
             if ($existingRegistration) {
-                return $this->sendError('User is already registered for an association.', [], 422);
+                return $this->sendError('User is already registered for an association offer.', [], 422);
             }
-            $association = AssociationDetails::find($request->association_id);
+        $offer = OffersAssociation::query()->where('association_id', $request->association_id)
+        ->where('id',$request->offers_association_id)
+        ->first();
 
-            if (!$association) {
-                return $this->sendError('Association not found.', [], 404);
-            }
-
-            $limit = (int) $association->limit;
-            $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)->count();
-
-            // Check if the association's limit is set and has reached its capacity
-            if ($registeredUsersCount >= $limit && $limit == $limit && $limit != $registeredUsersCount) {
-                return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
-            }
-            // Proceed with registering the user to the association
+        if (!$offer) {
+            return $this->sendError('Offer not found for this association.', [], 404);
+        }
+        $limit = (int) $offer->limits;
+        $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
+        ->where('offers_association_id',$request->offers_association_id)
+        ->count();
+        if ($registeredUsersCount >= $limit) {
+            return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
+        }
             $newDetails = new RegisterToAssocitationDetails;
-            $newDetails->user_id = $request->user_id;
+            $newDetails->user_id = $user;
             $newDetails->association_id = $request->association_id;
-            $newDetails->created_by_user_id = $request->created_by_user_id;
-            $newDetails->offers_association_id = $request->offers_association_id;
+            //$newDetails->created_by_user_id = $request->created_by_user_id;
+            $newDetails->offers_association_id=$request->offers_association_id;
             $newDetails->save();
-            return $this->sendResponse([], 'RegisterToAssocitationDetails Created Successfully.', true);
+            return $this->sendResponse([], 'Offer Claim successfully.', true);
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
+public function getUpcomingEvent(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'filter' => 'in:upcoming,past',
+        ]);
 
-    public function getUpcomingEvent(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'pageNo' => 'numeric',
-                'limit' => 'numeric',
-                'filter' => 'in:upcoming,past',
-            ]);
-
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(), 400);
-            }
-            // $query = LocationDetails::query();
-            $query = EventDetails::query()->with(['location_details']); // Replace "ModelName" with your actual model name
-            // Filter upcoming events based on the 'filter' parameter
-            if ($request->has('filter')) {
-                $filter = $request->filter;
-                if ($filter === 'upcoming') {
-                    // For upcoming events, filter those with the event_end_date greater than today's date
-                    $query = $query->where('event_end_date', '>', date('Y-m-d'));
-                }
-            }
-            // Get the start and end dates for the current week
-            $startOfWeek = date('Y-m-d', strtotime('this week'));
-            $endOfWeek = date('Y-m-d', strtotime('this week +6 days'));
-            // Filter events for this week
-            $queryThisWeek = clone $query; // Create a clone of the query to use for this week
-            $queryThisWeek = $queryThisWeek->where('event_start_date', '>=', $startOfWeek); // Events that start on or after the start of the week
-            $queryThisWeek = $queryThisWeek->where('event_start_date', '<=', $endOfWeek); // Events that start on or before the end of the week
-            // Filter events for next week
-            $nextWeek = date('Y-m-d', strtotime('+1 week')); // Get the date one week from today
-            $queryNextWeek = clone $query; // Create a clone of the query to use for the next week
-            $queryNextWeek = $queryNextWeek->where('event_start_date', '>=', date('Y-m-d')); // Only consider events that haven't ended yet
-            $queryNextWeek = $queryNextWeek->where('event_start_date', '<', $nextWeek);
-            $currentDate = now();
-
-            // Calculate the first day of the next month
-            $firstDayNextMonth = $currentDate->copy()->addMonthNoOverflow()->startOfMonth();
-
-            // Calculate the last day of the next month
-            $lastDayNextMonth = $firstDayNextMonth->copy()->endOfMonth();
-
-            // Query for events in the next month
-            $queryNextMonth = EventDetails::query()
-                ->where('event_start_date', '>=', $firstDayNextMonth)
-                ->where('event_start_date', '<', $lastDayNextMonth)
-                ->with(['location_details']);
-            // Count the total number of events matching the filters
-            $countThisWeek = $queryThisWeek->count();
-            $countNextWeek = $queryNextWeek->count();
-            $countNextMonth = $queryNextMonth->count();
-            if ($request->has('pageNo') && $request->has('limit')) {
-                $limit = $request->limit;
-                $pageNo = $request->pageNo;
-                $skip = $limit * $pageNo;
-                $query = $query->skip($skip)->limit($limit);
-                $queryThisWeek = $queryThisWeek->skip($skip)->limit($limit);
-                $queryNextWeek = $queryNextWeek->skip($skip)->limit($limit);
-                $queryNextMonth = $queryNextMonth->skip($skip)->limit($limit);
-            }
-            $data = $query->orderBy('event_start_date', 'ASC')->get();
-            $dataThisWeek = $queryThisWeek->orderBy('event_start_date', 'ASC')->get();
-            $dataNextWeek = $queryNextWeek->orderBy('event_start_date', 'ASC')->get();
-            $dataNextMonth = $queryNextMonth->orderBy('event_start_date', 'ASC')->get();
-            $response['this_week'] = $dataThisWeek;
-            $response['next_week'] = $dataNextWeek;
-            $response['next_month'] = $dataNextMonth;
-            $response['count_this_week'] = $countThisWeek;
-            $response['count_next_week'] = $countNextWeek;
-            $response['count_next_month'] = $countNextMonth;
-            if (count($dataThisWeek) > 0 || count($dataNextWeek) > 0 || count($dataNextMonth) > 0) {
-                return $this->sendResponse($response, 'Data Fetched Successfully', true);
-            } else {
-                return $this->sendResponse('No Data Available', [], false);
-            }
-        } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
-    }
+        $userId = Auth::user()->id;
+        $now = Carbon::now();
+        $currentDate = Carbon::now('Asia/Kolkata');
 
+        // Calculate the start and end of the current week with time
+        $startOfWeek = $now->startOfWeek()->format('Y-m-d H:i:s');
+        $endOfWeek = $now->endOfWeek()->format('Y-m-d H:i:s');
+
+        // Calculate the start of next week with time
+        $nextWeekStart = $now->copy()->endOfWeek()->addDay()->format('Y-m-d H:i:s');
+
+        // Calculate the start of next month
+        $nextMonthStart = $now->copy()->addMonthNoOverflow()->startOfMonth();
+
+        $query = EventDetails::query()->with(['location_details'])->get();
+
+        // Filter events for this week
+        $queryThisWeek = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->where('event_start_date', '>=', $startOfWeek)
+            ->where('event_start_date', '<=', $endOfWeek);
+
+        $queryNextWeek = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->where('event_start_date', '>=', $nextWeekStart);
+
+        $queryThisMonth = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->whereBetween('event_start_date', [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()]);
+
+        $queryNextMonth = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation'])
+            ->where('event_start_date', '>=', $nextMonthStart);
+
+        // Count the total number of events matching the filters
+        $countThisWeek = $queryThisWeek->count();
+        $countNextWeek = $queryNextWeek->count();
+        $countThisMonth = $queryThisMonth->count();
+        $countNextMonth = $queryNextMonth->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+            $queryThisWeek = $queryThisWeek->skip($skip)->limit($limit);
+            $queryNextWeek = $queryNextWeek->skip($skip)->limit($limit);
+            $queryThisMonth = $queryThisMonth->skip($skip)->limit($limit);
+            $queryNextMonth = $queryNextMonth->skip($skip)->limit($limit);
+        }
+
+       // Fetch the data for each time frame
+        $dataThisWeek = $queryThisWeek->orderBy('event_start_date', 'ASC')->get();
+        $dataNextWeek = $queryNextWeek->orderBy('event_start_date', 'ASC')->get();
+        $dataThisMonth = $queryThisMonth->orderBy('event_start_date', 'ASC')->get();
+        $dataNextMonth = $queryNextMonth->orderBy('event_start_date', 'ASC')->get();
+
+        // Additional code to update properties of each event
+        foreach ($dataThisWeek as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        foreach ($dataNextWeek as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        foreach ($dataThisMonth as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        foreach ($dataNextMonth as $event) {
+            $event->is_series_event = count($event->children) > 0;
+            $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+            $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+        }
+
+        $response['this_week'] = $dataThisWeek;
+        $response['next_week'] = $dataNextWeek;
+        $response['this_month'] = $dataThisMonth;
+        $response['next_month'] = $dataNextMonth;
+        $response['count_this_week'] = $countThisWeek;
+        $response['count_next_week'] = $countNextWeek;
+        $response['count_this_month'] = $countThisMonth;
+        $response['count_next_month'] = $countNextMonth;
+
+        if (count($dataThisWeek) > 0 || count($dataNextWeek) > 0 || count($dataThisMonth) > 0 || count($dataNextMonth) > 0) {
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
     public function getPastEvents(Request $request)
     {
         try {
@@ -383,7 +426,7 @@ class AppMetaDataController extends Controller
             // $product = LocationDetails::query()->where ('event_id',$request->id)->get();
             // $getEmp['location_details'] = $product;
             return $this->sendResponse(["Event_Details" => $getitems, "event_presentation_vedio" => $getPresentationVideo, "event_images" => $product], 'Data fetch successfully', true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
@@ -399,12 +442,17 @@ class AppMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $user_id = auth()->user()->id;
-
+           $user_id = auth()->user()->id;
+            // $user_id=Auth::user()->id;
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');
 
-            $eventQuery = EventRegistration::query()->where('user_id', $user_id);
+            $eventQuery = EventRegistration::query()
+            ->where('user_id', $user_id)
+                ->where(function ($query) {
+                    $query->whereNotNull('event_id')
+                        ->orWhereNull('student_batche_id');
+                });
 
             if ($startDate && $endDate) {
                 $eventQuery->whereBetween('event_details.event_start_date', [$startDate, $endDate]);
@@ -437,7 +485,12 @@ class AppMetaDataController extends Controller
             if ($attendedEvents > 0) {
                 $attendedEventPercentage = ($attendedEvents / $registerEvent) * 100;
             }
-            $batchQuery = EventRegistration::query()->where('user_id', $user_id);
+            $batchQuery = EventRegistration::query()
+                ->where('user_id', $user_id)
+                ->where(function ($query) {
+                    $query->whereNotNull('student_batche_id')
+                        ->orWhereNull('event_id');
+                });
 
             if ($startDate && $endDate) {
                 $batchQuery->whereBetween('student_batches.start_date', [$startDate, $endDate]);
@@ -455,7 +508,7 @@ class AppMetaDataController extends Controller
             ];
 
             return $this->sendResponse($response, 'Data fetched successfully', true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
@@ -570,64 +623,173 @@ class AppMetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
+    // public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'event_id' => 'nullable|integer|exists:event_details,id',
+    //             'student_batche_id' => 'nullable|integer|exists:student_batches,id',
+    //             'user_id'=>'required|integer|exists:users,id',
+    //             'gst_no' => 'required',
+    //             'legal_name' => 'required',
+    //             'event_price' => 'required|nullable',
+    //             'total_amount' => 'required|nullable',
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
+    //         $newEventRegistration = new EventRegistration();
+    //         $newEventRegistration->event_id=$request->event_id;
+    //         $newEventRegistration->student_batche_id=$request->student_batche_id;
+    //         $newEventRegistration->user_id=$request->user_id;
+    //         $newEventRegistration->gst_no=$request->gst_no;
+    //         $newEventRegistration->legal_name=$request->legal_name;
+    //         $newEventRegistration->attendance_status = $request->attendance_status;
+    //         $newEventRegistration->event_price = $request->event_price;
+    //         $newEventRegistration->total_amount = $request->total_amount;
+    //         $newEventRegistration->save();
+    //         if($newEventRegistration->save()){
+    //             $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+    //             $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id, 'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes'=> array()));
+    //             $newEventRegistration->razorpay_id = $orderDetails->id;
+    //             $newEventRegistration->save();
+    //             $response = [];
+    //             $response['system_order_id']=$newEventRegistration->id;
+    //             $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
+    //             $response['razorpay_api_key']=env('R_API_KEY');
+    //             return $this->sendResponse($response, 'Payment Initiated Successfully',true);
+    //         }else{
+    //             return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
+    //         }
+
+    //     }
+    //     catch (Exception $e) {
+    //         return $this->sendError('Something went wrong', $e->getTrace(), 413);
+    //     }
+    // }
+    public function addEventRegistration(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_id' => 'nullable|integer|exists:event_details,id',
-                'student_batche_id' => 'nullable|integer|exists:student_batches,id',
-                'user_id' => 'required|integer|exists:users,id',
-                'gst_no' => 'required',
-                'legal_name' => 'required',
-                'event_price' => 'required|nullable',
-                'total_amount' => 'required|nullable',
+                'event_id' => 'required|integer|exists:event_details,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
+            $eventDetails = EventDetails::find($request->event_id);
+            $user = Auth::user();
+            $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
+                ->where('payment_status','like',"paid")->first();
+            if(!is_null($eventRegistration)){
+                return $this->sendResponse([],'You are already registered to this event',false);
+            }
+            $isMember = false;
+            if(in_array('members',Auth::user()->roles->pluck('name')->toArray())){
+                $isMember = true;
+            }else if(in_array('students',Auth::user()->roles->pluck('name')->toArray())){
+                $isMember = false;
+            }
+            $totalAmount = $isMember?$eventDetails->price_for_members:$eventDetails->price_for_students;
+
             $newEventRegistration = new EventRegistration();
-            $newEventRegistration->event_id = $request->event_id;
-            $newEventRegistration->student_batche_id = $request->student_batche_id;
-            $newEventRegistration->user_id = $request->user_id;
-            $newEventRegistration->gst_no = $request->gst_no;
-            $newEventRegistration->legal_name = $request->legal_name;
-            $newEventRegistration->attendance_status = $request->attendance_status;
-            $newEventRegistration->event_price = $request->event_price;
-            $newEventRegistration->total_amount = $request->total_amount;
+            $newEventRegistration->event_id=$request->event_id;
+            $newEventRegistration->user_id=$user->id;
+            $newEventRegistration->gst_no=null;
+            $newEventRegistration->legal_name=null;
+            $newEventRegistration->attendance_status =null;
+            $newEventRegistration->event_price = $totalAmount;
+            $newEventRegistration->total_amount = $totalAmount;
             $newEventRegistration->save();
-            if ($newEventRegistration->save()) {
+            if($newEventRegistration->save()){
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $orderDetails = $api->order->create(array('receipt' => 'Inv-' . $newEventRegistration->id, 'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes' => array()));
+                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
-                $response['system_order_id'] = $newEventRegistration->id;
-                $response['razorpay_order_id'] = $newEventRegistration->razorpay_id;
-                $response['razorpay_api_key'] = env('R_API_KEY');
-                return $this->sendResponse($response, 'Payment Initiated Successfully', true);
-            } else {
-                return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
+                $response['system_order_id']=$newEventRegistration->id;
+                $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
+                $response['razorpay_api_key']=env('R_API_KEY');
+                return $this->sendResponse($response, 'Payment Initiated Successfully',true);
+            }else{
+                return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
             }
-        } catch (Exception $e) {
+        }
+        catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-    public function paymentVerification(Request $request)
+    public function addStudentBatchRegistration(Request $request)
     {
         try {
-            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-                'system_order_id' => 'required|numeric',
-                'razorpay_order_id' => 'required|string',
+            $validator = Validator::make($request->all(), [
+                'student_batche_id' => 'required|integer|exists:student_batches,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $payment = EventRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
-            if (is_null($payment)) {
-                return $this->sendResponse([], 'Wrong Payment Id', false);
+            $eventDetails = StudentBatches::find($request->student_batche_id);
+            $currentDate = now();
+        if ($currentDate > $eventDetails->batch_cut_off_date) {
+            return $this->sendResponse([], 'Registration is closed for this batch.', false);
+        }
+            $user = Auth::user();
+            $eventRegistration = EventRegistration::where('student_batche_id',$request->student_batche_id)
+            ->where('user_id',$user->id)
+                ->where('payment_status','like',"paid")->first();
+            if(!is_null($eventRegistration)){
+                return $this->sendResponse([],'You are already registered to this batch',false);
             }
-            if ($payment->payment_status == "paid") {
-                return $this->sendResponse([], 'Payment Already Done', false);
+            $currentDate = now();
+        if ($currentDate < $eventDetails->early_bird_date) {
+            $totalAmount = $eventDetails->early_bird_fees;
+        } else {
+            $totalAmount = $eventDetails->fees;
+        }
+            $newEventRegistration = new EventRegistration();
+            $newEventRegistration->student_batche_id=$request->student_batche_id;
+            $newEventRegistration->user_id=$user->id;
+            $newEventRegistration->gst_no=null;
+            $newEventRegistration->legal_name=null;
+            $newEventRegistration->attendance_status =null;
+            $newEventRegistration->event_price = $totalAmount;
+            $newEventRegistration->total_amount = $totalAmount;
+            $newEventRegistration->save();
+            if($newEventRegistration->save()){
+                $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
+                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
+                $newEventRegistration->razorpay_id = $orderDetails->id;
+                $newEventRegistration->save();
+                $response = [];
+                $response['system_order_id']=$newEventRegistration->id;
+                $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
+                $response['razorpay_api_key']=env('R_API_KEY');
+                return $this->sendResponse($response, 'Payment Initiated Successfully',true);
+            }else{
+                return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
+            }
+        }
+        catch (\Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
+    }
+    public function paymentVerification(Request $request)
+        {
+        try{
+            $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+                'system_order_id'=>'required|numeric',
+                'razorpay_order_id'=>'required|string',
+            ]);
+            if($validator->fails()){
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $payment = EventRegistration::where('razorpay_id',$request->razorpay_order_id)->find($request->system_order_id);
+            if(is_null($payment)){
+                return $this->sendResponse([], 'Wrong Payment Id',false);
+            }
+            if($payment->payment_status=="paid"){
+                return $this->sendResponse([], 'Payment Already Done',false);
             }
             $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
             $razorpay_order = $api->order->fetch($request->razorpay_order_id);
@@ -663,12 +825,7 @@ class AppMetaDataController extends Controller
                 $query = $query->skip($skip)->limit($limit);
             }
             $data = $query->orderBy('id', 'DESC')->get();
-            // foreach ($data as $user) {
-            //     if ($user['id'] != null) {
-            //         $product = OffersAssociation::query()->where('association_id', $user['id'])->get();
-            //         $user['offers_association'] = $product;
-            //     }
-            // }
+
             if (count($data) > 0) {
                 $response['association_details'] = $data;
                 $response['count'] = $count;
@@ -711,24 +868,23 @@ class AppMetaDataController extends Controller
             $id = $request->id;
             $limit = $request->limit;
 
-            // Calculate the count of registered associations
-            $countRegisteredAssociations = RegisterToAssocitationDetails::where('association_id', $id)->count();
-            // Prepare the query to retrieve the specific association details
-            $query = AssociationDetails::query()->where('id', $id)->with(['location_details',]);
-            $data = $query->orderBy('id', 'DESC')->get();
-            foreach ($data as $user) {
-                if ($user['id'] != null) {
-                    $product = OffersAssociation::query()->where('association_id', $user['id'])->get();
-                    $user['offers_association'] = $product;
-                }
+        // Calculate the count of registered associations
+        $countRegisteredAssociations = RegisterToAssocitationDetails::where('association_id', $id)->count();
+        // Prepare the query to retrieve the specific association details
+        $query = AssociationDetails::query()->where('id', $id)->with(['location_details',]);
+        $data = $query->orderBy('id', 'DESC')->get();
+        foreach ($data as $user) {
+            if ($user['id'] != null) {
+                $product = OffersAssociation::query()->where('association_id', $user['id'])->get();
+                $user['offers_association'] = $product;
             }
-            // If the limit is provided and greater than zero, apply the limit to the query
-            if (isset($limit) && $limit > 0) {
-                // If the limit exceeds the count of registered associations, use the count as the limit
-                $limit = min($limit, $countRegisteredAssociations);
-                $query = $query->take($limit);
-            }
-            $getitems = $query->first();
+        }
+
+        if (isset($limit) && $limit > 0) {
+            $limit = min($limit, $countRegisteredAssociations);
+            $query = $query->take($limit);
+        }
+        $getitems = $query->first();
 
             return $this->sendResponse([
                 "association_details" => $getitems,
@@ -849,67 +1005,158 @@ class AppMetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
+    // public function getAllVacancyDetails(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'pageNo' => 'numeric',
+    //             'limit' => 'numeric',
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors(), 400);
+    //         }
+    //        $userRoles = Auth::user()->roles;
+    //         $userRoleNames = $userRoles->pluck('name');
+    //         echo $userRoleNames;
+    //         $company=Auth::user()->company_id;
+    //         echo $company;
+    //         $query = VacancyDetails::query()->where('company_id',$company)
+    //         ->with(['location_details','user_details']);
+
+    //         if ($request->has('ca_firm_name')) {
+    //             $caFirmName = $request->input('ca_firm_name');
+    //             $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
+    //         }
+    //         if ($request->has('position')) {
+    //             $Position = $request->input('position');
+    //             $query->where('position', 'LIKE', "%{$Position}%");
+    //         }
+
+    //         if ($request->has('pincode')) {
+    //             $locationId = $request->input('pincode');
+    //             $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+    //                 $locationQuery->where(function ($query) use ($locationId) {
+    //                     $query->where('pincode', 'LIKE', "%{$locationId}%");
+    //                 });
+    //             });
+    //         }
+    //         if ($request->has('city')) {
+    //             $locationId = $request->input('city');
+    //             $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+    //                 $locationQuery->where(function ($query) use ($locationId) {
+    //                     $query->where('city', 'LIKE', "%{$locationId}%");
+    //                 });
+    //             });
+    //         }
+    //         $currentDate = date('Y-m-d');
+    //         $query->where(function ($query) use ($currentDate) {
+    //         $query->where('expiry_date', '>=', $currentDate)
+    //             ->orWhereNull('expiry_date');
+    //     });
+
+    //         $count = $query->count();
+
+    //         if ($request->has('pageNo') && $request->has('limit')) {
+    //             $limit = $request->limit;
+    //             $pageNo = $request->pageNo;
+    //             $skip = $limit * $pageNo;
+    //             $query = $query->skip($skip)->limit($limit);
+    //         }
+    //         $data = $query->orderBy('id', 'DESC')->get();
+    //         if (count($data) > 0) {
+    //             $response['vacancy_details'] = $data;
+    //             $response['count'] = $count;
+    //             return $this->sendResponse($response, 'Data Fetched Successfully', true);
+    //         } else {
+    //             return $this->sendResponse('No Data Available', [], false);
+    //         }
+    //     } catch (Exception $e) {
+    //         return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    //     }
+    // }
     public function getAllVacancyDetails(Request $request)
     {
-        try {
-            $validator = Validator::make($request->all(), [
-                'pageNo' => 'numeric',
-                'limit' => 'numeric',
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(), 400);
-            }
-            $query = VacancyDetails::query()->with(['location_details', 'user_details']);
 
-            if ($request->has('ca_firm_name')) {
-                $caFirmName = $request->input('ca_firm_name');
-                $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
-            }
-            if ($request->has('position')) {
-                $Position = $request->input('position');
-                $query->where('position', 'LIKE', "%{$Position}%");
-            }
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+        ]);
 
-            if ($request->has('pincode')) {
-                $locationId = $request->input('pincode');
-                $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-                    $locationQuery->where(function ($query) use ($locationId) {
-                        $query->where('pincode', 'LIKE', "%{$locationId}%");
-                    });
-                });
-            }
-            if ($request->has('city')) {
-                $locationId = $request->input('city');
-                $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-                    $locationQuery->where(function ($query) use ($locationId) {
-                        $query->where('city', 'LIKE', "%{$locationId}%");
-                    });
-                });
-            }
-            $currentDate = date('Y-m-d');
-            $query->where('expiry_date', '>=', $currentDate);
-
-            $count = $query->count();
-
-            if ($request->has('pageNo') && $request->has('limit')) {
-                $limit = $request->limit;
-                $pageNo = $request->pageNo;
-                $skip = $limit * $pageNo;
-                $query = $query->skip($skip)->limit($limit);
-            }
-            $data = $query->orderBy('id', 'DESC')->get();
-            if (count($data) > 0) {
-                $response['vacancy_details'] = $data;
-                $response['count'] = $count;
-                return $this->sendResponse($response, 'Data Fetched Successfully', true);
-            } else {
-                return $this->sendResponse('No Data Available', [], false);
-            }
-        } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
+
+        $userRoles = Auth::user()->roles;
+        $userRoleNames = $userRoles->pluck('name');
+
+        $company = Auth::user()->company_id;
+
+        $query = VacancyDetails::query()->with(['location_details', 'user_details','companyDetails']);
+
+        if ($userRoleNames->contains('members')) {
+
+            $query->where('company_id', $company);
+        }
+
+        if ($request->has('ca_firm_name')) {
+            $caFirmName = $request->input('ca_firm_name');
+            $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
+        }
+
+        if ($request->has('position')) {
+            $Position = $request->input('position');
+            $query->where('position', 'LIKE', "%{$Position}%");
+        }
+
+        if ($request->has('pincode')) {
+            $locationId = $request->input('pincode');
+            $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+                $locationQuery->where(function ($query) use ($locationId) {
+                    $query->where('pincode', 'LIKE', "%{$locationId}%");
+                });
+            });
+        }
+
+        if ($request->has('city')) {
+            $locationId = $request->input('city');
+            $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+                $locationQuery->where(function ($query) use ($locationId) {
+                    $query->where('city', 'LIKE', "%{$locationId}%");
+                });
+            });
+        }
+
+                $currentDate = date('Y-m-d');
+        $query->where(function ($query) use ($currentDate) {
+                $query->where('expiry_date', '>=', $currentDate)
+                ->orWhereNull('expiry_date');
+        });
+
+        $count = $query->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+
+        $data = $query->orderBy('id', 'DESC')->get();
+
+        if (count($data) > 0) {
+            $response['vacancy_details'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data Fetched Successfully', true);
+        } else {
+            return $this->sendResponse('No Data Available', [], false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
-    public function getVacancyDetailsById(Request $request): \Illuminate\Http\JsonResponse
+}
+
+    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -934,148 +1181,224 @@ class AppMetaDataController extends Controller
         $image->move($destinationPath, $image_name);
         return '/ResumePdf/' . $image_name;
     }
-
-
-    public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
+       public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required|nullable',
-                'vacancy_id' => 'required|nullable',
-                'resume_pdf' => 'required|nullable',
+                //   'user_id' => 'nullable|numeric|exists:users,id',
+                'vacancy_id' => 'required|numeric|exists:vacancy_details,id',
+                'name' => 'required|string',
+                'email' => 'required|email|string',
+                'resume_pdf' => 'required',
+                'experience' => 'nullable',
+                'qualification' => 'nullable',
+                'expected_package' => 'nullable',
+                'current_package' => 'nullable',
+                'notice_period_in_days' => 'nullable'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $newDetails = new ApplyForJob;
-            $newDetails->user_id = $request->user_id;
+            //   $newDetails->user_id = $request->user_id;
             $newDetails->vacancy_id = $request->vacancy_id;
-
+            $newDetails->name = $request->name;
+            $newDetails->email = $request->email;
+            $newDetails->experience = $request->experience;
+            $newDetails->qualification = $request->qualification;
+            $newDetails->expected_package = $request->expected_package;
+            $newDetails->current_package = $request->current_package;
+            $newDetails->notice_period_in_days = $request->notice_period_in_days;
             if ($request->resume_pdf != "") {
                 if (!str_contains($request->resume_pdf, "http")) {
-                    $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf, $request->user_id);
+                    $newDetails->resume_pdf = $this->saveResumePdf($request->resume_pdf, $request->name);
                 }
             }
             $newDetails->save();
-
             return $this->sendResponse([], 'Apply for Job Successfully.', true);
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
+ public function getStudentNoticeBoard(Request $request)
+ {
+	try{
+		$validator = Validator::make($request->all(), [
+			'pageNo'=>'numeric',
+			'limit'=>'numeric',
+		]);
+		if ($validator->fails()) {
+			return $this->sendError('Validation Error.', $validator->errors(),400);
+		}
+		$query = StudentNoticeBoard::query()->where('type',$request->type);
+		$count=$query->count();
+		if($request->has('pageNo') && $request->has('limit')){
+			$limit = $request->limit;
+			$pageNo = $request->pageNo;
+			$skip = $limit*$pageNo;
+			$query= $query->skip($skip)->limit($limit);
+		}
+		$data = $query->orderBy('id', 'DESC')->get();
+		if(count($data)>0){
+			$response['data'] =  $data;
+			$response['count']=$count;
+			return $this->sendResponse($response,'Data Fetched Successfully', true);
+		}else{
+			return $this->sendResponse('No Data Available', [],false);
+		}
+	}catch (\Exception $e){
+            return $this->sendError($e->getMessage(), $e->getTrace(),500);
+        }
+}
+public function getStudentNoticeBoardById(Request $request):  \Illuminate\Http\JsonResponse
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|exists:table_student_notice_board,id',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $getitems = StudentNoticeBoard::query()->first();
 
-    public function getStudentNoticeBoard(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'pageNo' => 'numeric',
-                'limit' => 'numeric',
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(), 400);
-            }
+        return $this->sendResponse(["student_notice_board" => $getitems], 'Data fetch successfully', true);
+    } catch (Exception $e) {
+        return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+    }
+}
+  public function getAllEventDetails(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'filter' => 'in:upcoming,past,ongoing,this_week,next_week',
+            'event_start_date' => 'date_format:Y-m-d',
+            'event_end_date' => 'date_format:Y-m-d',
+        ]);
 
-            $query = StudentNoticeBoard::query()->where('type', $request->type);
-            $count = $query->count();
-            if ($request->has('pageNo') && $request->has('limit')) {
-                $limit = $request->limit;
-                $pageNo = $request->pageNo;
-                $skip = $limit * $pageNo;
-                $query = $query->skip($skip)->limit($limit);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+        $userId = Auth::user()->id;
+        $currentDate = carbon::now('Asia/Kolkata');
+            $now = carbon::now();
+            $currentWeekStart = $now->startOfWeek();
+            $currentWeekEnd = $now->endOfWeek();
+            $nextWeekStart = $currentWeekStart->copy()->addWeek();
+        $nextWeekEnd = $currentWeekEnd->copy()->addWeek();
+        $query = EventDetails::query()->whereNull('parent_event_id')
+        ->with(['children','location_details','event_images','event_video','event_presntation']);
+        if ($request->has('filter')) {
+            $filter = $request->filter;
+            if ($filter === 'upcoming') {
+                $query = $query->where('event_start_date', '>', $now);
             }
-            $data = $query->get();
-            if (count($data) > 0) {
-                $response['data'] =  $data;
+            if ($filter === 'past') {
+                $query = $query->where('event_end_date', '<', $now);
+            }
+            if ($filter === 'ongoing') {
+                    $query->where('event_start_date', '<=', $currentDate)
+                        ->where('event_end_date', '>=', $currentDate);
+            }
+            if ($filter === 'this_week') {
+                // Include events that have not yet started and are ongoing this week
+                $query->where(function ($query) use ($currentWeekStart, $currentWeekEnd, $currentDate) {
+                    $query->where('event_start_date', '>', $currentDate)
+                        ->orWhere(function ($query) use ($currentDate) {
+                            $query->where('event_start_date', '<=', $currentDate)
+                                ->where('event_end_date', '>=', $currentDate);
+                        });
+                });
+            }
+            if ($filter === 'next_week') {
+                $query->whereBetween('event_start_date', [$nextWeekStart, $nextWeekEnd]);
+            }
+        }
+        $count = $query->count();
+        if ($request->has('event_name')) {
+            $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
+        }
+        if ($request->has('event_fee')) {
+            $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
+        }
+        if ($request->has('event_start_date') && $request->has('event_end_date')) {
+            $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
+        }
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+            $data = $query->orderBy('id', 'DESC')->get();
+
+             if (count($data) > 0) {
+            foreach ($data as $event) {
+                $event->is_series_event = count($event->children) > 0;
+                $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
+                $event->is_user_registered = EventRegistration::where('user_id', $userId)
+                ->where('event_id', $event->id)
+                ->exists();
+            }
+                $response['event_details'] = $data;
                 $response['count'] = $count;
                 return $this->sendResponse($response, 'Data Fetched Successfully', true);
             } else {
                 return $this->sendResponse('No Data Available', [], false);
             }
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
-        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
-
-
-    public function getStudentNoticeBoardById(Request $request): \Illuminate\Http\JsonResponse
+}
+    public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id' => 'required|integer|exists:table_student_notice_board,id',
+                'position' => [ Rule::in(['Semi Qualified','Article Assistant','Industrial Trainee','Qualified'])],
+                'comments' => 'nullable',
+                'experience' => 'required',
+                'expiry_date' => 'nullable|date',
+                'job_type' => [ Rule::in(['internship', 'full_time'])],
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $getitems = StudentNoticeBoard::query()->first();
+            $user = Auth::user()->id;
 
-            return $this->sendResponse(["student_notice_board" => $getitems], 'Data fetch successfully', true);
-        } catch (Exception $e) {
-            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        // if (!$user->member) {
+        //     return $this->sendError('Permission Error', 'User is not a member', 403);
+        // }
+            $newVacancy = new VacancyDetails();
+            $newVacancy->position=$request->position;
+            $newVacancy->comments=$request->comments;
+            $newVacancy->experience=$request->experience;
+            $newVacancy->company_id = auth::user()->company_id;
+            $newVacancy->created_by =$user;
+		    $newVacancy->expiry_date = $request->expiry_date;
+            $newVacancy->job_type = $request->job_type;
+            $newVacancy->save();
+            return $this->sendResponse([], 'Vacancy details added successfully', true);
+        }
+        catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
-
-
-
-
-    public function getAllEventDetails(Request $request)
+public function getEventRegistrationByUser(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
                 'limit' => 'numeric',
-                'filter' => 'in:upcoming,past,ongoing,this_week,next_week',
-                'event_start_date' => 'date_format:Y-m-d',
-                'event_end_date' => 'date_format:Y-m-d',
             ]);
-
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $userId = Auth::user()->id;
-            $currentDate = carbon::now('Asia/Kolkata');
-            $now = carbon::now();
-            $currentWeekStart = $now->startOfWeek();
-            $currentWeekEnd = $now->endOfWeek();
-            $nextWeekStart = $currentWeekStart->copy()->addWeek();
-            $nextWeekEnd = $currentWeekEnd->copy()->addWeek();
-            $query = EventDetails::query()->whereNull('parent_event_id')
-                ->with(['children', 'location_details', 'event_images', 'event_video', 'event_presntation']);
-            if ($request->has('filter')) {
-                $filter = $request->filter;
-                if ($filter === 'upcoming') {
-                    $query = $query->where('event_start_date', '>', $now);
-                }
-                if ($filter === 'past') {
-                    $query = $query->where('event_end_date', '<', $now);
-                }
-                if ($filter === 'ongoing') {
-                    $query->where('event_start_date', '<=', $currentDate)
-                        ->where('event_end_date', '>=', $currentDate);
-                }
-                if ($filter === 'this_week') {
-                    // Include events that have not yet started and are ongoing this week
-                    $query->where(function ($query) use ($currentWeekStart, $currentWeekEnd, $currentDate) {
-                        $query->where('event_start_date', '>', $currentDate)
-                            ->orWhere(function ($query) use ($currentDate) {
-                                $query->where('event_start_date', '<=', $currentDate)
-                                    ->where('event_end_date', '>=', $currentDate);
-                            });
-                    });
-                }
-                if ($filter === 'next_week') {
-                    $query->whereBetween('event_start_date', [$nextWeekStart, $nextWeekEnd]);
-                }
-            }
+            $query = EventRegistration::query()->with(['event_details','user_details',
+            'paymentmode_details','voluntary_contribution_details','event_details.location_details'])
+            ->where('user_id',Auth::user()->id);
+             $query->whereNotNull('event_id');
             $count = $query->count();
-            if ($request->has('event_name')) {
-                $query = $query->where('event_name', 'like', '%' . $request->event_name . '%');
-            }
-            if ($request->has('event_fee')) {
-                $query = $query->where('event_fee', 'like', '%' . $request->event_fee . '%');
-            }
-            if ($request->has('event_start_date') && $request->has('event_end_date')) {
-                $query = $query->whereBetween('event_start_date', [$request->event_start_date, $request->event_end_date]);
-            }
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
@@ -1083,53 +1406,186 @@ class AppMetaDataController extends Controller
                 $query = $query->skip($skip)->limit($limit);
             }
             $data = $query->orderBy('id', 'DESC')->get();
-
             if (count($data) > 0) {
-                foreach ($data as $event) {
-                    $event->is_series_event = count($event->children) > 0;
-                    $event->registered_users_count = EventRegistration::where('event_id', $event->id)->count();
-                    $event->is_user_registered = EventRegistration::where('user_id', $userId)
-                        ->where('event_id', $event->id)
-                        ->exists();
-                }
-                $response['event_details'] = $data;
+                $response['event_registration'] = $data;
                 $response['count'] = $count;
-                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+                return $this->sendResponse($response, 'Data fetched successfully', true);
             } else {
-                return $this->sendResponse('No Data Available', [], false);
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+     public function getLatestUpdate(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'limit' => 'numeric',
+                'pageNo' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $eventData = EventDetails::orderBy('created_at', 'desc')->get();
+            $associationData = AssociationDetails::orderBy('created_at', 'desc')->get();
+            $newsletterData = NewsLetterDetails::orderBy('created_at', 'desc')->get();
+            $noticeBoardData = StudentNoticeBoard::orderBy('created_at', 'desc')->get();
+            $combinedData = $eventData
+                ->concat($associationData)
+                ->concat($newsletterData)
+                ->concat($noticeBoardData);
+            $combinedData = $combinedData->sortByDesc('created_at');
+
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * ($pageNo - 1);
+                $combinedData = $combinedData->slice($skip, $limit);
+            }
+            $formattedData = $combinedData->values();
+
+            if ($formattedData->count() > 0) {
+                return $this->sendResponse(["latest_update" => $formattedData], 'Data fetch successfully');
+            } else {
+                return $this->sendResponse([], 'No data available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+    public function getEventAttendentByUser(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = EventRegistration::query()
+            ->with(['event_details', 'user_details', 'paymentmode_details', 'voluntary_contribution_details'])
+            ->where('user_id', Auth::user()->id)
+            ->whereNotNull('event_id')
+            ->where('attendance_status', 1);
+
+             $query->whereNotNull('event_id');
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['event_registration'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+        public function getOfferRedimByUser(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = RegisterToAssocitationDetails::query()
+            ->where('user_id', Auth::user()->id)
+            ->with(['user_details','associatiomn_details','offers_association_details']);
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['offers'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+        }
+    }
+public function updateAttendance(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|numeric|exists:users,id',
+            'event_id' => 'required|numeric|exists:offers,id'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $attendance = EventRegistration::where('user_id', $request->user_id)
+            ->where('event_id', $request->event_id)
+            ->first();
+
+        if (is_null($attendance)) {
+            return $this->sendResponse([], 'Attendance record not found', false);
+        }
+        if ($attendance->attendance !== 1) {
+            $attendance->attendance = 1;
+            $attendance->save();
+            return $this->sendResponse([], 'Attendance updated successfully', true);
+        } else {
+            return $this->sendResponse([], 'Attendance was already marked', true);
+        }
+    } catch (Exception $e) {
+        return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
+    }
+}
+        public function getBatchesByUser(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
+            }
+            $query = EventRegistration::query()
+            ->where('user_id', Auth::user()->id)
+            ->where(function ($query) {
+            $query->whereNotNull('student_batche_id')
+            ->orWhereNull('event_id');
+            })
+            ->with(['batches']);
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+            $data = $query->orderBy('id', 'DESC')->get();
+            if (count($data) > 0) {
+                $response['offers'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data fetched successfully', true);
+            } else {
+                return $this->sendResponse([],'No Data Available', false);
             }
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
 
-    
-    public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'position' => [Rule::in(['Semi Qualified', 'Article Assistant', 'Industrial Trainee', 'Qualified'])],
-                'comments' => 'nullable',
-                'experience' => 'required',
-                'expiry_date' => 'nullable|date',
-                'job_type' => [Rule::in(['internship', 'full_time'])],
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
-            }
-            $user = Auth::user()->id;
-            $newVacancy = new VacancyDetails();
-            $newVacancy->position = $request->position;
-            $newVacancy->comments = $request->comments;
-            $newVacancy->experience = $request->experience;
-            $newVacancy->company_id = auth::user()->company_id;
-            $newVacancy->created_by = $user;
-            $newVacancy->expiry_date = $request->expiry_date;
-            $newVacancy->job_type = $request->job_type;
-            $newVacancy->save();
-            return $this->sendResponse([], 'Vacancy details added successfully', true);
-        } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
-        }
-    }
 }

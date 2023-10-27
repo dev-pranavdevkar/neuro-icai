@@ -13,8 +13,8 @@
                                 <a href="#" class="primary-btn">Get Start</a>
                                 <a href="#" class="primary-btn howit-btn">How It Work</a>
                             </div>
-    
-    
+
+
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-2">
@@ -65,8 +65,8 @@
                                 <a href="#" class="primary-btn">Get Start</a>
                                 <a href="#" class="primary-btn howit-btn">How It Work</a>
                             </div>
-    
-    
+
+
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-2">
@@ -117,8 +117,8 @@
                                 <a href="#" class="primary-btn">Get Start</a>
                                 <a href="#" class="primary-btn howit-btn">How It Work</a>
                             </div>
-    
-    
+
+
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-2">
@@ -843,7 +843,7 @@
                                             Firm name not available
                                         @endif
                                     </h6>
-                                    
+
                                     <div class=" posted-details">
                                         <ul class="d-flex justify-content-between">
                                             <li><i class="fa fa-briefcase"

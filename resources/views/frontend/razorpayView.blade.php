@@ -269,7 +269,7 @@
                                                                 <a href="{{ route('tickets', ['id' => $eventDetails->id]) }}"  id="viewTicket">
                                                                     <button class="btn btn-primary">View Ticket</button>
                                                                 </a>
-                                                                
+
                                                                 @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
@@ -478,7 +478,7 @@
                                                 <div class="col-lg-3 border-left-dashed">
 
                                                     <div>
-                                                        
+
                                                         <p class="text-center">{{ $eventDetails['event_name'] }}</p>
                                                         <div class="d-flex justify-content-center">
                                                         {{ $qrData }}
@@ -490,7 +490,7 @@
                                             </div>
 
 
-                                     
+
 
                                         </div>
                                     </div>
@@ -541,7 +541,7 @@
 
 {{-- <button id="generateQrCodeBtn">Generate QR Code</button> --}}
 
-   
+
 <script>
     document.getElementById('generateQrCodeBtn').addEventListener('click', function() {
         // Retrieve the event_id and event_name
@@ -555,11 +555,11 @@
                 event_name: eventName
             },
             user: {
-               
+
                 last_name: userLastName
             }
         };
-        
+
         // Convert the object to a JSON string
         var qrDataString = JSON.stringify(qrData);
 

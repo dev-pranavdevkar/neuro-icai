@@ -58,13 +58,13 @@
                                 <a href="{{ $studentNoticeBoard->previousPageUrl() }}" rel="prev" aria-label="@lang('pagination.previous')">Previous</a>
                             @endif
                         </li>
-    
+
                         @for ($i = max(1, $studentNoticeBoard->currentPage() - 5); $i <= min($studentNoticeBoard->lastPage(), $studentNoticeBoard->currentPage() + 5); $i++)
                             <li class="pagination-cell {{ $studentNoticeBoard->currentPage() == $i ? 'active text-white' : '' }}">
                                 <a href="{{ $studentNoticeBoard->url($i) }}">{{ $i }}</a>
                             </li>
                         @endfor
-    
+
                         <li class="pagination-cell">
                             @if ($studentNoticeBoard->hasMorePages())
                                 <a href="{{ $studentNoticeBoard->nextPageUrl() }}" rel="next" aria-label="@lang('pagination.next')">Next</a>
@@ -74,7 +74,7 @@
                         </li>
                     </ul>
                 </div>
-    
+
                 <div class="text-center mt-2 w-100">
                     Showing {{ $studentNoticeBoard->firstItem() }} to {{ $studentNoticeBoard->lastItem() }} of {{ $studentNoticeBoard->total() }} results
                 </div>
@@ -89,7 +89,7 @@
             @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
                 <div class="row d-flex justify-content-between">
                     {{-- 1 --}}
-                  
+
                     @foreach ($studentNoticeBoard as $studentNotice)
                     @if ($studentNotice['type'] == 'student')
                         <div class="col-lg-4 my-3 ">
@@ -116,7 +116,7 @@
                         </div>
                         @endif
                     @endforeach
-                 
+
                 </div>
                 <div>
                     <div class="d-flex justify-content-center mt-5 w-100">
@@ -159,5 +159,5 @@
             @endif
         </div>
     </section>
-    
+
 @endsection

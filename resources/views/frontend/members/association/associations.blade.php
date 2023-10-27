@@ -26,7 +26,7 @@
         <div class="testimonial__carousel ">
             <div class="container">
                 @if (Auth::user() &&
-                        in_array(   
+                        in_array(
                             'members',
                             Auth::user()->roles->pluck('name')->toArray()))
                     <div class="row d-flex justify-content-end mb-5">
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                         @endforeach
-                   
+
                     @else
                         <h1>Association Not available.</h1>
                     @endif
@@ -98,7 +98,7 @@
                         </li>
                     </ul>
                 </div>
-{{-- 
+{{--
                 <div class="text-center mt-2 w-100">
                     Showing {{ $associations->firstItem() }} to {{ $associations->lastItem() }} of
                     {{ $associations->total() }} results

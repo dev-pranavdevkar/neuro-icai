@@ -17,6 +17,21 @@
 
 
 
+                                <!-- Role Selection -->
+                                <div class="input-list">
+                                    <p>Register As</p>
+                                    <div class="input-list-item radio d-flex">
+                                        <input class="radio-btn" type="radio" id="role_members" name="role"
+                                            value="members">
+                                        <label for="role_member">Member</label>
+                                    </div>
+                                    <div class="input-list-item d-flex">
+                                        <input class="radio-btn" type="radio" id="role_student" name="role"
+                                            value="student">
+                                        <label for="role_student">Student</label>
+                                    </div>
+                                </div>
+
 
 
                                 <!-- Personal Information -->
@@ -162,7 +177,7 @@
                                 <script>
                                     function updateSelectedRole() {
                                         var selectedRole = document.querySelector('input[name="role"]:checked').value;
-                                
+
                                         // Toggle the visibility of firm details based on the selected role
                                         var firmDetailsDiv = document.getElementById('firmDetails');
                                         if (selectedRole === 'members') {

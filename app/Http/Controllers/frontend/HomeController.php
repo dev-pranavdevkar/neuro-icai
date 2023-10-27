@@ -82,16 +82,16 @@ class HomeController extends Controller
         $alreadyRegistered = null;
         $qrData = null;
         if(Auth::user()){
-            
+
             $user = Auth::user();
             $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
                 ->where('payment_status', 'like', "paid")->first();
                 $qrData = QrCode::size(150)->generate($user->id.'_'.$eventDetails->id);
                 // $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
                 // ->where('payment_status', 'like', "paid")->orderBy('id','DESC')->pagination(10);
-            
+
         }
-        
+
         return view('frontend.razorpayView', compact(['eventDetails','alreadyRegistered','qrData']));
     }
 
@@ -100,7 +100,7 @@ class HomeController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'event_id' => 'required|integer|exists:event_details,id',
-                
+
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -188,16 +188,16 @@ class HomeController extends Controller
         $alreadyRegistered = null;
         $qrData = null;
         if(Auth::user()){
-            
+
             $user = Auth::user();
             $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
                 ->where('payment_status', 'like', "paid")->first();
                 $qrData = QrCode::size(150)->generate($user->id.'_'.$eventDetails->id);
                 // $alreadyRegistered = EventRegistration::where('event_id', $id)->where('user_id', $user->id)
                 // ->where('payment_status', 'like', "paid")->orderBy('id','DESC')->pagination(10);
-            
+
         }
-        
+
         return view('frontend.ticket', compact(['eventDetails','alreadyRegistered','qrData']));
     }
 
