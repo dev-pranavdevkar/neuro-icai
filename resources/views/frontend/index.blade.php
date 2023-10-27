@@ -849,8 +849,10 @@
                                             <li><i class="fa fa-briefcase"
                                                     aria-hidden="true"></i>{{ $vacancy['experience'] }} Yrs</li>
                                             <li><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                            <li><i class="fa fa-map-marker"
-                                                    aria-hidden="true"></i>{{ $vacancy['location_details']['city'] }}</li>
+                                            <li>
+                                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                                {{ $vacancy['location_details']['city'] ?? 'N/A' }}
+                                            </li>
                                         </ul>
                                         <p class="mt-2">We are looking for {{ $vacancy['position'] }}. The candidates
                                             will get
