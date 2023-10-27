@@ -21,4 +21,7 @@ class EventRegistration extends Model
     public function voluntary_contribution_details(){
         return $this->belongsTo(VoluntaryContribution::class,'voluntary_contribution_id');
     }
+    public function batches(){
+        return $this->belongsTo(StudentBatches::class,'student_batche_id');
+    }
 }

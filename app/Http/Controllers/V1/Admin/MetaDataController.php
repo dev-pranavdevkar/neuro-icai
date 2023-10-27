@@ -1184,12 +1184,14 @@ class MetaDataController extends Controller
             $validator = Validator::make($request->all(), [
                 'pageNo' => 'numeric',
                 'limit' => 'numeric',
-                'association_id' => 'required|integer|exists:association_details,id',
+                'offers_id' => 'required|integer|exists:offers_association,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = RegisterToAssocitationDetails::query()->where('association_id', $request->association_id)->with(['user_details']);
+            $query = RegisterToAssocitationDetails::query()
+            ->where('offers_association_id',$request->offers_id)
+            ->with(['user_details']);
 
             $count = $query->count();
 
@@ -1211,22 +1213,7 @@ class MetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    // public function getRegisterToAssociation(Request $request)
-    // {
-    //     try {
-    //         $validator = Validator::make($request->all(), [
-    //             'association_id' => 'required|integer|exists:register_to_association,id',
-    //         ]);
-    //         if ($validator->fails()) {
-    //             return $this->sendError('Validation Error.', $validator->errors());
-    //         }
 
-    //         $getitems = RegisterToAssocitationDetails::query()->where('association_id', $request->association_id)->get();
-    //         return $this->sendResponse(["Register_to_association" => $getitems], 'Data fetch successfully', true);
-    //     } catch (Exception $e) {
-    //         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
-    //     }
-    // }
     public function addNewsLetterForStudent(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -1248,7 +1235,7 @@ class MetaDataController extends Controller
             $newNewsLetterDetails->save();
             return $this->sendResponse([], 'News letter added successfully', true);
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
@@ -1769,7 +1756,10 @@ class MetaDataController extends Controller
             });
         }
             $currentDate = date('Y-m-d');
-            $query->where('expiry_date', '>=', $currentDate);
+            $query->where(function ($query) use ($currentDate) {
+            $query->where('expiry_date', '>=', $currentDate)
+            ->orWhereNull('expiry_date');
+        });
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -1785,10 +1775,11 @@ class MetaDataController extends Controller
             } else {
                 return $this->sendResponse([],'No Data Available',false);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-    }    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    }
+     public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -1800,7 +1791,7 @@ class MetaDataController extends Controller
 
             $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details','user_details','companyDetails'])->first();
             return $this->sendResponse(["vacancy_details" => $getitems], 'Data fetch successfully', true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
@@ -1831,7 +1822,7 @@ class MetaDataController extends Controller
 			}
             $editVacancy->save();
             return $this->sendResponse([], 'Vacancy Details updated successfully');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
@@ -1883,38 +1874,141 @@ class MetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    public function getAllStudentBatchRegistration(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'pageNo' => 'numeric',
-                'limit' => 'numeric',
-            ]);
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(), 400);
-            }
-            $query = EventRegistration::query()->with(['event_details','user_details',
-            'paymentmode_details','voluntary_contribution_details']);
-             $query->whereNotNull('student_batche_id');
-            $count = $query->count();
-            if ($request->has('pageNo') && $request->has('limit')) {
-                $limit = $request->limit;
-                $pageNo = $request->pageNo;
-                $skip = $limit * $pageNo;
-                $query = $query->skip($skip)->limit($limit);
-            }
-            $data = $query->orderBy('id', 'DESC')->get();
-            if (count($data) > 0) {
-                $response['student_registration'] = $data;
-                $response['count'] = $count;
-                return $this->sendResponse($response, 'Data fetched successfully', true);
-            } else {
-                return $this->sendResponse([],'No Data Available', false);
-            }
-        } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+public function getAllStudentBatchRegistration(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'name' => 'string',
+            'email' => 'string',
+            'last_name' => 'string',
+            'mobile_no' => 'string',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
         }
+
+        $query = EventRegistration::query()->with(['user_details', 'paymentmode_details']);
+        $query->whereNotNull('student_batche_id');
+        if ($request->has('name')) {
+            $name = $request->input('name');
+            $query->whereHas('user_details', function ($userQuery) use ($name) {
+                $userQuery->where('name', 'LIKE', "%$name%");
+            });
+        }
+
+        if ($request->has('email')) {
+            $email = $request->input('email');
+            $query->whereHas('user_details', function ($userQuery) use ($email) {
+                $userQuery->where('email', 'LIKE', "%$email%");
+            });
+        }
+
+        if ($request->has('last_name')) {
+            $last_name = $request->input('last_name');
+            $query->whereHas('user_details', function ($userQuery) use ($last_name) {
+                $userQuery->where('last_name', 'LIKE', "%$last_name%");
+            });
+        }
+
+        if ($request->has('mobile_no')) {
+            $mobile_no = $request->input('mobile_no');
+            $query->whereHas('user_details', function ($userQuery) use ($mobile_no) {
+                $userQuery->where('mobile_no', 'LIKE', "%$mobile_no%");
+            });
+        }
+
+        $count = $query->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+
+        $data = $query->orderBy('id', 'DESC')->get();
+
+        if (count($data) > 0) {
+            $response['student_registration'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data fetched successfully', true);
+        } else {
+            return $this->sendResponse([], 'No Data Available', false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
+}
+public function getAllUsersAttendToBatchs(Request $request)
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'pageNo' => 'numeric',
+            'limit' => 'numeric',
+            'name' => 'string',
+            'email' => 'string',
+            'last_name' => 'string',
+            'mobile_no' => 'string',
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 400);
+        }
+
+        $query = EventRegistration::query()->with(['user_details', 'paymentmode_details'])
+        ->where('attendance_status',1);
+        $query->whereNotNull('student_batche_id');
+        if ($request->has('name')) {
+            $name = $request->input('name');
+            $query->whereHas('user_details', function ($userQuery) use ($name) {
+                $userQuery->where('name', 'LIKE', "%$name%");
+            });
+        }
+
+        if ($request->has('email')) {
+            $email = $request->input('email');
+            $query->whereHas('user_details', function ($userQuery) use ($email) {
+                $userQuery->where('email', 'LIKE', "%$email%");
+            });
+        }
+
+        if ($request->has('last_name')) {
+            $last_name = $request->input('last_name');
+            $query->whereHas('user_details', function ($userQuery) use ($last_name) {
+                $userQuery->where('last_name', 'LIKE', "%$last_name%");
+            });
+        }
+
+        if ($request->has('mobile_no')) {
+            $mobile_no = $request->input('mobile_no');
+            $query->whereHas('user_details', function ($userQuery) use ($mobile_no) {
+                $userQuery->where('mobile_no', 'LIKE', "%$mobile_no%");
+            });
+        }
+
+        $count = $query->count();
+
+        if ($request->has('pageNo') && $request->has('limit')) {
+            $limit = $request->limit;
+            $pageNo = $request->pageNo;
+            $skip = $limit * $pageNo;
+            $query = $query->skip($skip)->limit($limit);
+        }
+
+        $data = $query->orderBy('id', 'DESC')->get();
+
+        if (count($data) > 0) {
+            $response['attendance'] = $data;
+            $response['count'] = $count;
+            return $this->sendResponse($response, 'Data fetched successfully', true);
+        } else {
+            return $this->sendResponse([], 'No Data Available', false);
+        }
+    } catch (Exception $e) {
+        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+    }
+}
 
      public function getAllUserRegisterToEvent(Request $request)
     {
@@ -2887,6 +2981,11 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
 			$query= $query->skip($skip)->limit($limit);
 		}
 		$data = $query->get();
+        foreach ($data as $batch) {
+                $batch->is_user_registered = EventRegistration::where('user_id', Auth::user()->id)
+                ->where('student_batche_id', $batch->id)
+                ->exists();
+            }
 		if(count($data)>0){
 			$response['data'] =  $data;
 			$response['count']=$count;
@@ -3348,6 +3447,23 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
+        public function getMemberById(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|numeric|exists:users,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $query = User::query()->with(['company'])
+            ->where('id', $request->id)->first();
+
+             return $this->sendResponse(['member'=>$query], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
+        }
+    }
     public function getAllMember(Request $request)
     {
         try {
@@ -3392,7 +3508,6 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-
       public function addAnnualReport(Request $request)
     {
         try {
@@ -3421,7 +3536,7 @@ public function editMembersNoticeBoard(Request $request):  \Illuminate\Http\Json
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
-      public function editAnnualReports(Request $request)
+    public function editAnnualReports(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -3691,7 +3806,7 @@ public function updateAttendance(Request $request)
             ->where('id', $request->id)->first();
             $deleteCompany->delete();
             return $this->sendResponse([],'Members Meetings deleted successfully', true);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
