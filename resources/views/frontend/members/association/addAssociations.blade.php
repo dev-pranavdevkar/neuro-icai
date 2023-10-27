@@ -1,5 +1,22 @@
 @extends('frontend.layouts.main')
 @section('main-container')
+    <!-- Breadcrumb Section Begin -->
+    <div class="breadcrumb-option set-bg" data-setbg="{{ url('frontend/img/breadcrumb/breadcrumb-bg.jpg') }}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Add New Association</h2>
+                        <div class="breadcrumb__links">
+                            <a href="./index.html">Members</a>
+                            <span>Association</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb Section End -->
     <section class="hero set-bg login-section" data-setbg="{{ url('frontend/img/loginImg.jpg') }}">
         <div class="container">
             <div class="row">
@@ -16,21 +33,6 @@
 
 
 
-
-                                <!-- Role Selection -->
-                                <div class="input-list">
-                                    <p>Register As</p>
-                                    <div class="input-list-item radio d-flex">
-                                        <input class="radio-btn" type="radio" id="role_members" name="role"
-                                            value="members">
-                                        <label for="role_member">Member</label>
-                                    </div>
-                                    <div class="input-list-item d-flex">
-                                        <input class="radio-btn" type="radio" id="role_student" name="role"
-                                            value="student">
-                                        <label for="role_student">Student</label>
-                                    </div>
-                                </div>
 
 
 
@@ -177,7 +179,7 @@
                                 <script>
                                     function updateSelectedRole() {
                                         var selectedRole = document.querySelector('input[name="role"]:checked').value;
-
+                                
                                         // Toggle the visibility of firm details based on the selected role
                                         var firmDetailsDiv = document.getElementById('firmDetails');
                                         if (selectedRole === 'members') {

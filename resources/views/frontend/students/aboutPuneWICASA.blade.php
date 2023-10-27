@@ -38,12 +38,12 @@
                             {{-- <h5>OF THE STUDENTS, BY THE STUDENTS & FOR THE STUDENTS</h5> --}}
                             <p class="mt-3">Western India Chartered Accountants Students Association (WICASA) is the student’s wing of Western India Regional Council of Institute of Chartered Accountants Association (WIRC-ICAI). It is this association which provides students a platform to learn, share, participate and perform. It is a platform given by ICAI for the students, by the students and of the students. It’s a family consisting of 1, 50,000 members in western region. The managing committee consists of 12 members who are Chartered Accountancy course students, pursuing their article ship, to be the eminent future torch bearers of the institute. ICAI looks forward to build WICASA as a strong platform for their future growth. It’s a platform for a visionary to build its networking, its social circle and to sharpen its leadership skills by participating in the various activities held in WICASA. </p>
                             
-                            <a href="#" class="primary-btn">Contact Us</a>
+                            <a href="{{ url('/contact') }}" class="primary-btn">Contact Us</a>
                         </div>
                     </div>
                 </div>
             </div>
-          <div class="row">
+          <div class="row mt-lg-5">
                 <div class="col-lg-6 col-md-4">
                     <div class="about__item">
                         <h4>What the WICASA Aims to achieve?</h4>

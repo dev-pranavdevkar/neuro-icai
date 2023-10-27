@@ -31,7 +31,7 @@ class StudentsController extends Controller
 
     public function studentsNoticeboard()
     {
-        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(3);
+        $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(10);
         return view('frontend.students.studentsNoticeboard', compact('studentNoticeBoard'));
     }
 

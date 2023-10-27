@@ -13,8 +13,8 @@
                                 <a href="#" class="primary-btn">Get Start</a>
                                 <a href="#" class="primary-btn howit-btn">How It Work</a>
                             </div>
-    
-    
+
+
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-2">
@@ -65,8 +65,8 @@
                                 <a href="#" class="primary-btn">Get Start</a>
                                 <a href="#" class="primary-btn howit-btn">How It Work</a>
                             </div>
-    
-    
+
+
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-2">
@@ -117,8 +117,8 @@
                                 <a href="#" class="primary-btn">Get Start</a>
                                 <a href="#" class="primary-btn howit-btn">How It Work</a>
                             </div>
-    
-    
+
+
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-2">
@@ -294,23 +294,33 @@
                                 <img class="card-img-top" src="{{ url('frontend/img/loan-services/ls-4.jpg') }}"
                                     alt="Card image cap">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ $event['event_name'] }}</h5>
-                                    <div class="">
-                                        <ul class="events">
-                                            <li><a href="{{ url('/') }}"><i
-                                                        class="fa fa-calendar"></i> {{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-m-Y') }} To 
-                                                        <br/> {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-m-Y') }}
-                                                   
-                                                </a></li>
-                                            <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> {{ \Carbon\Carbon::parse($event['event_start_date'])->format('h:i A') }} To
-                                                {{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }}
-                                                </a>
-                                            </li>
-                                        </ul>
+                                    <div class="h-25">
+                                        <h5 class="card-title">{{ $event['event_name'] }}</h5>
                                     </div>
-                                    <div class="text-center">
-                                        <a class="readMore"   href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}">Read More</a>
-                                  
+                                    <div class="h-75">
+                                        <div class="">
+                                            <ul class="events">
+                                                <li class="text-nowrap"><a href="{{ url('/') }}"><i
+                                                            class="fa fa-calendar"></i>
+                                                        {{ \Carbon\Carbon::parse($event['event_start_date'])->format('d-m-Y') }}
+                                                        To
+                                                        {{ \Carbon\Carbon::parse($event['event_end_date'])->format('d-m-Y') }}
+
+                                                    </a></li>
+                                                <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i>
+                                                        {{ \Carbon\Carbon::parse($event['event_start_date'])->format('h:i A') }}
+                                                        To
+                                                        {{ \Carbon\Carbon::parse($event['event_end_date'])->format('h:i A') }}
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="text-center">
+                                            <a class="readMore"
+                                                href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}">Read
+                                                More</a>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -372,26 +382,29 @@
                                         @if (isset($combinedData) && count($combinedData) > 0)
                                             <ul>
                                                 @foreach ($combinedData as $update)
-                                                <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>
-                                            
-                                                    {{-- Determine the link based on the type of update --}}
-                                                    @if (isset($update->title))
-                                                        <a href=" {{ $update->upload_newsletter_pdf ?? $update->notice_board_pdf ?? url('/') }}" class="">
-                                                            {{ $update->title }}
-                                                        </a>
-                                                    @elseif(isset($update->event_name))
-                                                        <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}" class="">
-                                                            {{ $update->event_name }}
-                                                        </a>
-                                                    @elseif(isset($update->association_name))
-                                                        <a href="{{ url('/members/association/associations') }}" class="">
-                                                            {{ $update->association_name }}
-                                                        </a>
-                                                    @endif
-                                            
-                                                </li>
-                                            @endforeach
-                                            
+                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>
+
+                                                        {{-- Determine the link based on the type of update --}}
+                                                        @if (isset($update->title))
+                                                            <a href=" {{ $update->upload_newsletter_pdf ?? ($update->notice_board_pdf ?? url('/')) }}"
+                                                                class="">
+                                                                {{ $update->title }}
+                                                            </a>
+                                                        @elseif(isset($update->event_name))
+                                                            <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}"
+                                                                class="">
+                                                                {{ $update->event_name }}
+                                                            </a>
+                                                        @elseif(isset($update->association_name))
+                                                            <a href="{{ url('/members/association/associations') }}"
+                                                                class="">
+                                                                {{ $update->association_name }}
+                                                            </a>
+                                                        @endif
+
+                                                    </li>
+                                                @endforeach
+
 
                                             </ul>
                                         @endif
@@ -451,7 +464,7 @@
                                         <div class="posted-details">
                                             <ul class="d-flex justify-content-center">
                                                 <li><a href="{{ url('/') }}"><i
-                                                            class="fa fa-calendar"></i>{{ $association['start_date'] }}</a>
+                                                            class="fa fa-calendar"></i> {{ \Carbon\Carbon::parse($association['start_date'])->format('d-m-Y') }}</a>
                                                 </li>
                                                 {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
                                                 </li>
@@ -477,7 +490,10 @@
     <!-- Counter Begin -->
     <div class="counter spad">
         <div class="container">
-            @if (Auth::user() && in_array('members', Auth::user()->roles->pluck('name')->toArray()))
+            @if (Auth::user() &&
+                    in_array(
+                        'members',
+                        Auth::user()->roles->pluck('name')->toArray()))
                 <div class="row">
                     <div class="col-lg-4 col-md-4 col-12">
                         <div class="counter__item">
@@ -513,7 +529,10 @@
             @endif
 
 
-            @if (Auth::user() && in_array('student', Auth::user()->roles->pluck('name')->toArray()))
+            @if (Auth::user() &&
+                    in_array(
+                        'student',
+                        Auth::user()->roles->pluck('name')->toArray()))
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-6">
                         <div class="counter__item">
@@ -597,12 +616,12 @@
                                     @if (isset($studentNoticeBoard) && count($studentNoticeBoard) > 0)
                                         <ul class="text-left  px-lg-5 px-4 fa-list-notice">
                                             @foreach ($studentNoticeBoard as $studentNotice)
-                                            @if ($studentNotice['type'] == 'members')
-                                                <li>
-                                                    <a href={{ $studentNotice['notice_board_pdf'] }}>
-                                                        {{ $studentNotice['title'] }}</a>
+                                                @if ($studentNotice['type'] == 'members')
+                                                    <li>
+                                                        <a href={{ $studentNotice['notice_board_pdf'] }}>
+                                                            {{ $studentNotice['title'] }}</a>
 
-                                                </li>
+                                                    </li>
                                                 @endif
                                             @endforeach
                                         </ul>
@@ -612,7 +631,7 @@
                                 </p>
                             </div>
                             <div class="pt-lg-5 pt-4 text-center ">
-                                <a href="{{ url('/members/updatesForMembers') }}" class="primary-btn">View More</a>
+                                <a href="{{ url('/members/membersNoticeboard') }}" class="primary-btn">View More</a>
                             </div>
                         </div>
                     </div>
@@ -709,7 +728,9 @@
                                                         </div>
                                                         <div class="col-9 text-right">
                                                             <div class="">
-                                                                <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                                                                <h4>{{ \Carbon\Carbon::parse($newsLetter['uploaded_date'])->format('M Y') }}
+                                                                </h4>
+
                                                             </div>
                                                             <div>
                                                                 <b> Students </b>
@@ -764,7 +785,8 @@
                                                         </div>
                                                         <div class="col-9 text-right">
                                                             <div class="">
-                                                                <h4> {{ $newsLetter['uploaded_date'] }}</h4>
+                                                                <h4>{{ \Carbon\Carbon::parse($newsLetter['uploaded_date'])->format('M Y') }}
+                                                                </h4>
                                                             </div>
                                                             <div>
                                                                 <b> Members </b>
@@ -814,7 +836,14 @@
 
                                 <div class="card-body ">
                                     <h5 class="card-title"> {{ $vacancy['position'] }}</h5>
-                                    <h6 class="card-subtitle mb-2 ">{{ $vacancy['ca_firm_name'] }}</h6>
+                                    <h6 class="card-subtitle mb-2">
+                                        @if(isset($vacancy['company_details']['firm_name']))
+                                            {{ $vacancy['company_details']['firm_name'] }}
+                                        @else
+                                            Firm name not available
+                                        @endif
+                                    </h6>
+
                                     <div class=" posted-details">
                                         <ul class="d-flex justify-content-between">
                                             <li><i class="fa fa-briefcase"
@@ -830,9 +859,7 @@
                                             GST, TDS, etc.</p>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ url('/vacancies/viewVacancies') }}" class="btn btn-primary" data-toggle="modal"
-                                        data-target="#applyJob">View
-                                            Details</a>
+                                        <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}" class="btn btn-primary">View Details</a>
                                     </div>
 
                                 </div>
@@ -849,7 +876,7 @@
 
 
             <div class="py-4 text-center ">
-                <a href="#" class="primary-btn">View More</a>
+                <a href="{{ url('/vacancies/viewVacancies') }}" class="primary-btn">View More</a>
             </div>
 
 

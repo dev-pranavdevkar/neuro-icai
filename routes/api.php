@@ -210,21 +210,20 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         //get ongoing batches
         Route::get('getAllOngoingBatches', [MetaDataController::class, 'getAllOngoingBatches']);
 
-    //event presentation
-    Route::post('addEventPresentationPdf', [MetaDataController::class, 'addEventPresentationPdf']);
-    //event images
-    Route::post('addEventImage', [MetaDataController::class, 'addEventImage']);
-    //event video
-    Route::post('addEventVideoLink', [MetaDataController::class, 'addEventVideoLink']);
+        //event presentation
+        Route::post('addEventPresentationPdf', [MetaDataController::class, 'addEventPresentationPdf']);
+        //event images
+        Route::post('addEventImage', [MetaDataController::class, 'addEventImage']);
+        //event video
+        Route::post('addEventVideoLink', [MetaDataController::class, 'addEventVideoLink']);
 
-    //annual report
-    Route::post('addAnnualReport', [MetaDataController::class, 'addAnnualReport']);
-    Route::post('editAnnualReports', [MetaDataController::class, 'editAnnualReports']);
-    Route::get('getAllAnnualReports', [MetaDataController::class, 'getAllAnnualReports']);
-    Route::get('getAnnualReportsById', [MetaDataController::class, 'getAnnualReportsById']);
-    Route::delete('deleteAnnualReportsById', [MetaDataController::class, 'deleteAnnualReportsById']);
-
-});
+        //annual report
+        Route::post('addAnnualReport', [MetaDataController::class, 'addAnnualReport']);
+        Route::post('editAnnualReports', [MetaDataController::class, 'editAnnualReports']);
+        Route::get('getAllAnnualReports', [MetaDataController::class, 'getAllAnnualReports']);
+        Route::get('getAnnualReportsById', [MetaDataController::class, 'getAnnualReportsById']);
+        Route::delete('deleteAnnualReportsById', [MetaDataController::class, 'deleteAnnualReportsById']);
+    });
 });
 Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
     Route::post('userLogin', [AppAuthController::class, 'userLogin']);
@@ -315,7 +314,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('userLogin', [WebAuthController::class, 'userLogin']);
     Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
-    Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
+
     Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
      Route::get('getAllAssociationDetails', [WebMetaDataController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
@@ -355,5 +354,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
         Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
        // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
+        Route::post('addAssociationDetails', [WebMetaDataController::class, 'addAssociationDetails']);
+        // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
     });
 });

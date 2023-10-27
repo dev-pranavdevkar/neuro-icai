@@ -143,8 +143,8 @@
                                     role="tab">Event Images</a> </li>
                             <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-four"
                                     role="tab">Event Videos</a> </li>
-                            <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
-                                    role="tab">Event Tickit</a> </li>
+                            {{-- <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#tab-five"
+                                    role="tab">Event Ticket</a> </li> --}}
                         </ul>
 
                     </nav>
@@ -266,9 +266,10 @@
                                                                         data-event="{{ $eventDetails->id }}">Pay
                                                                         Now</button>
                                                                 @else
-                                                                    <button id="viewTickit" class="btn btn-primary"
-                                                                        data-event="{{ $eventDetails->id }}">View
-                                                                        Tickit</button>
+                                                                <a href="{{ route('tickets', ['id' => $eventDetails->id]) }}"  id="viewTicket">
+                                                                    <button class="btn btn-primary">View Ticket</button>
+                                                                </a>
+
                                                                 @endif
                                                             @else
                                                                 <p class="text-danger">Event has ended. Registration is
@@ -479,8 +480,9 @@
                                                     <div>
 
                                                         <p class="text-center">{{ $eventDetails['event_name'] }}</p>
-                                                        <img src="{{ url('/frontend/img/scanner.jpg') }}"
-                                                            alt="">
+                                                        <div class="d-flex justify-content-center">
+                                                        {{ $qrData }}
+                                                    </div>
                                                         <p class="text-center">{{ $eventDetails['event_name'] }}</p>
                                                     </div>
 
@@ -488,7 +490,7 @@
                                             </div>
 
 
-                                     
+
 
                                         </div>
                                     </div>
@@ -498,8 +500,8 @@
                                         <div>
 
 
-                                            <button id="viewTickit" class="btn btn-primary"
-                                                data-event="{{ $eventDetails->id }}">Download Tickit</button>
+                                            <button id="viewTicket" class="btn btn-primary"
+                                                data-event="{{ $eventDetails->id }}">Download Ticket</button>
 
                                         </div>
 
@@ -537,9 +539,9 @@
 
 
 
-<button id="generateQrCodeBtn">Generate QR Code</button>
+{{-- <button id="generateQrCodeBtn">Generate QR Code</button> --}}
 
-   
+
 <script>
     document.getElementById('generateQrCodeBtn').addEventListener('click', function() {
         // Retrieve the event_id and event_name
@@ -553,11 +555,11 @@
                 event_name: eventName
             },
             user: {
-               
+
                 last_name: userLastName
             }
         };
-        
+
         // Convert the object to a JSON string
         var qrDataString = JSON.stringify(qrData);
 

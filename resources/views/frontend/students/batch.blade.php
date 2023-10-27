@@ -113,12 +113,52 @@
                         </div>
                     @endforeach
 
-                    <div class="d-flex justify-content-center d-none">
-                        {!! $batchs->links() !!}
+
+                </div>
+                <div class="w-100">
+                    <div class="d-flex justify-content-center mt-5 w-100">
+                        <ul class="pagination">
+                            <li class="pagination-cell">
+                                @if ($batchs->onFirstPage())
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.previous')">Previous</span>
+                                @else
+                                    <a href="{{ $batchs->previousPageUrl() }}" rel="prev"
+                                        aria-label="@lang('pagination.previous')">Previous</a>
+                                @endif
+                            </li>
+
+                            @for ($i = max(1, $batchs->currentPage() - 5); $i <= min($batchs->lastPage(), $batchs->currentPage() + 5); $i++)
+                                <li
+                                    class="pagination-cell {{ $batchs->currentPage() == $i ? 'active text-white' : '' }}">
+                                    <a href="{{ $batchs->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="pagination-cell">
+                                @if ($batchs->hasMorePages())
+                                    <a href="{{ $batchs->nextPageUrl() }}" rel="next"
+                                        aria-label="@lang('pagination.next')">Next</a>
+                                @else
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.next')">Next</span>
+                                @endif
+                            </li>
+                        </ul>
                     </div>
+{{--
+                    <div class="text-center mt-2 w-100">
+                        Showing {{ $batchs->firstItem() }} to
+                        {{ $batchs->lastItem() }} of
+                        {{ $batchs->total() }} results
+                    </div> --}}
                 </div>
             @else
+
+                <h1>No Data available.</h1>
+
                 <h1>No Batches details available.</h1>
+
             @endif
 
 

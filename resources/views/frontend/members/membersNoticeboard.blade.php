@@ -17,12 +17,12 @@
         </div>
     </div>
     <!-- Breadcrumb Section End -->
-    <section class="loan-services study-circle spad">
+    <section class="loan-services  spad">
         <div class="container">
             @if (isset($memberNoticeBoard) && count($memberNoticeBoard) > 0)
                 <div class="row d-flex justify-content-between">
                     {{-- 1 --}}
-                  
+
                     @foreach ($memberNoticeBoard as $studentNotice)
                     @if ($studentNotice['type'] == 'members')
                         <div class="col-lg-4 my-3 ">
@@ -49,7 +49,7 @@
                         </div>
                         @endif
                     @endforeach
-                 
+
                 </div>
                 <div>
                     <div class="d-flex justify-content-center mt-5 w-100">
@@ -82,10 +82,10 @@
                         </ul>
                     </div>
 
-                    <div class="text-center mt-2 w-100">
+                    {{-- <div class="text-center mt-2 w-100">
                         Showing {{ $memberNoticeBoard->firstItem() }} to {{ $memberNoticeBoard->lastItem() }} of
                         {{ $memberNoticeBoard->total() }} results
-                    </div>
+                    </div> --}}
                 </div>
             @else
                 <h1>No Data available.</h1>

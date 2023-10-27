@@ -20,32 +20,164 @@
         <div class="container">
             <div class="contact__form">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="contact__form__text">
-                            <div class="contact__form__title">
-                                <h2>Post Job</h2>
-                                <p>Please fill this form to post Vacancies
-                                <form action="#">
-                                    <div class="input-list">
-                                        <input type="text" placeholder="Firm Name">
-                                        <input type="text" placeholder="Position">
-                                    </div>
-                                    <div class="input-list">
-                                        <input type="number" placeholder="Number Opening">
-                                        <input type="text" placeholder="Area">
-                                        <input type="tel" placeholder="Pin Code">
-                                    </div>
-                                    <textarea placeholder="Address"></textarea>
-                                    <textarea placeholder="Job Description"></textarea>
-                                    <button type="submit" class="site-btn">Submit</button>
-                                </form>
-                            </div>
+                    <div class="col-lg-6">
+
+                        <div class="hero__form">
+                            <h3>Job Post Form</h3>
+                
+                            @if (Auth::user() &&
+                                    in_array(
+                                        'members',
+                                        Auth::user()->roles->pluck('name')->toArray()))
+                                <!-- Registration Form -->
+                                @if (session()->has('success'))
+                                    <h2>Thank You,<br /> you are successfully submitted admission form to us.</h2>
+                                @else
+                                    <form id="jobPostForm" action="{{ route('addVacancyDetails') }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <!-- Job Type Selection -->
+                                        <div class="input-list">
+                                            <div class="input-list-item radio d-flex">
+                                                <input class="radio-btn" type="radio" id="job_type_full_time"
+                                                    name="job_type" value="full_time">
+                                                <label for="job_type_full_time">Full Time</label>
+                                            </div>
+                                            <div class="input-list-item d-flex">
+                                                <input class="radio-btn" type="radio" id="job_type_internship"
+                                                    name="job_type" value="internship">
+                                                <label for="job_type_internship">Internship</label>
+                                            </div>
+                                        </div>
+                                        <!-- Personal Information -->
+
+                                        <div class="input-list">
+                                            <div class="input-list-item">
+
+                                                <p>Position</p>
+                                                <select name="position" id="position" autocomplete="off">
+                                                    <option value="" disabled selected>Select Position</option>
+                                                    @foreach (['Semi Qualified', 'Article Assistant', 'Industrial Trainee', 'Qualified'] as $position)
+                                                        <option value="{{ $position }}"
+                                                            {{ old('position') == $position ? 'selected' : '' }}>
+                                                            {{ $position }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div>
+                                                    <span id="position1" class="text-danger font-weight-bold"></span>
+                                                </div>
+                                                @if ($errors->has('position'))
+                                                    <div class="alert-vsa text-danger ">
+                                                        <ul>
+                                                            @foreach ($errors->get('position') as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+
+                                            <div class="input-list-item">
+                                                <p>Expiry Date</p>
+                                                <input type="date" name="expiry_date" autocomplete="off">
+                                                <div>
+                                                    <span id="expiry_date1" class="text-danger font-weight-bold"></span>
+                                                </div>
+                                                @if ($errors->has('expiry_date'))
+                                                    <div class="alert-vsa text-danger ">
+                                                        <ul>
+                                                            @foreach ($errors->get('expiry_date') as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Contact Information -->
+                                        <div class="input-list">
+                                            <div class="input-list-item">
+                                                <p>Experience</p>
+                                                <input type="text" name="experience" autocomplete="off">
+                                                <span id="experience" class="text-danger font-weight-bold span"></span>
+                                                @if ($errors->has('experience'))
+                                                    <div class="alert-vsa text-danger">
+                                                        <ul>
+                                                            @foreach ($errors->get('experience') as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="input-list-item">
+                                                <p>Job Description</p>
+                                                <textarea type="text" name="comments" autocomplete="off">
+                                                <span id="comments" class="text-danger font-weight-bold span"></span>
+                                                @if ($errors->has('comments'))
+                                                    <div class="alert-vsa text-danger">
+                                                        <ul>
+                                                            @foreach ($errors->get('comments') as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+
+                                        </div>
+
+
+
+
+
+
+
+
+
+                                        <!-- Sign Up Button -->
+                                        <button type="submit" id="signupButton" class="site-btn">Post Job</button>
+                                        <!-- Success Message -->
+                                        @php
+                                            $job_type = request('job_type');
+                                        @endphp
+
+
+                                        <!-- Login Link -->
+                                        <div class="mt-3 d-flex justify-content-center">
+                                            <p> Already have an account? <a class="text-primery" href="/login">Login</a>
+                                            </p>
+                                        </div>
+
+
+
+                                        <!-- Google and Facebook Logos -->
+                                        <div class="d-flex justify-content-center mt-4">
+                                            <div><img class="signupwithlogo"
+                                                    src="{{ url('frontend/img/google-logo.png') }}" alt="Google Logo" />
+                                            </div>
+                                            <div class="ml-5"><img class="signupwithlogo"
+                                                    src="{{ url('frontend/img/facebook_logo.png') }}"
+                                                    alt="Facebook Logo" />
+                                            </div>
+                                        </div>
+                                    </form>
+                                @endif
+                            @endif
+
                         </div>
                     </div>
+                    <div class="col-lg-5 offset-lg-1">
+
+                    </div>
                 </div>
-               
             </div>
+        </div>
     </section>
- 
+
     <!-- Contact End -->
 @endsection

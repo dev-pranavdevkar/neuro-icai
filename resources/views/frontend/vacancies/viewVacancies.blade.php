@@ -63,11 +63,14 @@
                                                 Income Tax,
                                                 GST, TDS, etc.</p>
                                         </div>
-                                        <div class="d-flex justify-content-end align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center">
 
-                                            {{-- <a  href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}" class="btn btn-primary">Apply</a> --}}
+                                            <!-- Your Blade file -->
+                                            <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}"
+                                                class="btn btn-primary">Details</a>
                                             <a href="#" class="btn btn-primary" data-toggle="modal"
                                                 data-target="#applyJob">Apply</a>
+
 
                                             <div class="modal fade" id="applyJob" tabindex="-1" role="dialog"
                                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -89,18 +92,94 @@
 
                                                                 </div>
                                                                 <form action="#">
+                                                                    @csrf
+
                                                                     <div class="input-list">
-                                                                        <input type="text" placeholder="Your First name">
-                                                                        <input type="text" placeholder="Your Last name">
+                                                                        <input type="text" placeholder="Your First name"
+                                                                            name="name">
+                                                                        <input type="text" placeholder="Your Last name"
+                                                                            name="last_name">
                                                                     </div>
+
                                                                     <div class="input-list">
                                                                         <input type="text"
-                                                                            placeholder="Your contact number">
-                                                                        <input type="text" placeholder="Your email Id">
+                                                                            placeholder="Your contact number"
+                                                                            name="contact_number">
+                                                                        <input type="text" placeholder="Your email Id"
+                                                                            name="email">
                                                                     </div>
-                                                                    <input type="file" name="uploadResume">
-                                                                    <button type="submit" class="site-btn">Submit</button>
+
+                                                                    <input type="file" name="resume_pdf">
+
+                                                                    <!-- Experience Field -->
+                                                                    <div class="input-list">
+
+                                                                        <select id="experience" name="experience"
+                                                                            onchange="toggleExperienceField(this.value)">
+                                                                            <option value="" disabled selected>Select
+                                                                                Experience</option>
+                                                                            @for ($i = 0; $i <= 10; $i++)
+                                                                                <option value="{{ $i }}">
+                                                                                    {{ $i }}</option>
+                                                                            @endfor
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <!-- Hidden Fields (displayed only if experience is greater than 0) -->
+                                                                    <div id="experienceFields" style="display: none;">
+                                                                        <div class="input-list">
+                                                                            <input type="text"
+                                                                                placeholder="Qualification"
+                                                                                name="qualification">
+                                                                        </div>
+
+                                                                        <div class="input-list">
+                                                                            <input type="text"
+                                                                                placeholder="Expected Package"
+                                                                                name="expected_package">
+                                                                            <input type="text"
+                                                                                placeholder="Current Package"
+                                                                                name="current_package">
+                                                                            <input type="text"
+                                                                                placeholder="Notice Period (in days)"
+                                                                                name="notice_period">
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <button type="submit"
+                                                                        class="site-btn">Submit</button>
                                                                 </form>
+
+                                                                @push('scripts')
+                                                                    <script>
+                                                                        function toggleExperienceField(value) {
+                                                                            var experienceFields = document.getElementById("experienceFields");
+
+                                                                            if (value !== "") {
+                                                                                experienceFields.style.display = "block";
+                                                                            } else {
+                                                                                experienceFields.style.display = "none";
+                                                                            }
+                                                                        }
+                                                                    </script>
+                                                                @endpush
+
+
+                                                                @push('scripts')
+                                                                    <script>
+                                                                        function toggleExperienceField(value) {
+                                                                            var experienceFields = document.getElementById("experienceFields");
+
+                                                                            if (value > 0) {
+                                                                                experienceFields.style.display = "block";
+                                                                            } else {
+                                                                                experienceFields.style.display = "none";
+                                                                            }
+                                                                        }
+                                                                    </script>
+                                                                @endpush
+
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -122,9 +201,49 @@
                     </div>
 
 
+
+                </div>
+                <div class="w-100">
+                    <div class="d-flex justify-content-center mt-5 w-100">
+                        <ul class="pagination">
+                            <li class="pagination-cell">
+                                @if ($vacancyDetails->onFirstPage())
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.previous')">Previous</span>
+                                @else
+                                    <a href="{{ $vacancyDetails->previousPageUrl() }}" rel="prev"
+                                        aria-label="@lang('pagination.previous')">Previous</a>
+                                @endif
+                            </li>
+
+                            @for ($i = max(1, $vacancyDetails->currentPage() - 5); $i <= min($vacancyDetails->lastPage(), $vacancyDetails->currentPage() + 5); $i++)
+                                <li
+                                    class="pagination-cell {{ $vacancyDetails->currentPage() == $i ? 'active text-white' : '' }}">
+                                    <a href="{{ $vacancyDetails->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="pagination-cell">
+                                @if ($vacancyDetails->hasMorePages())
+                                    <a href="{{ $vacancyDetails->nextPageUrl() }}" rel="next"
+                                        aria-label="@lang('pagination.next')">Next</a>
+                                @else
+                                    <span class="disabled" aria-disabled="true"
+                                        aria-label="@lang('pagination.next')">Next</span>
+                                @endif
+                            </li>
+                        </ul>
+                    </div>
+
+                    {{-- <div class="text-center mt-2 w-100">
+                        Showing {{ $vacancyDetails->firstItem() }} to
+                        {{ $vacancyDetails->lastItem() }} of
+                        {{ $vacancyDetails->total() }} results
+                    </div> --}}
+
                 </div>
             @else
-                <h1>No Vacancies Available.</h1>
+                <h1>No Data available.</h1>
             @endif
 
         </div>

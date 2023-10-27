@@ -31,54 +31,55 @@ use App\Mail\ForgetPasswordMail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+
 class WebMetaDataController extends Controller
 {
 
-// public function getLatestUpdate(Request $request)
-// {
-//     try {
-//         $validator = Validator::make($request->all(), [
-//             'limit' => 'numeric',
-//             'pageNo' => 'numeric',
-//         ]);
-//         if ($validator->fails()) {
-//             return $this->sendError('Validation Error.', $validator->errors());
-//         }
+    // public function getLatestUpdate(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'limit' => 'numeric',
+    //             'pageNo' => 'numeric',
+    //         ]);
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
 
-//         // Create queries for each table and select all columns
-//         $eventQuery = EventDetails::select('*')->addSelect(DB::raw("'Event' AS source"));
-//         $associationQuery = AssociationDetails::select('*')->addSelect(DB::raw("'Association' AS source"));
-//         $newsletterQuery = NewsLetterDetails::select('*')->addSelect(DB::raw("'Newsletter' AS source"));
-//         $noticeBoardQuery = StudentNoticeBoard::select('*')->addSelect(DB::raw("'NoticeBoard' AS source"));
+    //         // Create queries for each table and select all columns
+    //         $eventQuery = EventDetails::select('*')->addSelect(DB::raw("'Event' AS source"));
+    //         $associationQuery = AssociationDetails::select('*')->addSelect(DB::raw("'Association' AS source"));
+    //         $newsletterQuery = NewsLetterDetails::select('*')->addSelect(DB::raw("'Newsletter' AS source"));
+    //         $noticeBoardQuery = StudentNoticeBoard::select('*')->addSelect(DB::raw("'NoticeBoard' AS source"));
 
-//         // Combine the queries using union
-//         $combinedQuery = $eventQuery
-//             ->union($associationQuery)
-//             ->union($newsletterQuery)
-//             ->union($noticeBoardQuery);
+    //         // Combine the queries using union
+    //         $combinedQuery = $eventQuery
+    //             ->union($associationQuery)
+    //             ->union($newsletterQuery)
+    //             ->union($noticeBoardQuery);
 
-//         // Apply sorting and pagination
-//         $combinedQuery = $combinedQuery->orderBy('created_at', 'desc');
+    //         // Apply sorting and pagination
+    //         $combinedQuery = $combinedQuery->orderBy('created_at', 'desc');
 
-//         if ($request->has('pageNo') && $request->has('limit')) {
-//             $limit = $request->limit;
-//             $pageNo = $request->pageNo;
-//             $skip = $limit * ($pageNo - 1);
-//             $combinedQuery = $combinedQuery->skip($skip)->take($limit);
-//         }
+    //         if ($request->has('pageNo') && $request->has('limit')) {
+    //             $limit = $request->limit;
+    //             $pageNo = $request->pageNo;
+    //             $skip = $limit * ($pageNo - 1);
+    //             $combinedQuery = $combinedQuery->skip($skip)->take($limit);
+    //         }
 
-//         // Execute the combined query
-//         $results = $combinedQuery->get();
+    //         // Execute the combined query
+    //         $results = $combinedQuery->get();
 
-//         if ($results->count() > 0) {
-//             return $this->sendResponse(["member" => $results], 'Data fetch successfully');
-//         } else {
-//             return $this->sendResponse([], 'No data available', false);
-//         }
-//     } catch (Exception $e) {
-//         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
-//     }
-// }
+    //         if ($results->count() > 0) {
+    //             return $this->sendResponse(["member" => $results], 'Data fetch successfully');
+    //         } else {
+    //             return $this->sendResponse([], 'No data available', false);
+    //         }
+    //     } catch (Exception $e) {
+    //         return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+    //     }
+    // }
 
     public function getLatestUpdate(Request $request)
     {
@@ -186,11 +187,16 @@ class WebMetaDataController extends Controller
     }
 
 
-    public function eventRegister(Request $request)
+    public function addEventRegistration(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
-                'event_id' => 'required|integer|exists:event_details,id',
+                'event_id' => 'nullable|integer|exists:event_details,id',
+                //  'student_batche_id' => 'nullable|integer|exists:event_details,id',
+                'gst_no' => 'required',
+                'legal_name' => 'required',
+                'event_price' => 'required|nullable',
+                'total_amount' => 'required|nullable',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -221,8 +227,10 @@ class WebMetaDataController extends Controller
             $newEventRegistration->save();
             if($newEventRegistration->save()){
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
-                $orderDetails = $api->order->create(array('receipt' => 'Inv-'.$newEventRegistration->id,
-                    'amount' => intval($newEventRegistration->total_amount)*100, 'currency' => 'INR', 'notes'=> array()));
+                $orderDetails = $api->order->create(array(
+                    'receipt' => 'Inv-' . $newEventRegistration->id,
+                    'amount' => intval($newEventRegistration->total_amount), 'currency' => 'INR', 'notes' => array()
+                ));
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
@@ -233,8 +241,7 @@ class WebMetaDataController extends Controller
             }else{
                 return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
             }
-        }
-        catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
@@ -283,12 +290,13 @@ class WebMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $user = Auth::user()->name;
-            $data = auth()->user()->role;
-            // dd('sourabh');
-            if (auth()->user()->role !== 'members') {
+            $user = Auth::user()->id;
+            $userRole = auth()->user()->role;
+
+            if (!in_array('members', auth()->user()->roles->pluck('name')->toArray())) {
                 return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
             }
+
             $newVacancy = new VacancyDetails();
 
             $newVacancy->position = $request->position;
@@ -304,6 +312,25 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
+
+
+    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:vacancy_details,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details', 'user_details','companyDetails'])->first();
+            return $this->sendResponse(["vacancy" => $getitems], 'Data fetch successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
+
+
     public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -358,51 +385,51 @@ class WebMetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $NewLocationDetails = new LocationDetails();
-            $NewLocationDetails->address_line_1=$request->address_line_1;
-            $NewLocationDetails->pincode=$request->pincode;
+            $NewLocationDetails->address_line_1 = $request->address_line_1;
+            $NewLocationDetails->pincode = $request->pincode;
             $NewLocationDetails->save();
             $newDetails = new StudentBatches;
-            $newDetails->location_id=$NewLocationDetails->id;
+            $newDetails->location_id = $NewLocationDetails->id;
             $newDetails->batch_name = $request->batch_name;
             $newDetails->fees = $request->fees;
-            $newDetails->start_date=$request->start_date;
-            $newDetails->end_date=$request->end_date;
+            $newDetails->start_date = $request->start_date;
+            $newDetails->end_date = $request->end_date;
             $newDetails->batch_discription = $request->batch_discription;
             $newDetails->batch_cut_off_date = $request->batch_cut_off_date;
             $newDetails->batch_address = $request->batch_address;
-            $newDetails->early_bird_date=$request->early_bird_date;
+            $newDetails->early_bird_date = $request->early_bird_date;
             $newDetails->early_bird_fees = $request->early_bird_fees;
             $newDetails->save();
-            return $this->sendResponse([],' Student batches added successfully.', true);
-        }
-        catch (Exception $e) {
+            return $this->sendResponse([], ' Student batches added successfully.', true);
+        } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
     }
+
     public function getStudentBatches(Request $request)
     {
-        try{
+        try {
             $validator = Validator::make($request->all(), [
-                'pageNo'=>'numeric',
-                'limit'=>'numeric',
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
             ]);
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors(),400);
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
             $currentDate = carbon::now('Asia/Kolkata');
             $now = carbon::now();
             $query = StudentBatches::query()->with('location_details');
             if ($request->has('batch_name')) {
-                $query = $query->where('batch_name', 'like', '%' . $request->batch_name. '%');
+                $query = $query->where('batch_name', 'like', '%' . $request->batch_name . '%');
             }
             if ($request->has('start_date')) {
-                $query = $query->where('start_date', 'like', '%' . $request->start_date. '%');
+                $query = $query->where('start_date', 'like', '%' . $request->start_date . '%');
             }
             if ($request->has('end_date')) {
-                $query = $query->where('end_date', 'like', '%' . $request->end_date. '%');
+                $query = $query->where('end_date', 'like', '%' . $request->end_date . '%');
             }
             if ($request->has('fees')) {
-                $query = $query->where('fees', 'like', '%' . $request->fees. '%');
+                $query = $query->where('fees', 'like', '%' . $request->fees . '%');
             }
             if ($request->has('address_line_1')) {
                 $searchTerm = $request->input('address_line_1');
@@ -423,26 +450,27 @@ class WebMetaDataController extends Controller
                         ->where('end_date', '>=', $currentDate);
                 }
             }
-            $count=$query->count();
-            if($request->has('pageNo') && $request->has('limit')){
+            $count = $query->count();
+            if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
                 $pageNo = $request->pageNo;
-                $skip = $limit*$pageNo;
-                $query= $query->skip($skip)->limit($limit);
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
             }
             $data = $query->get();
-            if(count($data)>0){
+            if (count($data) > 0) {
                 $response['data'] =  $data;
-                $response['count']=$count;
-                return $this->sendResponse($response,'Data Fetched Successfully', true);
-            }else{
-                return $this->sendResponse([],'No Data Available',false);
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse([], 'No Data Available', false);
             }
-        }catch (\Exception $e){
-            return $this->sendError($e->getMessage(), $e->getTrace(),500);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    public function getStudentBatchesById(Request $request):  \Illuminate\Http\JsonResponse
+
+    public function getStudentBatchesById(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -459,7 +487,7 @@ class WebMetaDataController extends Controller
         }
     }
 
-    public function getEventDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    public function getEventDetailsById(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -470,20 +498,20 @@ class WebMetaDataController extends Controller
             }
 
             $getEvent = EventDetails::query()->where('id', $request->id)->with(['location_details'])->first();
-            if($getEvent['id']!=null){
-                $product=EventPresentationVideo::query()->where('event_id',$getEvent['id'])
+            if ($getEvent['id'] != null) {
+                $product = EventPresentationVideo::query()->where('event_id', $getEvent['id'])
                     ->get();
-                $getEvent['event_video']=$product;
+                $getEvent['event_video'] = $product;
             }
-            if($getEvent['id']!=null){
-                $product=EventImages::query()->where('event_id',$getEvent['id'])
+            if ($getEvent['id'] != null) {
+                $product = EventImages::query()->where('event_id', $getEvent['id'])
                     ->get();
-                $getEvent['event_images']=$product;
+                $getEvent['event_images'] = $product;
             }
-            if($getEvent['id']!=null){
-                $product=EventPresentationPdf::query()->where('event_id',$getEvent['id'])
+            if ($getEvent['id'] != null) {
+                $product = EventPresentationPdf::query()->where('event_id', $getEvent['id'])
                     ->get();
-                $getEvent['event_prsentation']=$product;
+                $getEvent['event_prsentation'] = $product;
             }
 
             return $this->sendResponse([
@@ -493,17 +521,17 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-      public function saveCompanyLogo($image): string
-  {
-      $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
-      $destinationPath = public_path('CompanyLogo/');
-      if (env('APP_ENV') == 'prod') {
-                  $destinationPath = public_path('CompanyLogo/' . $imageName);
-              }
-      $image->move($destinationPath, $image_name);
-      return '/CompanyLogo/' . $image_name;
-  }
-        public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
+    public function saveCompanyLogo($image): string
+    {
+        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('CompanyLogo/');
+        if (env('APP_ENV') == 'prod') {
+            $destinationPath = public_path('CompanyLogo/' . $imageName);
+        }
+        $image->move($destinationPath, $image_name);
+        return '/CompanyLogo/' . $image_name;
+    }
+    public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -537,8 +565,10 @@ class WebMetaDataController extends Controller
         catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
+
+
     }
-        public function getAllAssociationDetails(Request $request)
+    public function getAllAssociationDetails(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -568,13 +598,12 @@ class WebMetaDataController extends Controller
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
     }
-      public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
+    public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
-              //  'association_id' => 'required|exists:association_details,id',
+                //  'association_id' => 'required|exists:association_details,id',
                 'offers_association_id'=>'required|exists:offers_association,id'
             ]);
             if ($validator->fails()) {
@@ -582,27 +611,27 @@ class WebMetaDataController extends Controller
             }
             $user = Auth::user()->id;
             $existingRegistration = RegisterToAssocitationDetails::where('user_id', $user)
-           // ->where('association_id',$request->association_id)
-            ->where('offers_association_id',$request->offers_association_id)
-            ->first();
+                // ->where('association_id',$request->association_id)
+                ->where('offers_association_id',$request->offers_association_id)
+                ->first();
 
             if ($existingRegistration) {
                 return $this->sendError('User is already registered for an association offer.', [], 422);
             }
-        $offer = OffersAssociation::query()->where('association_id', $request->association_id)
-        ->where('id',$request->offers_association_id)
-        ->first();
+            $offer = OffersAssociation::query()->where('association_id', $request->association_id)
+                ->where('id',$request->offers_association_id)
+                ->first();
 
-        if (!$offer) {
-            return $this->sendError('Offer not found for this association.', [], 404);
-        }
-        $limit = (int) $offer->limits;
-        $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
-        ->where('offers_association_id',$request->offers_association_id)
-        ->count();
-        if ($registeredUsersCount >= $limit) {
-            return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
-        }
+            if (!$offer) {
+                return $this->sendError('Offer not found for this association.', [], 404);
+            }
+            $limit = (int) $offer->limits;
+            $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
+                ->where('offers_association_id',$request->offers_association_id)
+                ->count();
+            if ($registeredUsersCount >= $limit) {
+                return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
+            }
             $newDetails = new RegisterToAssocitationDetails;
             $newDetails->user_id = $user;
             $newDetails->association_id = $request->association_id;
@@ -624,106 +653,91 @@ class WebMetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $getitems = AssociationDetails::query()->where('id', $request->id)->with(['location_details'])->first();
+            //$getOffersOfAssociation = OffersAssociation::query()->where('association_id', $request->id)->get();
             return $this->sendResponse(["association_details" => $getitems], 'Data fetch successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    public function getAllVacancyDetailsAsPerRole(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id' => 'required|integer|exists:vacancy_details,id',
+                'pageNo' => 'numeric',
+                'limit' => 'numeric',
             ]);
+
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
+                return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details', 'user_details','companyDetails'])->first();
-            return $this->sendResponse(["vacancy" => $getitems], 'Data fetch successfully', true);
-        } catch (Exception $e) {
-            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
-        }
-    }
 
-    public function getAllVacancyDetailsAsPerRole(Request $request)
-{
-    try {
-        $validator = Validator::make($request->all(), [
-            'pageNo' => 'numeric',
-            'limit' => 'numeric',
-        ]);
+            $userRoles = Auth::user()->roles;
+            $userRoleNames = $userRoles->pluck('name');
 
-        if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 400);
-        }
+            $company = Auth::user()->company_id;
 
-        $userRoles = Auth::user()->roles;
-        $userRoleNames = $userRoles->pluck('name');
+            $query = VacancyDetails::query()->with(['location_details', 'user_details']);
 
-        $company = Auth::user()->company_id;
+            if ($userRoleNames->contains('members')) {
 
-        $query = VacancyDetails::query()->with(['location_details', 'user_details']);
+                $query->where('company_id', $company);
+            }
 
-        if ($userRoleNames->contains('members')) {
+            if ($request->has('ca_firm_name')) {
+                $caFirmName = $request->input('ca_firm_name');
+                $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
+            }
 
-            $query->where('company_id', $company);
-        }
-
-        if ($request->has('ca_firm_name')) {
-            $caFirmName = $request->input('ca_firm_name');
-            $query->where('ca_firm_name', 'LIKE', "%{$caFirmName}%");
-        }
-
-        if ($request->has('position')) {
-            $Position = $request->input('position');
-            $query->where('position', 'LIKE', "%{$Position}%");
-        }
-        if ($request->has('pincode')) {
-            $locationId = $request->input('pincode');
-            $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-                $locationQuery->where(function ($query) use ($locationId) {
-                    $query->where('pincode', 'LIKE', "%{$locationId}%");
+            if ($request->has('position')) {
+                $Position = $request->input('position');
+                $query->where('position', 'LIKE', "%{$Position}%");
+            }
+            if ($request->has('pincode')) {
+                $locationId = $request->input('pincode');
+                $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+                    $locationQuery->where(function ($query) use ($locationId) {
+                        $query->where('pincode', 'LIKE', "%{$locationId}%");
+                    });
                 });
-            });
-        }
+            }
 
-        if ($request->has('city')) {
-            $locationId = $request->input('city');
-            $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
-                $locationQuery->where(function ($query) use ($locationId) {
-                    $query->where('city', 'LIKE', "%{$locationId}%");
+            if ($request->has('city')) {
+                $locationId = $request->input('city');
+                $query = $query->whereHas('location_details', function ($locationQuery) use ($locationId) {
+                    $locationQuery->where(function ($query) use ($locationId) {
+                        $query->where('city', 'LIKE', "%{$locationId}%");
+                    });
                 });
-            });
-        }
+            }
 
-                $currentDate = date('Y-m-d');
-        $query->where(function ($query) use ($currentDate) {
+            $currentDate = date('Y-m-d');
+            $query->where(function ($query) use ($currentDate) {
                 $query->where('expiry_date', '>=', $currentDate)
-                ->orWhereNull('expiry_date');
-        });
+                    ->orWhereNull('expiry_date');
+            });
 
-        $count = $query->count();
+            $count = $query->count();
 
-        if ($request->has('pageNo') && $request->has('limit')) {
-            $limit = $request->limit;
-            $pageNo = $request->pageNo;
-            $skip = $limit * $pageNo;
-            $query = $query->skip($skip)->limit($limit);
+            if ($request->has('pageNo') && $request->has('limit')) {
+                $limit = $request->limit;
+                $pageNo = $request->pageNo;
+                $skip = $limit * $pageNo;
+                $query = $query->skip($skip)->limit($limit);
+            }
+
+            $data = $query->orderBy('id', 'DESC')->get();
+
+            if (count($data) > 0) {
+                $response['vacancy_details'] = $data;
+                $response['count'] = $count;
+                return $this->sendResponse($response, 'Data Fetched Successfully', true);
+            } else {
+                return $this->sendResponse('No Data Available', [], false);
+            }
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
-
-        $data = $query->orderBy('id', 'DESC')->get();
-
-        if (count($data) > 0) {
-            $response['vacancy_details'] = $data;
-            $response['count'] = $count;
-            return $this->sendResponse($response, 'Data Fetched Successfully', true);
-        } else {
-            return $this->sendResponse('No Data Available', [], false);
-        }
-    } catch (Exception $e) {
-        return $this->sendError($e->getMessage(), $e->getTrace(), 500);
     }
-}
     public function getAllVacancyDetails(Request $request)
     {
         try {
@@ -736,24 +750,24 @@ class WebMetaDataController extends Controller
             }
             $query = VacancyDetails::query()->with(['location_details','user_details','companyDetails']);
 
-        if ($request->has('firm_name')) {
-            $firmName = $request->input('firm_name');
-            $query->whereHas('companyDetails', function ($companyQuery) use ($firmName) {
-                $companyQuery->where('firm_name', 'LIKE', "%{$firmName}%");
-            });
-        }
-        if ($request->has('pincode')) {
-            $pincode = $request->input('pincode');
-            $query->whereHas('companyDetails', function ($companyQuery) use ($pincode) {
-                $companyQuery->where('pincode', 'LIKE', "%{$pincode}%");
-            });
-        }
-        if ($request->has('address')) {
-            $address = $request->input('address');
-            $query->whereHas('companyDetails', function ($companyQuery) use ($address) {
-                $companyQuery->where('address', 'LIKE', "%{$address}%");
-            });
-        }
+            if ($request->has('firm_name')) {
+                $firmName = $request->input('firm_name');
+                $query->whereHas('companyDetails', function ($companyQuery) use ($firmName) {
+                    $companyQuery->where('firm_name', 'LIKE', "%{$firmName}%");
+                });
+            }
+            if ($request->has('pincode')) {
+                $pincode = $request->input('pincode');
+                $query->whereHas('companyDetails', function ($companyQuery) use ($pincode) {
+                    $companyQuery->where('pincode', 'LIKE', "%{$pincode}%");
+                });
+            }
+            if ($request->has('address')) {
+                $address = $request->input('address');
+                $query->whereHas('companyDetails', function ($companyQuery) use ($address) {
+                    $companyQuery->where('address', 'LIKE', "%{$address}%");
+                });
+            }
             if ($request->has('position')) {
                 $Position = $request->input('position');
                 $query->where('position', 'LIKE', "%{$Position}%");
@@ -762,17 +776,17 @@ class WebMetaDataController extends Controller
                 $Experience = $request->input('experience');
                 $query->where('experience', 'LIKE', "%{$Experience}%");
             }
-        if ($request->has('company_email')) {
-            $email = $request->input('company_email');
-            $query->whereHas('companyDetails', function ($companyQuery) use ($email) {
-                $companyQuery->where('company_email', 'LIKE', "%{$email}%");
-            });
-        }
+            if ($request->has('company_email')) {
+                $email = $request->input('company_email');
+                $query->whereHas('companyDetails', function ($companyQuery) use ($email) {
+                    $companyQuery->where('company_email', 'LIKE', "%{$email}%");
+                });
+            }
             $currentDate = date('Y-m-d');
             $query->where(function ($query) use ($currentDate) {
-            $query->where('expiry_date', '>=', $currentDate)
-            ->orWhereNull('expiry_date');
-        });
+                $query->where('expiry_date', '>=', $currentDate)
+                    ->orWhereNull('expiry_date');
+            });
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
