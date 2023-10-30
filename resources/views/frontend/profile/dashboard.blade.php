@@ -341,8 +341,8 @@
                             <nav class="nav flex-column">
                                 <ul class="d-flex justify-content-start  nav nav-pills w-100" id="pills-tab" role="tablist">
                                     <li class="nav-item w-100"> <a class="nav-link active" data-toggle="pill"
-                                            href="#tab-one"><i class="fa fa-tachometer"
-                                                aria-hidden="true"></i>Dashboard</a> </li>
+                                            href="#tab-one"><i class="fa fa-tachometer" aria-hidden="true"></i>Dashboard</a>
+                                    </li>
                                     <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-two"
                                             role="tab"><i class="fa fa-user" aria-hidden="true"></i>My Profile</a>
                                     </li>
@@ -357,15 +357,19 @@
                                             role="tab"><i class="fa fa-graduation-cap" aria-hidden="true"></i>Enrolled
                                             Batches</a> </li>
                                     <li class="nav-item w-100"> <a class="nav-link" data-toggle="pill" href="#tab-six"
-                                            role="tab"><i class="fa fa-users"
-                                                aria-hidden="true"></i>Association</a> </li>
-                             
-                                    <li class="nav-item w-100"><a class="nav-link" data-toggle="pill" href="#tab-eight"
-                                            role="tab"><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>
+                                            role="tab"><i class="fa fa-users" aria-hidden="true"></i>Association</a>
                                     </li>
-                                    <li class="nav-item w-100"><a class="nav-link" data-toggle="pill" href="#tab-nine"
-                                            role="tab"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
+
+                                    <li class="nav-item w-100">
+                                        <a class="nav-link" data-toggle="pill" href="#tab-eight" role="tab"><i
+                                                class="fa fa-cog" aria-hidden="true"></i>Settings</a>
                                     </li>
+                                    <li class="nav-item w-100">
+                                        <a class="nav-link" href="{{ route('logout') }}"><i class="fa fa-sign-out"
+                                                aria-hidden="true"></i> Logout </a>
+                                    </li>
+
+
                                 </ul>
 
                             </nav>
@@ -374,16 +378,306 @@
                     <div class="col-lg-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab-one">
-                                <h1>Dashboard Content</h1>
+                                <h1>
+                                    <!-- Counter Begin -->
+                                    <div class="counter spad">
+                                        <div class="container">
+                                            @if (Auth::user() &&
+                                                    in_array(
+                                                        'members',
+                                                        Auth::user()->roles->pluck('name')->toArray()))
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4 col-12">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/register.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">{{ $numRegisteredEvents }}</h2>
+                                                            </div>
+                                                            <p>Registered Events</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ccol-lg-4 col-md-4 col-12">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/attended.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">99</h2>
+                                                                {{-- <span>%</span> --}}
+                                                            </div>
+                                                            <p>Attended Events</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4 col-md-4 col-12">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/offers.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">90</h2>
+                                                                {{-- <span>+</span> --}}
+                                                            </div>
+                                                            <p>Applied Offers</p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            @endif
+
+
+                                            @if (Auth::user() &&
+                                                    in_array(
+                                                        'student',
+                                                        Auth::user()->roles->pluck('name')->toArray()))
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-md-3 col-6">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/register.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">2100</h2>
+                                                            </div>
+                                                            <p>Registered Events</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-6">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/attended.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">99</h2>
+                                                                {{-- <span>%</span> --}}
+                                                            </div>
+                                                            <p>Attended Events</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-6">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/batch.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">90</h2>
+                                                                {{-- <span>+</span> --}}
+                                                            </div>
+                                                            <p>Registered Batches</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-md-3 col-6">
+                                                        <div class="counter__item">
+                                                            <img src="{{ url('frontend/img/counter/attend.png') }}"
+                                                                alt="">
+                                                            <div class="counter__number">
+                                                                <h2 class="counter-add">70</h2>
+                                                                {{-- <span>+</span> --}}
+                                                            </div>
+                                                            <p>Attended Batches</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <!-- Counter End -->
+                                </h1>
                             </div>
                             <div class="tab-pane fade" id="tab-two">
-                                <h1>My Profile Content</h1>
+                                <h3 class="py-3">My Profile</h3>
+                                {{-- {{ Auth::user()->last_name }}
+                                {{ Auth::user()->name }}  --}}
+
+                                
+                                <div class="row d-flex justify-content-center">
+                                    {{-- 1 --}}
+                                    <div class="col-lg-12 py-3 ">
+                                        <div class="card member-card p-4">
+                                            <div class="card-body " style="border: 1px solid #909090">
+                                                <div class="row h-100">
+
+                                                    <div class="col-lg-6 h-100 d-flex justify-content-center">
+                                                        <div>
+                                                            <h4>Personal Details
+                                                            </h4>
+
+                                                            <ul>
+                                                                <li class="my-2"><i class="fa fa-user"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        {{ Auth::user()->name }}
+                                                                        {{ Auth::user()->last_name }}
+
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-briefcase"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        {{ Auth::user()->roles->first()->name }}
+
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-envelope"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        {{ Auth::user()->email }}
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-phone"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        {{ Auth::user()->mobile_no }}
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-birthday-cake"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        {{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('d/m/Y') }}
+
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-at"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        {{ Auth::user()->generated_user_id }}
+                                                                    </a>
+                                                                </li>
+
+
+
+
+
+                                                            </ul>
+
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div
+                                                        class="col-lg-6 h-100 border-left-dashed pl-lg-3 d-flex justify-content-center">
+                                                        <div class=" pb-2">
+                                                            <h4 class="text-primery">Company Profile</h4>
+                                                            <ul>
+                                                                <li class="my-2"><i class="fa fa-building"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        @if ($companyDetails)
+                                                                            {{ $companyDetails->firm_name }}
+                                                                        @else
+                                                                            No company details available.
+                                                                        @endif
+
+
+
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-user"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        @if ($companyDetails)
+                                                                            {{ $companyDetails->contact_person_name }}
+                                                                        @else
+                                                                            No company details available.
+                                                                        @endif
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-envelope"
+                                                                        aria-hidden="true"></i><a href="mailto">
+                                                                        @if ($companyDetails)
+                                                                            {{ $companyDetails->company_email }}
+                                                                        @else
+                                                                            No company details available.
+                                                                        @endif
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-phone"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        @if ($companyDetails)
+                                                                            {{ $companyDetails->contact_person_number }}
+                                                                        @else
+                                                                            No company details available.
+                                                                        @endif
+                                                                    </a>
+                                                                </li>
+                                                                <li class="my-2"><i class="fa fa-map-marker"
+                                                                        aria-hidden="true"></i><a href="">
+                                                                        @if ($locationDetails)
+                                                                            {{ $locationDetails->address_line_1 }},
+                                                                            {{ $locationDetails->address_line_2 }},
+                                                                            {{ $locationDetails->city }},
+                                                                            {{ $locationDetails->state }}-{{ $locationDetails->pincode }},
+                                                                        @else
+                                                                            No location details available.
+                                                                        @endif
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="tab-three">
                                 <h1>Enrolled Events Content</h1>
                             </div>
                             <div class="tab-pane fade" id="tab-four">
-                                <h1>Digital ID Card Content</h1>
+                                <div class="row  d-flex justify-content-center py-5">
+
+                                    <div class="col-lg-5">
+
+
+                                        <div class="card digitalIDCard">
+                                            <div class="card-body">
+                                                {{-- Logo Image --}}
+
+                                                <div class="institute-section d-flex justify-content-between">
+                                                    <img class="logo-icai" src="{{ url('/frontend/img/icai.png') }}"
+                                                        alt="">
+                                                    <h5 class="text-white ml-2">The Institute Of Chartered Accountants
+                                                        Of
+                                                        India </h5>
+                                                </div>
+
+
+
+
+                                                {{-- Profile Picture --}}
+                                                <div class="scanner-section py-4">
+                                                    <div>
+                                                        <div class="d-flex justify-content-center">
+                                                            <img class="profile-img"
+                                                                src="{{ url('/frontend/img/ca-rajesh-agarwal.jpg') }}"
+                                                                alt="">
+                                                        </div>
+                                                        <h4 class="text-white text-center py-3 ">
+                                                            {{ Auth::user()->name }}
+                                                            {{ Auth::user()->last_name }}</h4>
+                                                    </div>
+
+                                                    <div class="d-flex justify-content-center ">
+                                                        <img class="scanner-img"
+                                                            src="{{ url('/frontend/img/scanner.jpg') }}" alt="">
+                                                    </div>
+                                                </div>
+
+
+                                                {{-- Personal Info --}}
+                                                <div class="info-section d-flex justify-content-center py-2">
+                                                    <ul>
+                                                        <li class="text-nowrap"><i class="fa fa-user"
+                                                                aria-hidden="true"></i>
+                                                            {{ Auth::user()->name }}
+                                                            {{ Auth::user()->last_name }}</li>
+                                                        <li class="text-nowrap"><i class="fa fa-envelope"
+                                                                aria-hidden="true"></i>
+                                                            {{ Auth::user()->email }}</li>
+                                                        <li><i class="fa fa-phone" aria-hidden="true"></i> +91
+                                                            {{ Auth::user()->mobile_no }}
+                                                        </li>
+                                                        <li><i class="fa fa-id-card" aria-hidden="true"></i>
+                                                            {{ Auth::user()->id }}</li>
+                                                    </ul>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="tab-five">
                                 <h1>Enrolled Batches Content</h1>

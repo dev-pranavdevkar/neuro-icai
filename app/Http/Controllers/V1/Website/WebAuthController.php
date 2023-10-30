@@ -90,46 +90,117 @@ class WebAuthController extends Controller
             return $this->sendError('Something Went Wrong', $e->getTrace(), 413);
         }
     }
+    // public function userLogin(Request $request)
+    // {
+    //     try {
+    //         $validator = Validator::make($request->all(), [
+    //             'credential' => 'required|string',
+    //             'password' => 'required|string|min:6',
+    //         ]);
+
+    //         if ($validator->fails()) {
+    //             return $this->sendError('Validation Error.', $validator->errors());
+    //         }
+
+    //         $user = User::where(function ($query) use ($request) {
+    //             $query->where('email', $request->credential)
+    //                 ->orWhere('generated_user_id', $request->credential);
+    //         })->first();
+
+    //         if (!is_null($user)) {
+    //             if (Hash::check($request->password, $user->password)) {
+    //                 $getUser = User::query()->where('email', $user->email)->first();
+    //             $location_id = $getUser->location_id;
+    //                 $companyId = $getUser->company_id;
+    //             $componyDetails=Company::query()->where('id', $companyId)->first();
+    //             echo $componyDetails;
+    //             $locationDetails = LocationDetails::query()->where('id', $location_id)->first();
+
+    //             $userRoles = $user->getRoleNames();
+
+    //             $token = JWTAuth::fromUser($user);
+    //             $response = ['token' => $token];
+    //             $userData = $user->toArray();
+    //             $userData['location_details'] = $locationDetails;
+    //             $userData['company_details'] = $componyDetails;
+    //             $response['permissions'] = $user->getAllPermissions();
+    //             $response['location_details'] = LocationDetails::query()->where('id', $location_id)->first();
+    //             $response['role'] = $user->roles->first();
+    //             return $this->sendResponse($response, 'Login Success', true);
+    //             }
+    //         //         return redirect('/');
+    //         //     } else {
+    //         //         return redirect()->route('login')
+    //         //             ->withErrors(['error' => 'Password mismatch. Please try again.']);
+    //         //     }
+    //         // } else {
+    //         //     return redirect()->route('login')
+    //         //         ->withErrors(['error' => 'User does not exist or user doesn\'t have access']);
+    //         // }
+    //     } 
+    // }catch (\Exception $e) {
+    //         return redirect()->route('login')
+    //             ->withErrors(['error' => 'Something Went Wrong' . $e->getMessage()]);
+    //     }
+    // }
+    
+
     public function userLogin(Request $request)
     {
         try {
+            // Validate the request data
             $validator = Validator::make($request->all(), [
                 'credential' => 'required|string',
                 'password' => 'required|string|min:6',
             ]);
-
+    
             if ($validator->fails()) {
+                // If validation fails, return error response
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-
+    
+            // Find user by email or generated_user_id
             $user = User::where(function ($query) use ($request) {
                 $query->where('email', $request->credential)
                     ->orWhere('generated_user_id', $request->credential);
             })->first();
-
+    
             if (!is_null($user)) {
+                // Check if the provided password matches the hashed password
                 if (Hash::check($request->password, $user->password)) {
+                    // Login the user using Laravel Auth
                     Auth::login($user);
-                    $getUser = User::query()->where('email', $user->email)->first();
-                    $location_id = $getUser->location_id;
-                    $getUser->save();
+    
+                    // Retrieve additional user details
+                    $locationDetails = LocationDetails::find($user->location_id);
+                    $companyDetails = Company::find($user->company_id);
+    
+                    // Generate JWT token
                     $token = JWTAuth::fromUser($user);
-                    $response = ['token' => $token];
-                    $response['userData'] = $user;
-                    $response['permissions'] = $user->getAllPermissions();
-                    // $response['location_details'] = LocationDetails::query()->where('id', $location_id)->first();
-                    //  $response['role'] = $user->roles->first();
-                    // return $this->sendResponse($response, 'Login Success', true);
-                    return redirect('/');
+    
+                    // Build the response
+                    $response = [
+                        'token' => $token,
+                        'userData' => $user->toArray(),
+                        'location_details' => $locationDetails,
+                        'company_details' => $companyDetails,
+                        'permissions' => $user->getAllPermissions(),
+                    ];
+    
+                    // Send a success response
+                    return $this->sendResponse($response, 'Login Success', true);
                 } else {
+                    // Password mismatch
                     return redirect()->route('login')
                         ->withErrors(['error' => 'Password mismatch. Please try again.']);
                 }
             } else {
+                // User does not exist or doesn't have access
                 return redirect()->route('login')
                     ->withErrors(['error' => 'User does not exist or user doesn\'t have access']);
             }
         } catch (\Exception $e) {
+            // Handle other exceptions
             return redirect()->route('login')
                 ->withErrors(['error' => 'Something Went Wrong' . $e->getMessage()]);
         }
