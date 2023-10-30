@@ -288,18 +288,21 @@ class WebMetaDataController extends Controller
                 'expiry_date' => 'nullable|date',
                 'job_type' => [Rule::in(['internship', 'full_time'])],
             ]);
+    
             if ($validator->fails()) {
-                return $this->sendErrorsubmitVacancies('Validation Error.', $validator->errors());
+                $this->sendErrorsubmitVacancies('Validation Error.', $validator->errors());
+                return response()->json(); // Return an empty JSON response
             }
+    
             $user = Auth::user()->id;
-            $userRole = auth()->user()->role;
-
+    
             if (!in_array('members', auth()->user()->roles->pluck('name')->toArray())) {
-                return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
+                $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
+                return response()->json(); // Return an empty JSON response
             }
-
+    
             $newVacancy = new VacancyDetails();
-
+    
             $newVacancy->position = $request->position;
             $newVacancy->comments = $request->comments;
             $newVacancy->experience = $request->experience;
@@ -308,12 +311,15 @@ class WebMetaDataController extends Controller
             $newVacancy->expiry_date = $request->expiry_date;
             $newVacancy->job_type = $request->job_type;
             $newVacancy->save();
-            return response()->json(['success' => true, 'message' => 'Thank you for adding!!']);
-            // return response()->json(['success' => 'Thanks you for adding!!']);
+    
+            // Redirect to the 'submitVacancies' route
+            return response()->json(['success' => true]);
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return response()->json(['success' => false, 'message' => 'Something went wrong']);
         }
     }
+    
 
 
     public function getVacancyDetailsById(Request $request): \Illuminate\Http\JsonResponse

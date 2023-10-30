@@ -16,8 +16,8 @@ class VacanciesController extends Controller
 {
     public function submitVacancies(Request $request)
     {
-        $successMessage = $request->session()->get('success_message');
-        return view('frontend.vacancies.submitVacancies', ['successMessage' => $successMessage]);
+        // $successMessage = $request->session()->get('success_message');
+        return view('frontend.vacancies.submitVacancies');
     }
 
 

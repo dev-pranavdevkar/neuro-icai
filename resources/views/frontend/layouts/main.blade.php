@@ -138,7 +138,7 @@
                         <li><a href="{{ url('/vacancies/viewVacancies') }}"> View Vacancies </a>
                         </li>
                         @if (
-                            !Auth::user() ||
+                          
                                 (Auth::user() &&
                                     in_array(
                                         'members',
@@ -354,7 +354,7 @@
                                         <li><a href="{{ url('/vacancies/viewVacancies') }}"> View Vacancies </a>
                                         </li>
                                         @if (
-                                            !Auth::user() ||
+                                         
                                                 (Auth::user() &&
                                                     in_array(
                                                         'members',

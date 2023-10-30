@@ -31,9 +31,9 @@
                                         'members',
                                         Auth::user()->roles->pluck('name')->toArray()))
                                 <!-- Registration Form -->
-                                @if (Session::has('success'))
+                                @if (isset($successMessage))
                                     <div class="alert alert-success">
-                                        {{ Session::get('success') }}
+                                        {{ $successMessage }}
                                     </div>
                                 @else
                                     <form id="jobPostForm" action="{{ route('addVacancyDetails') }}" method="POST"
