@@ -9,11 +9,15 @@
                             {{ $vacancyDetails['position'] ?? 'Position Not Available' }}</h4>
 
                         <!-- Registration Form -->
-                        @if (session()->has('success'))
-                            <h2>Thank You,<br /> you have successfully submitted the application form to us.</h2>
+                        @if (Session::has('success'))
+                            <div class="alert alert-success">
+                                {{ Session::get('success') }}
+                            </div>
                         @else
-                        <form id="addApplyJob" action="{{ route('addApplyJob', ['id' => $id, 'vacancy_id' => $vacancyDetails['id']]) }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-                            @csrf
+                            <form id="addApplyJob"
+                                action="{{ route('addApplyJob', ['id' => $id, 'vacancy_id' => $vacancyDetails['id']]) }}"
+                                method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                                @csrf
                                 <!-- Personal Information -->
                                 <div class="input-list">
                                     <div class="input-list-item w-100 pr-3">
@@ -92,7 +96,7 @@
                                     function updateExperienceDetailsVisibility(selectedExperience) {
                                         var experienceDetailsDiv = document.getElementById('experienceDetails');
                                         var experienceDetailsVisibleInput = document.getElementById('experienceDetailsVisible');
-                                
+
                                         if (parseInt(selectedExperience) > 0) {
                                             experienceDetailsDiv.style.display = 'block';
                                             experienceDetailsVisibleInput.value = '1';

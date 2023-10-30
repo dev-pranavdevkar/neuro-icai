@@ -23,7 +23,7 @@ class VacanciesController extends Controller
 
     public function viewVacancies()
     {
-        $vacancyDetails = VacancyDetails::with([])->paginate(5);
+        $vacancyDetails = VacancyDetails::orderBy('created_at', 'desc')->paginate(5);
         return view('frontend.vacancies.viewVacancies', compact('vacancyDetails'));
     }
 
@@ -64,23 +64,20 @@ class VacanciesController extends Controller
             $locationDetails = LocationDetails::paginate(1);
             $companyDetails = Company::paginate(1);
 
-
             $vacancyDetails = VacancyDetails::with(['location_details', 'companyDetails'])->findOrFail($id);
 
-            return view('frontend.vacancies.applyJob', compact('id', 'locationDetails', 'companyDetails', 'vacancyDetails'));
+            return view('frontend.vacancies.applyJob', [
+                'id' => $id,
+                'locationDetails' => $locationDetails,
+                'companyDetails' => $companyDetails,
+                'vacancyDetails' => $vacancyDetails,
+            ]);
         } catch (ModelNotFoundException $e) {
-
             Log::error($e);
-
-
             return view('frontend.vacancies.applyJob', ['error' => 'Vacancy not found.']);
         } catch (\Exception $e) {
-
             Log::error($e);
-
-
             return view('errors.default', ['error' => 'An unexpected error occurred.']);
-            
         }
     }
 }
