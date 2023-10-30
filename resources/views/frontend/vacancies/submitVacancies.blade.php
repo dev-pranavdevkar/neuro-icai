@@ -1,4 +1,5 @@
 @extends('frontend.layouts.main')
+
 @section('main-container')
     <!-- Breadcrumb Section Begin -->
     <div class="breadcrumb-option contact-breadcrumb set-bg"
@@ -24,14 +25,16 @@
 
                         <div class="hero__form">
                             <h3>Job Post Form</h3>
-                
+
                             @if (Auth::user() &&
                                     in_array(
                                         'members',
                                         Auth::user()->roles->pluck('name')->toArray()))
                                 <!-- Registration Form -->
-                                @if (session()->has('success'))
-                                    <h2>Thank You,<br /> you are successfully submitted admission form to us.</h2>
+                                @if (isset($successMessage))
+                                    <div class="alert alert-success">
+                                        {{ $successMessage }}
+                                    </div>
                                 @else
                                     <form id="jobPostForm" action="{{ route('addVacancyDetails') }}" method="POST"
                                         enctype="multipart/form-data">
@@ -77,7 +80,6 @@
                                                 @endif
                                             </div>
 
-
                                             <div class="input-list-item">
                                                 <p>Expiry Date</p>
                                                 <input type="date" name="expiry_date" autocomplete="off">
@@ -100,7 +102,10 @@
                                         <div class="input-list">
                                             <div class="input-list-item">
                                                 <p>Experience</p>
-                                                <input type="text" name="experience" autocomplete="off">
+                                                <input type="tel" pattern="[0-9]{2}" name="experience" maxlength="2"
+                                                    required>
+
+
                                                 <span id="experience" class="text-danger font-weight-bold span"></span>
                                                 @if ($errors->has('experience'))
                                                     <div class="alert-vsa text-danger">
@@ -115,7 +120,7 @@
 
                                             <div class="input-list-item">
                                                 <p>Job Description</p>
-                                                <textarea type="text" name="comments" autocomplete="off">
+                                                <textarea name="comments" autocomplete="off"></textarea>
                                                 <span id="comments" class="text-danger font-weight-bold span"></span>
                                                 @if ($errors->has('comments'))
                                                     <div class="alert-vsa text-danger">
@@ -127,48 +132,13 @@
                                                     </div>
                                                 @endif
                                             </div>
-
-
                                         </div>
-
-
-
-
-
-
-
-
 
                                         <!-- Sign Up Button -->
                                         <button type="submit" id="signupButton" class="site-btn">Post Job</button>
-                                        <!-- Success Message -->
-                                        @php
-                                            $job_type = request('job_type');
-                                        @endphp
-
-
-                                        <!-- Login Link -->
-                                        <div class="mt-3 d-flex justify-content-center">
-                                            <p> Already have an account? <a class="text-primery" href="/login">Login</a>
-                                            </p>
-                                        </div>
-
-
-
-                                        <!-- Google and Facebook Logos -->
-                                        <div class="d-flex justify-content-center mt-4">
-                                            <div><img class="signupwithlogo"
-                                                    src="{{ url('frontend/img/google-logo.png') }}" alt="Google Logo" />
-                                            </div>
-                                            <div class="ml-5"><img class="signupwithlogo"
-                                                    src="{{ url('frontend/img/facebook_logo.png') }}"
-                                                    alt="Facebook Logo" />
-                                            </div>
-                                        </div>
                                     </form>
                                 @endif
                             @endif
-
                         </div>
                     </div>
                     <div class="col-lg-5 offset-lg-1">
@@ -178,6 +148,5 @@
             </div>
         </div>
     </section>
-
     <!-- Contact End -->
 @endsection

@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Exception;
+
 class WebMetaDataController extends Controller
 {
 
@@ -203,29 +204,29 @@ class WebMetaDataController extends Controller
             }
             $eventDetails = EventDetails::find($request->event_id);
             $user = Auth::user();
-            $eventRegistration = EventRegistration::where('event_id',$request->event_id)->where('user_id',$user->id)
-                ->where('payment_status','like',"paid")->first();
-            if(!is_null($eventRegistration)){
-                return $this->sendResponse([],'You are already registered to this event',false);
+            $eventRegistration = EventRegistration::where('event_id', $request->event_id)->where('user_id', $user->id)
+                ->where('payment_status', 'like', "paid")->first();
+            if (!is_null($eventRegistration)) {
+                return $this->sendResponse([], 'You are already registered to this event', false);
             }
             $isMember = false;
-            if(in_array('members',Auth::user()->roles->pluck('name')->toArray())){
+            if (in_array('members', Auth::user()->roles->pluck('name')->toArray())) {
                 $isMember = true;
-            }else if(in_array('students',Auth::user()->roles->pluck('name')->toArray())){
+            } else if (in_array('students', Auth::user()->roles->pluck('name')->toArray())) {
                 $isMember = false;
             }
-            $totalAmount = $isMember?$eventDetails->price_for_members:$eventDetails->price_for_students;
+            $totalAmount = $isMember ? $eventDetails->price_for_members : $eventDetails->price_for_students;
 
             $newEventRegistration = new EventRegistration();
-            $newEventRegistration->event_id=$request->event_id;
-            $newEventRegistration->user_id=$user->id;
-            $newEventRegistration->gst_no=null;
-            $newEventRegistration->legal_name=null;
-            $newEventRegistration->attendance_status =null;
+            $newEventRegistration->event_id = $request->event_id;
+            $newEventRegistration->user_id = $user->id;
+            $newEventRegistration->gst_no = null;
+            $newEventRegistration->legal_name = null;
+            $newEventRegistration->attendance_status = null;
             $newEventRegistration->event_price = $totalAmount;
             $newEventRegistration->total_amount = $totalAmount;
             $newEventRegistration->save();
-            if($newEventRegistration->save()){
+            if ($newEventRegistration->save()) {
                 $api = new Api(env('R_API_KEY'), env('R_API_SECRET'));
                 $orderDetails = $api->order->create(array(
                     'receipt' => 'Inv-' . $newEventRegistration->id,
@@ -234,12 +235,12 @@ class WebMetaDataController extends Controller
                 $newEventRegistration->razorpay_id = $orderDetails->id;
                 $newEventRegistration->save();
                 $response = [];
-                $response['system_order_id']=$newEventRegistration->id;
-                $response['razorpay_order_id']=$newEventRegistration->razorpay_id;
-                $response['razorpay_api_key']=env('R_API_KEY');
-                return $this->sendResponse($response, 'Payment Initiated Successfully',true);
-            }else{
-                return $this->sendResponse([], 'Payment Cannot Be Initiated',false);
+                $response['system_order_id'] = $newEventRegistration->id;
+                $response['razorpay_order_id'] = $newEventRegistration->razorpay_id;
+                $response['razorpay_api_key'] = env('R_API_KEY');
+                return $this->sendResponse($response, 'Payment Initiated Successfully', true);
+            } else {
+                return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
             }
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
@@ -287,18 +288,21 @@ class WebMetaDataController extends Controller
                 'expiry_date' => 'nullable|date',
                 'job_type' => [Rule::in(['internship', 'full_time'])],
             ]);
+    
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
+                $this->sendErrorsubmitVacancies('Validation Error.', $validator->errors());
+                return response()->json(); // Return an empty JSON response
             }
+    
             $user = Auth::user()->id;
-            $userRole = auth()->user()->role;
-
+    
             if (!in_array('members', auth()->user()->roles->pluck('name')->toArray())) {
-                return $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
+                $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
+                return response()->json(); // Return an empty JSON response
             }
-
+    
             $newVacancy = new VacancyDetails();
-
+    
             $newVacancy->position = $request->position;
             $newVacancy->comments = $request->comments;
             $newVacancy->experience = $request->experience;
@@ -307,14 +311,18 @@ class WebMetaDataController extends Controller
             $newVacancy->expiry_date = $request->expiry_date;
             $newVacancy->job_type = $request->job_type;
             $newVacancy->save();
-            return $this->sendResponse([], 'Vacancy details added successfully', true);
+    
+            // Redirect to the 'submitVacancies' route
+            return response()->json(['success' => true]);
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return response()->json(['success' => false, 'message' => 'Something went wrong']);
         }
     }
+    
 
 
-    public function getVacancyDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    public function getVacancyDetailsById(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -323,7 +331,7 @@ class WebMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details', 'user_details','companyDetails'])->first();
+            $getitems = VacancyDetails::query()->where('id', $request->id)->with(['location_details', 'user_details', 'companyDetails'])->first();
             return $this->sendResponse(["vacancy" => $getitems], 'Data fetch successfully', true);
         } catch (Exception $e) {
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
@@ -365,9 +373,14 @@ class WebMetaDataController extends Controller
                 }
             }
             $newDetails->save();
-            return $this->sendResponse([], 'Apply for Job Successfully.', true);
+            session()->flash('success', true);
+
+            // Now, you can continue rendering the same page without redirecting
+            // You can include this logic in the controller method that renders the page initially
+
+            return back()->with('success', 'Thanks you for adding!!');
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
     public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
@@ -531,6 +544,16 @@ class WebMetaDataController extends Controller
         $image->move($destinationPath, $image_name);
         return '/CompanyLogo/' . $image_name;
     }
+    public function saveResumePdf($image): string
+    {
+        $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
+        $destinationPath = public_path('Resume/');
+        if (env('APP_ENV') == 'prod') {
+            $destinationPath = public_path('Resume/' . $imageName);
+        }
+        $image->move($destinationPath, $image_name);
+        return '/Resume/' . $image_name;
+    }
     public function addAssociationDetails(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -546,27 +569,24 @@ class WebMetaDataController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $NewLocationDetails = new LocationDetails();
-            $NewLocationDetails->address_line_1=$request->address_line_1;
-            $NewLocationDetails->pincode=$request->pincode;
+            $NewLocationDetails->address_line_1 = $request->address_line_1;
+            $NewLocationDetails->pincode = $request->pincode;
             $NewLocationDetails->save();
             $newAssociationDetails = new AssociationDetails();
-            $newAssociationDetails->location_id=$NewLocationDetails->id;
-            $newAssociationDetails->company_name=$request->company_name;
-            $newAssociationDetails->company_email=$request->company_email;
-            $newAssociationDetails->mobile_no=$request->mobile_no;
+            $newAssociationDetails->location_id = $NewLocationDetails->id;
+            $newAssociationDetails->company_name = $request->company_name;
+            $newAssociationDetails->company_email = $request->company_email;
+            $newAssociationDetails->mobile_no = $request->mobile_no;
             if ($request->company_logo != "") {
                 if (!str_contains($request->company_logo, "http")) {
-                    $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo,$request->company_name);
+                    $newAssociationDetails->company_logo = $this->saveCompanyLogo($request->company_logo, $request->company_name);
                 }
             }
             $newAssociationDetails->save();
             return $this->sendResponse([], 'Association Details added successfully', true);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getTrace(), 413);
         }
-
-
     }
     public function getAllAssociationDetails(Request $request)
     {
@@ -578,7 +598,7 @@ class WebMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = AssociationDetails::query()->with(['location_details','offers_of_association']);
+            $query = AssociationDetails::query()->with(['location_details', 'offers_of_association']);
             $count = $query->count();
             if ($request->has('pageNo') && $request->has('limit')) {
                 $limit = $request->limit;
@@ -604,7 +624,7 @@ class WebMetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 //  'association_id' => 'required|exists:association_details,id',
-                'offers_association_id'=>'required|exists:offers_association,id'
+                'offers_association_id' => 'required|exists:offers_association,id'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -612,14 +632,14 @@ class WebMetaDataController extends Controller
             $user = Auth::user()->id;
             $existingRegistration = RegisterToAssocitationDetails::where('user_id', $user)
                 // ->where('association_id',$request->association_id)
-                ->where('offers_association_id',$request->offers_association_id)
+                ->where('offers_association_id', $request->offers_association_id)
                 ->first();
 
             if ($existingRegistration) {
                 return $this->sendError('User is already registered for an association offer.', [], 422);
             }
             $offer = OffersAssociation::query()->where('association_id', $request->association_id)
-                ->where('id',$request->offers_association_id)
+                ->where('id', $request->offers_association_id)
                 ->first();
 
             if (!$offer) {
@@ -627,7 +647,7 @@ class WebMetaDataController extends Controller
             }
             $limit = (int) $offer->limits;
             $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
-                ->where('offers_association_id',$request->offers_association_id)
+                ->where('offers_association_id', $request->offers_association_id)
                 ->count();
             if ($registeredUsersCount >= $limit) {
                 return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
@@ -636,14 +656,14 @@ class WebMetaDataController extends Controller
             $newDetails->user_id = $user;
             $newDetails->association_id = $request->association_id;
             //$newDetails->created_by_user_id = $request->created_by_user_id;
-            $newDetails->offers_association_id=$request->offers_association_id;
+            $newDetails->offers_association_id = $request->offers_association_id;
             $newDetails->save();
             return $this->sendResponse([], 'Offer Claim successfully.', true);
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
-    public function getAssociationDetailsById(Request $request):  \Illuminate\Http\JsonResponse
+    public function getAssociationDetailsById(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -748,7 +768,7 @@ class WebMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors(), 400);
             }
-            $query = VacancyDetails::query()->with(['location_details','user_details','companyDetails']);
+            $query = VacancyDetails::query()->with(['location_details', 'user_details', 'companyDetails']);
 
             if ($request->has('firm_name')) {
                 $firmName = $request->input('firm_name');
@@ -800,7 +820,7 @@ class WebMetaDataController extends Controller
                 $response['count'] = $count;
                 return $this->sendResponse($response, 'Data Fetched Successfully', true);
             } else {
-                return $this->sendResponse([],'No Data Available',false);
+                return $this->sendResponse([], 'No Data Available', false);
             }
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
