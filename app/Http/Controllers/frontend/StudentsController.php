@@ -83,8 +83,26 @@ class StudentsController extends Controller
     public function batchDetails(Request $request, $id)
     {
         $batchDetails = StudentBatches::with(['location_details'])->find($id);
-        return view('frontend.students.batchDetails', compact('batchDetails'));
+        $user = Auth::user();
+    
+        $alreadyRegistered = EventRegistration::where('student_batche_id', $id)
+        ->where('user_id', $user->id)
+        ->where(function ($query) {
+            $query->where('payment_status', 'like', 'paid')
+                ->orWhereNull('payment_status');
+        })
+        ->orderBy('id', 'DESC')
+        ->first();
+    
+    // dd($alreadyRegistered); // Check if $alreadyRegistered is retrieved
+    
+    
+    
+        return view('frontend.students.batchDetails', compact(['batchDetails','alreadyRegistered']));
     }
+    
+    
+    
 
 
 
@@ -150,7 +168,7 @@ class StudentsController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $payment = BatchRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
+            $payment = EventRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
             if (is_null($payment)) {
                 return $this->sendResponse([], 'Wrong Payment Id', false);
             }

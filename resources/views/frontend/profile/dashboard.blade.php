@@ -380,6 +380,7 @@
                             <div class="tab-pane fade show active" id="tab-one">
                                 <h1>
                                     <!-- Counter Begin -->
+                                    <h3 class="py-3">Dashboard</h3>
                                     <div class="counter spad">
                                         <div class="container">
                                             @if (Auth::user() &&
@@ -434,7 +435,7 @@
                                                             <img src="{{ url('frontend/img/counter/register.png') }}"
                                                                 alt="">
                                                             <div class="counter__number">
-                                                                <h2 class="counter-add">2100</h2>
+                                                                <h2 class="counter-add">{{ $numRegisteredEvents }}</h2>
                                                             </div>
                                                             <p>Registered Events</p>
                                                         </div>
@@ -455,7 +456,7 @@
                                                             <img src="{{ url('frontend/img/counter/batch.png') }}"
                                                                 alt="">
                                                             <div class="counter__number">
-                                                                <h2 class="counter-add">90</h2>
+                                                                <h2 class="counter-add">{{ $numRegisteredBatches }}</h2>
                                                                 {{-- <span>+</span> --}}
                                                             </div>
                                                             <p>Registered Batches</p>
@@ -484,7 +485,7 @@
                                 {{-- {{ Auth::user()->last_name }}
                                 {{ Auth::user()->name }}  --}}
 
-                                
+
                                 <div class="row d-flex justify-content-center">
                                     {{-- 1 --}}
                                     <div class="col-lg-12 py-3 ">
@@ -610,8 +611,33 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab-three">
-                                <h1>Enrolled Events Content</h1>
+                                <h3 class="py-3">Enrolled Event</h3>
+
+                                
+                                @if (count($alreadyRegistered) > 0)
+                                
+                                <ul>
+                                    @foreach($alreadyRegistered as $event)
+                                    
+                                        <li>
+                                            
+                                            Event ID: {{ $event->event_id }}
+                                            <br>
+                                            Event ID: {{ $event->event_details }}
+                                            <!-- Add other event details as needed -->
+                                        </li>
+                                        @endforeach
+                                </ul>
+                                {{ $alreadyRegistered->links() }} <!-- Add pagination links -->
+                            @else
+                                <p>No enrolled events found.</p>
+                            @endif
+                            
+                            
+                            
                             </div>
+
+
                             <div class="tab-pane fade" id="tab-four">
                                 <div class="row  d-flex justify-content-center py-5">
 
@@ -686,7 +712,35 @@
                                 <h1>Association Content</h1>
                             </div>
                             <div class="tab-pane fade" id="tab-eight">
-                                <h1>Settings Content</h1>
+                                <h3 class="py-3">Change Password</h3>
+                                <section class="container ">
+                                    <div class="row  d-flex justify-content-center">
+                                      
+                                        <div class="col-lg-10">
+                        
+                                        
+                                            <div class="contact__form__text">
+                                       
+                                                <form action="#">
+                                                    <div class="input-list">
+                                                        <input type="text" placeholder="Old Password">
+                                                        <input type="text" placeholder="OTP">
+                                                    </div>
+                                                    <div class="input-list">
+                                                        <input type="password" placeholder="Password">
+                                                        <input type="password" placeholder="Confirm Password">
+                                                    </div>
+                        
+                                                    <button type="submit" class="site-btn">Change
+                                                        Password</button>
+                                                </form>
+                                            </div>
+                                        
+                        
+                                        </div>
+                                    </div>
+                                </section>
+                                
                             </div>
                             <div class="tab-pane fade" id="tab-nine">
                                 <h1>Logout Content</h1>

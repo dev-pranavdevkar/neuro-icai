@@ -31,10 +31,11 @@
                                         'members',
                                         Auth::user()->roles->pluck('name')->toArray()))
                                 <!-- Registration Form -->
-                                @if (isset($successMessage))
+                                @if(Session::has('success'))
                                     <div class="alert alert-success">
-                                        {{ $successMessage }}
+                                        {{ Session::get('success') }}
                                     </div>
+                
                                 @else
                                     <form id="jobPostForm" action="{{ route('addVacancyDetails') }}" method="POST"
                                         enctype="multipart/form-data">

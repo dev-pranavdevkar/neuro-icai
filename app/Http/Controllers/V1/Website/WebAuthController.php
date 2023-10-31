@@ -29,7 +29,7 @@ use App\Models\OffersAssociation;
 
 class WebAuthController extends Controller
 {
-    
+
     public function registerUser(Request $request)
     {
         try {
@@ -143,7 +143,7 @@ class WebAuthController extends Controller
     //             ->withErrors(['error' => 'Something Went Wrong' . $e->getMessage()]);
     //     }
     // }
-    
+
 
     public function userLogin(Request $request)
     {
@@ -153,31 +153,31 @@ class WebAuthController extends Controller
                 'credential' => 'required|string',
                 'password' => 'required|string|min:6',
             ]);
-    
+
             if ($validator->fails()) {
                 // If validation fails, return error response
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-    
+
             // Find user by email or generated_user_id
             $user = User::where(function ($query) use ($request) {
                 $query->where('email', $request->credential)
                     ->orWhere('generated_user_id', $request->credential);
             })->first();
-    
+
             if (!is_null($user)) {
                 // Check if the provided password matches the hashed password
                 if (Hash::check($request->password, $user->password)) {
                     // Login the user using Laravel Auth
                     Auth::login($user);
-    
+
                     // Retrieve additional user details
                     $locationDetails = LocationDetails::find($user->location_id);
                     $companyDetails = Company::find($user->company_id);
-    
+
                     // Generate JWT token
                     $token = JWTAuth::fromUser($user);
-    
+
                     // Build the response
                     $response = [
                         'token' => $token,
@@ -186,9 +186,9 @@ class WebAuthController extends Controller
                         'company_details' => $companyDetails,
                         'permissions' => $user->getAllPermissions(),
                     ];
-    
+                    return redirect('/');
                     // Send a success response
-                    return $this->sendResponse($response, 'Login Success', true);
+                    // return $this->sendResponse($response, 'Login Success', true);
                 } else {
                     // Password mismatch
                     return redirect()->route('login')

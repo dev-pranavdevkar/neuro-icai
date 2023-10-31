@@ -278,7 +278,7 @@ class WebMetaDataController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 413);
         }
     }
-    public function addVacancyDetails(Request $request): \Illuminate\Http\JsonResponse
+    public function addVacancyDetails(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -313,7 +313,7 @@ class WebMetaDataController extends Controller
             $newVacancy->save();
     
             // Redirect to the 'submitVacancies' route
-            return response()->json(['success' => true]);
+            return back()->with('success', 'Thanks you for adding!!');
         } catch (Exception $e) {
             $this->sendError('Something went wrong', $e->getTrace(), 413);
             return response()->json(['success' => false, 'message' => 'Something went wrong']);

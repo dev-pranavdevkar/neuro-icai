@@ -1,4 +1,3 @@
-
 @extends('frontend.layouts.main')
 @section('main-container')
     {{-- <section class="">
@@ -150,9 +149,8 @@
                         <p class="text-center">We Send Code To
                             <b>yourmailid@domain.com</b>
                         </p>
-                        <form id="verifyOtp" action="{{ route('verifyOtp') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
+                        <form id="verifyOtp" action="{{ route('verifyOtp') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
 
                             <h5></h5>
                             <p>
@@ -183,12 +181,12 @@
                         <h3>Reset Password</h3>
 
                         <form id="changeForgetPassword" action="{{ route('changeForgetPassword') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <div class="input-full-width">
-                            <p>Email Id</p>
-                            <input type="email" id="email" name="email">
-                        </div>
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="input-full-width">
+                                <p>Email Id</p>
+                                <input type="email" id="email" name="email">
+                            </div>
 
                             <div class="input-full-width">
                                 <label for="password">Password</label>
@@ -202,8 +200,7 @@
                             <div class="input-full-width">
                                 <label for="password">Confirm Password</label>
                                 <div class="password-input-wrapper">
-                                    <input type="password" id="password_confirmation" name="password_confirmation"
-                                        required>
+                                    <input type="password" id="password_confirmation" name="password_confirmation" required>
                                     <span class="password-toggle"
                                         onclick="togglePasswordVisibility('password_confirmation')">
                                         <i class="fa fa-eye" id="eye-icon-password_confirmation"></i>
@@ -218,17 +215,17 @@
                         </form>
 
 
-                     
+
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-2">
-            
+
                 </div>
             </div>
         </div>
     </section>
 
-        <!-- Js Plugins -->
+    <!-- Js Plugins -->
     {{-- OTP disable fields to enable  --}}
 
 
@@ -261,37 +258,36 @@
     {{-- ------------------------------ --}}
 
     {{-- Script to hide Forget Passwor Screen --}}
- <!-- ... (your existing HTML code) ... -->
+    <!-- ... (your existing HTML code) ... -->
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const sendOTPButton = document.getElementById("sendOTPButton");
-        const forgetPasswordBlock = document.getElementById("forgetPassword");
-        const otpScreenBlock = document.getElementById("otpscreen");
-        const verifyOTPButton = document.querySelector("#otpscreen .site-btn");
-        const otpInputs = document.querySelectorAll(".otp-input");
-        const resetPasswordBlock = document.getElementById("resetPassword");
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sendOTPButton = document.getElementById("sendOTPButton");
+            const forgetPasswordBlock = document.getElementById("forgetPassword");
+            const otpScreenBlock = document.getElementById("otpscreen");
+            const verifyOTPButton = document.querySelector("#otpscreen .site-btn");
+            const otpInputs = document.querySelectorAll(".otp-input");
+            const resetPasswordBlock = document.getElementById("resetPassword");
 
-        // Handle sending OTP and showing OTP screen
-        sendOTPButton.addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent form submission
+            // Handle sending OTP and showing OTP screen
+            sendOTPButton.addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent form submission
 
-            forgetPasswordBlock.style.display = "none";
-            otpScreenBlock.style.display = "block";
-            otpInputs[0].focus(); // Focus on the first OTP input field
+                forgetPasswordBlock.style.display = "none";
+                otpScreenBlock.style.display = "block";
+                otpInputs[0].focus(); // Focus on the first OTP input field
+            });
+
+            // Handle verifying OTP and showing reset password screen
+            verifyOTPButton.addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                otpScreenBlock.style.display = "none";
+                resetPasswordBlock.style.display = "block";
+            });
         });
+        document.getElementById("emailPlaceholder").innerText = "pranavdevkar@gmail.com"; // Replace with actual email
+    </script>
 
-        // Handle verifying OTP and showing reset password screen
-        verifyOTPButton.addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            otpScreenBlock.style.display = "none";
-            resetPasswordBlock.style.display = "block";
-        });
-    });
-    document.getElementById("emailPlaceholder").innerText = "pranavdevkar@gmail.com"; // Replace with actual email
-</script>
-
-<!-- ... (rest of your HTML code) ... -->
-    @endsection
-    
+    <!-- ... (rest of your HTML code) ... -->
+@endsection
