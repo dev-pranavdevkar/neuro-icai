@@ -613,21 +613,22 @@
                             <div class="tab-pane fade" id="tab-three">
                                 <h3 class="py-3">Enrolled Event</h3>
 
-                                @if (isset($eventIds))
-                                    <p>Event IDs for the user: {{ implode(', ', $eventIds) }}</p>
-                                    <p>{{$eventDetails}} hello</p>
-                                @endif
-                                @if (count($eventDetails) > 0)
-                                <p>{{$eventDetails}}</p>
+                                
+                                @if (count($alreadyRegistered) > 0)
+                                
                                 <ul>
+                                    @foreach($alreadyRegistered as $event)
                                     
                                         <li>
-                                            {{-- Event ID: {{ $eventDetails->event_id }} --}}
+                                            
+                                            Event ID: {{ $event->event_id }}
+                                            <br>
+                                            Event ID: {{ $event->event_details }}
                                             <!-- Add other event details as needed -->
                                         </li>
-                                
+                                        @endforeach
                                 </ul>
-                                {{ $eventDetails->links() }} <!-- Add pagination links -->
+                                {{ $alreadyRegistered->links() }} <!-- Add pagination links -->
                             @else
                                 <p>No enrolled events found.</p>
                             @endif

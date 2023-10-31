@@ -168,7 +168,7 @@ class StudentsController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $payment = BatchRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
+            $payment = EventRegistration::where('razorpay_id', $request->razorpay_order_id)->find($request->system_order_id);
             if (is_null($payment)) {
                 return $this->sendResponse([], 'Wrong Payment Id', false);
             }

@@ -129,8 +129,7 @@
                             </li>
 
                             @for ($i = max(1, $batchs->currentPage() - 5); $i <= min($batchs->lastPage(), $batchs->currentPage() + 5); $i++)
-                                <li
-                                    class="pagination-cell {{ $batchs->currentPage() == $i ? 'active text-white' : '' }}">
+                                <li class="pagination-cell {{ $batchs->currentPage() == $i ? 'active text-white' : '' }}">
                                     <a href="{{ $batchs->url($i) }}">{{ $i }}</a>
                                 </li>
                             @endfor
@@ -140,13 +139,12 @@
                                     <a href="{{ $batchs->nextPageUrl() }}" rel="next"
                                         aria-label="@lang('pagination.next')">Next</a>
                                 @else
-                                    <span class="disabled" aria-disabled="true"
-                                        aria-label="@lang('pagination.next')">Next</span>
+                                    <span class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">Next</span>
                                 @endif
                             </li>
                         </ul>
                     </div>
-{{--
+                    {{--
                     <div class="text-center mt-2 w-100">
                         Showing {{ $batchs->firstItem() }} to
                         {{ $batchs->lastItem() }} of
@@ -154,11 +152,9 @@
                     </div> --}}
                 </div>
             @else
-
                 <h1>No Data available.</h1>
 
                 <h1>No Batches details available.</h1>
-
             @endif
 
 
