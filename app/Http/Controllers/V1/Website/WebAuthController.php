@@ -189,7 +189,9 @@ class WebAuthController extends Controller
     
                     // Send a success response
                     return $this->sendResponse($response, 'Login Success', true);
-                } else {
+                }
+                
+                else {
                     // Password mismatch
                     return redirect()->route('login')
                         ->withErrors(['error' => 'Password mismatch. Please try again.']);

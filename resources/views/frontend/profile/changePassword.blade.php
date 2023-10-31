@@ -19,32 +19,35 @@
         </div>
         <!-- Breadcrumb Section End -->
         <section class="container py-5">
-            <div class="row  d-flex justify-content-center">
-              
+            <div class="row d-flex justify-content-center">
                 <div class="col-lg-10">
-
-                
                     <div class="contact__form__text">
                         <div class="contact__form__title">
                             <h2>Change Password</h2>
                             <p>To change password fill the following form</p>
                         </div>
-                        <form action="#">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form method="POST" action="{{ route('change.password.submit') }}">
+                            @csrf
                             <div class="input-list">
-                                <input type="text" placeholder="Old Password">
-                                <input type="text" placeholder="OTP">
+                                <input type="password" name="old_password" placeholder="Old Password">
+                                <input type="text" name="otp" placeholder="OTP">
                             </div>
                             <div class="input-list">
-                                <input type="password" placeholder="Password">
-                                <input type="password" placeholder="Confirm Password">
+                                <input type="password" name="new_password" placeholder="Password">
+                                <input type="password" name="confirm_password" placeholder="Confirm Password">
                             </div>
-
-                            <button type="submit" class="site-btn">Change
-                                Password</button>
+                            <button type="submit" class="site-btn">Change Password</button>
                         </form>
                     </div>
-                
-
                 </div>
             </div>
         </section>
