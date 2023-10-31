@@ -176,7 +176,7 @@ class HomeController extends Controller
                 $payment->save();
                 return $this->sendResponse([], 'Payment Pending', false);
             }
-            return $this->sendResponse([], 'Event registration successfully', false);
+            return $this->sendResponse([], 'Batch registration successfully', false);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getTrace(), 413);
         }

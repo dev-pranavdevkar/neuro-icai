@@ -99,7 +99,41 @@
             })
 
             function verifyRazorpayPayment(payment_gateway_order_id, system_id) {
-                // ... (unchanged code) ...
+                let csrf_token = document.head.querySelector('meta[name="csrf-token"]').content;
+                $.ajaxSetup({
+                    headers: {
+                        'csrftoken': csrf_token
+                    }
+                });
+
+                let dataToSend = {};
+                dataToSend.url = "{!! route('checkOrderRazorpayPaymentStatusforBatch') !!}";
+                dataToSend.requestType = 'POST';
+                dataToSend.data = {
+                    razorpay_order_id: payment_gateway_order_id,
+                    system_order_id: system_id,
+                    "_token": csrf_token
+                };
+                $.ajax({
+                    url: dataToSend.url,
+                    type: 'post', // or 'POST', 'PUT', etc. depending on your API
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend.data),
+                    success: function(data) {
+                        console.log(data);
+                        if (data['success']) {
+                            toastr.success('You have registered successfully. Please go to my Batches section.');
+                        }
+                        toastr.success(data.message)
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        toastr.error(data.message)
+                        // Handle errors here
+                    }
+
+
+                })
             }
         </script>
     @endsection
@@ -211,18 +245,29 @@
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-center">
-
                             <div>
-
                                 @if (Auth::user())
-                                    <button id="payNow" class="btn btn-primary"
-                                        data-batch="{{ $batchDetails->id }}">Pay Now</button>
+                                    @if ($batchDetails->start_date > now())
+                                        @if ($alreadyRegistered)
+                                         
+                                            <a href="#" id="viewTicket">
+                                                <button class="btn btn-primary">View Ticket</button>
+                                            </a>
+                                        @else
+                                            
+                                            <button id="payNow" class="btn btn-primary" data-batch="{{ $batchDetails->id }}">Pay Now</button>
+                                        @endif
+                                    @else
+                                        <p class="text-danger">Event has ended. Registration is closed.</p>
+                                    @endif
                                 @else
                                     <a href="{{ route('login') }}" class="btn btn-primary">Login To Register</a>
                                 @endif
                             </div>
-
                         </div>
+                        
+                        
+
 
                     </div>
                 </div>

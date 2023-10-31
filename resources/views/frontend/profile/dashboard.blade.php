@@ -435,7 +435,7 @@
                                                             <img src="{{ url('frontend/img/counter/register.png') }}"
                                                                 alt="">
                                                             <div class="counter__number">
-                                                                <h2 class="counter-add">2100</h2>
+                                                                <h2 class="counter-add">{{ $numRegisteredEvents }}</h2>
                                                             </div>
                                                             <p>Registered Events</p>
                                                         </div>
@@ -456,7 +456,7 @@
                                                             <img src="{{ url('frontend/img/counter/batch.png') }}"
                                                                 alt="">
                                                             <div class="counter__number">
-                                                                <h2 class="counter-add">90</h2>
+                                                                <h2 class="counter-add">{{ $numRegisteredBatches }}</h2>
                                                                 {{-- <span>+</span> --}}
                                                             </div>
                                                             <p>Registered Batches</p>

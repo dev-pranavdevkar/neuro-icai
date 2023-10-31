@@ -83,8 +83,26 @@ class StudentsController extends Controller
     public function batchDetails(Request $request, $id)
     {
         $batchDetails = StudentBatches::with(['location_details'])->find($id);
-        return view('frontend.students.batchDetails', compact('batchDetails'));
+        $user = Auth::user();
+    
+        $alreadyRegistered = EventRegistration::where('student_batche_id', $id)
+        ->where('user_id', $user->id)
+        ->where(function ($query) {
+            $query->where('payment_status', 'like', 'paid')
+                ->orWhereNull('payment_status');
+        })
+        ->orderBy('id', 'DESC')
+        ->first();
+    
+    // dd($alreadyRegistered); // Check if $alreadyRegistered is retrieved
+    
+    
+    
+        return view('frontend.students.batchDetails', compact(['batchDetails','alreadyRegistered']));
     }
+    
+    
+    
 
 
 
