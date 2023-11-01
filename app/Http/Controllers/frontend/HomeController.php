@@ -10,6 +10,7 @@ use App\Models\StudentNoticeBoard;
 use App\Models\NewsLetterDetails;
 use App\Models\RegisterToAssocitationDetails;
 use App\Models\VacancyDetails;
+use  App\Models\StudentBatches;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Auth;
@@ -201,6 +202,23 @@ class HomeController extends Controller
         return view('frontend.ticket', compact(['eventDetails','alreadyRegistered','qrData']));
     }
 
+    public function batchAddmissionReceipt(Request $request, $id)
+    {
+        $batchDetails = StudentBatches::with(['location_details'])->find($id);
+        $alreadyRegistered = null;
+        $qrData = null;
+        if(Auth::user()){
+
+            $user = Auth::user();
+            $alreadyRegistered = EventRegistration::where('student_batche_id', $id)->where('user_id', $user->id)
+                ->where('payment_status', 'like', "paid")->first();
+                $qrData = QrCode::size(150)->generate($user->id.'_'.$batchDetails->id);
+         
+        }
+
+        return view('frontend.batchAddmissionReceipt', compact(['batchDetails','alreadyRegistered','qrData']));
+    }
+    
 
 
 

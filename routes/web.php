@@ -131,6 +131,7 @@ Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboa
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/event-details/{id}', [HomeController::class, 'eventDetails'])->name('eventDetails');
 Route::get('/ticket/{id}', [HomeController::class, 'tickets'])->name('tickets');
+Route::get('/batchAddmissionReceipt/{id}', [HomeController::class, 'batchAddmissionReceipt'])->name('batchAddmissionReceipt');
 Route::post('/eventRegister', [HomeController::class, 'eventRegister'])->name('eventRegister')->middleware(['auth']);
 Route::post('/checkOrderRazorpayPaymentStatus', [HomeController::class, 'checkOrderRazorpayPaymentStatus'])->name('checkOrderRazorpayPaymentStatus');
 Route::post('/batchRegister', [StudentsController::class, 'batchRegister'])
@@ -142,8 +143,12 @@ Route::post('/checkOrderRazorpayPaymentStatusforBatch', [StudentsController::cla
 Route::get('/profile/dashboard', [ProfileController::class, 'dashboard']);
 Route::get('/profile/digitalIdCard', [ProfileController::class, 'digitalIdCard']);
 Route::get('/profile/editProfile', [ProfileController::class, 'editProfile']);
-Route::get('/profile/changePassword', [ProfileController::class, 'changePassword']);
-Route::post('/profile/changePassword', [ProfileController::class, 'changePassword']);
+// Define the GET route for the view
+Route::get('/profile/changePassword', [ProfileController::class, 'changePassword'])->name('change.password.form');
+
+// Define the POST route for form submission
+Route::post('/profile/changePassword', [WebAuthController::class, 'changeForgetPassword'])->name('change.password.submit');
+
 
 
 
