@@ -613,32 +613,75 @@
                             <div class="tab-pane fade" id="tab-three">
                                 <h3 class="py-3">Enrolled Event</h3>
 
-                                
                                 @if (count($alreadyRegistered) > 0)
-                                
-                                <ul>
-                                    @foreach($alreadyRegistered as $event)
-                                    
-                                        <li>
-                                            
-                                            Event ID: {{ $event->event_id }}
-                                            <br>
-                                            Event ID: {{ $event->event_details }}
-                                            <!-- Add other event details as needed -->
-                                        </li>
+                                    <div class="row">
+                                        @foreach ($alreadyRegistered as $event)
+                                            <div class="col-lg-6">
+                                                <div class="card member-card p-4">
+                                                    <div class="card-body " style="border: 1px solid #909090">
+                                                        <div class="row h-100">
+
+                                                            <div class="col-lg-12 h-100">
+                                                                <div>
+                                                                    <b class=" text-center text-primery">{{ $event->event_details->event_name }}
+                                                                    </b>
+
+                                                                    <ul>
+                                                                        <li class="my-2"><i class="fa fa-calendar"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_start_date)->format('d/m/Y') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_end_date)->format('d/m/Y') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-clock-o"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_start_date)->format('h:i A') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_end_date)->format('h:i A') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-ticket"
+                                                                                aria-hidden="true"></i><a
+                                                                                href="{{ route('tickets', ['id' => $event->event_id]) }}"
+                                                                                class="text-danger">
+                                                                                <b> View Ticket </b>
+
+                                                                            </a>
+                                                                        </li>
+
+
+
+
+
+
+                                                                    </ul>
+
+                                                                </div>
+
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
-                                </ul>
-                                {{ $alreadyRegistered->links() }} <!-- Add pagination links -->
-                            @else
-                                <p>No enrolled events found.</p>
-                            @endif
-                            
-                            
-                            
+                                    </div>
+                                @else
+                                    <p>No enrolled events found.</p>
+                                @endif
+
+
+
                             </div>
 
 
                             <div class="tab-pane fade" id="tab-four">
+                                <h3 class="py-3">Digital ID Card</h3>
                                 <div class="row  d-flex justify-content-center py-5">
 
                                     <div class="col-lg-5">
@@ -706,41 +749,148 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab-five">
-                                <h1>Enrolled Batches Content</h1>
+                                <h3 class="py-3">Enrolled Batches</h3>
+
+                                @if (count($alreadyRegistered) > 0)
+                                    <div class="row">
+                                        @foreach ($alreadyRegistered as $event)
+                                            <div class="col-lg-6">
+                                                <div class="card member-card p-4">
+                                                    <div class="card-body " style="border: 1px solid #909090">
+                                                        <div class="row h-100">
+
+                                                            <div class="col-lg-12 h-100">
+                                                                <div>
+                                                                    <b class=" text-center text-primery">{{ $event->event_details->event_name }}
+                                                                    </b>
+
+                                                                    <ul>
+                                                                        <li class="my-2"><i class="fa fa-calendar"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_start_date)->format('d/m/Y') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_end_date)->format('d/m/Y') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-clock-o"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_start_date)->format('h:i A') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_end_date)->format('h:i A') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-ticket"
+                                                                                aria-hidden="true"></i><a
+                                                                                href="{{ route('tickets', ['id' => $event->event_id]) }}"
+                                                                                class="text-danger">
+                                                                                <b> View Ticket </b>
+
+                                                                            </a>
+                                                                        </li>
+
+
+
+
+
+
+                                                                    </ul>
+
+                                                                </div>
+
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p>No enrolled Batches found.</p>
+                                @endif
+
+                                        @if (count($alreadyRegistered) > 0)
+                                
+                                <ul>
+                                    @foreach($alreadyRegistered as $batch)
+                                    
+                                        <li>
+                                            
+                                            Event ID: {{ $batch->student_batche_id }}
+                                            <br>
+                                            {{-- Event ID: {{ $event->event_details }} --}}
+                                            <!-- Add other event details as needed -->
+                                        </li>
+                                        @endforeach
+                                </ul>
+                                {{ $alreadyRegistered->links() }} <!-- Add pagination links -->
+                            @else
+                                <p>No enrolled events found.</p>
+                            @endif
                             </div>
                             <div class="tab-pane fade" id="tab-six">
-                                <h1>Association Content</h1>
+                                <h3 class="py-3">Association Content</h3> 
                             </div>
                             <div class="tab-pane fade" id="tab-eight">
-                                <h3 class="py-3">Change Password</h3>
-                                <section class="container ">
-                                    <div class="row  d-flex justify-content-center">
+                              
+                                <section class="py-3  dashboardAreaSubTabView">
+                                    <div class="row m-0">
+                                        <div class="col-lg-12">
+                        
+                                            <nav class="nav flex-column">
+                                                <ul class="d-flex justify-content-start  nav nav-pills w-100" id="pills-tab" role="tablist">
+                                                    <li class="nav-item"> <a class="nav-link active" data-toggle="pill" href="#edit-profile">Edit Profile</a> </li>
+                                                    <li class="nav-item"> <a class="nav-link" data-toggle="pill" href="#change-password"
+                                                            role="tab">Change Password</a> </li>
+                                                  
+
+                                                </ul>
+                        
+                                            </nav>
+                        
+                        
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active" id="edit-profile">
+                                                    <div class="tab-pane fade show active" id="editProfile" role="tabpanel"
+                                                        aria-labelledby="editProfile-tab">
+                                                        <h3 class="py-3">Edit Profile</h3>
+                                                    </div>
+                                                </div>
+                                                <!-- end tab-pane -->
+                        
+                                                <div class="tab-pane fade" id="change-password">
+                                                    <h3 class="py-3">Change Password</h3>
+                                                </div>
+                        
+                                                <!-- end tab-pane -->
+                        
                                       
-                                        <div class="col-lg-10">
                         
-                                        
-                                            <div class="contact__form__text">
-                                       
-                                                <form action="#">
-                                                    <div class="input-list">
-                                                        <input type="text" placeholder="Old Password">
-                                                        <input type="text" placeholder="OTP">
-                                                    </div>
-                                                    <div class="input-list">
-                                                        <input type="password" placeholder="Password">
-                                                        <input type="password" placeholder="Confirm Password">
-                                                    </div>
+                                                <!-- end tab-pane -->
                         
-                                                    <button type="submit" class="site-btn">Change
-                                                        Password</button>
-                                                </form>
+                        
+                        
+                        
                                             </div>
-                                        
                         
                                         </div>
+                        
+                        
+                                        <!-- tab-content -->
+                        
+                        
+                        
+                        
+                        
                                     </div>
+                        
+                        
                                 </section>
-                                
+
                             </div>
                             <div class="tab-pane fade" id="tab-nine">
                                 <h1>Logout Content</h1>

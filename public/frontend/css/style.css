@@ -4845,7 +4845,13 @@ color: #182141;
 	font-weight: 400;
 	border-radius: 0;
 }
+.dashboardAreaSubTabView .nav-pills .nav-link{
+	background: rgba(24, 33, 65, 0.1) !important;
 
+	color: #182141 !important;
+	font-weight: 400 !important;
+	border-radius: 0 !important;
+}
 .without-border-table,
 .without-border-table tr,
 .without-border-table tr th,

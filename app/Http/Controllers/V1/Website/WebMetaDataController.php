@@ -339,7 +339,7 @@ class WebMetaDataController extends Controller
     }
 
 
-    public function addApplyJob(Request $request): \Illuminate\Http\JsonResponse
+    public function addApplyJob(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -378,7 +378,7 @@ class WebMetaDataController extends Controller
             // Now, you can continue rendering the same page without redirecting
             // You can include this logic in the controller method that renders the page initially
 
-            return back()->with('success', 'Thanks you for adding!!');
+            return back()->with('success', 'Thanks you for Apply!!');
         } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
