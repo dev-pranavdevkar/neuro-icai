@@ -97,7 +97,7 @@
     </section>
 
     <!-- Js Plugins -->
-    {{-- <script>
+    <script>
         const otpInputs = document.querySelectorAll(".otp-input");
 
         otpInputs.forEach((input, index) => {
@@ -152,5 +152,5 @@
                 resetPasswordBlock.style.display = "block";
             });
         });
-    </script> --}}
+    </script>
 @endsection
