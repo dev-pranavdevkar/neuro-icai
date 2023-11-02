@@ -4253,7 +4253,13 @@ ol {
 /* Wide Mobile = 480px */
 
 @media only screen and (max-width: 767px) {
-
+	.member-card img {
+		max-width: 90px;
+		object-fit: contain;
+	}
+	.newsletter-card .card-body{
+		padding: 1rem;
+	}
 	.side-social-media-apps ul li {
 
 		background-color: #283960;

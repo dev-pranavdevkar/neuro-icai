@@ -624,22 +624,22 @@ class WebMetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 //  'association_id' => 'required|exists:association_details,id',
-                'offers_association_id' => 'required|exists:offers_association,id'
+                'offers_association_id'=>'required|exists:offers_association,id'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $user = Auth::user()->id;
-            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $user)
+            $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)
                 // ->where('association_id',$request->association_id)
-                ->where('offers_association_id', $request->offers_association_id)
+                ->where('offers_association_id',$request->offers_association_id)
                 ->first();
 
             if ($existingRegistration) {
                 return $this->sendError('User is already registered for an association offer.', [], 422);
             }
-            $offer = OffersAssociation::query()->where('association_id', $request->association_id)
-                ->where('id', $request->offers_association_id)
+            $offer = OffersAssociation::query()
+                ->where('id',$request->offers_association_id)
                 ->first();
 
             if (!$offer) {
@@ -647,16 +647,16 @@ class WebMetaDataController extends Controller
             }
             $limit = (int) $offer->limits;
             $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
-                ->where('offers_association_id', $request->offers_association_id)
+                ->where('offers_association_id',$request->offers_association_id)
                 ->count();
             if ($registeredUsersCount >= $limit) {
                 return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
             }
             $newDetails = new RegisterToAssocitationDetails;
             $newDetails->user_id = $user;
-            $newDetails->association_id = $request->association_id;
+            //$newDetails->association_id = $request->association_id;
             //$newDetails->created_by_user_id = $request->created_by_user_id;
-            $newDetails->offers_association_id = $request->offers_association_id;
+            $newDetails->offers_association_id=$request->offers_association_id;
             $newDetails->save();
             return $this->sendResponse([], 'Offer Claim successfully.', true);
         } catch (Exception $e) {

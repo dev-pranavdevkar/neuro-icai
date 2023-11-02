@@ -387,8 +387,8 @@
                                                     in_array(
                                                         'members',
                                                         Auth::user()->roles->pluck('name')->toArray()))
-                                                <div class="row">
-                                                    <div class="col-lg-4 col-md-4 col-12">
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-lg-4 col-md-4 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/register.png') }}"
                                                                 alt="">
@@ -398,7 +398,7 @@
                                                             <p>Registered Events</p>
                                                         </div>
                                                     </div>
-                                                    <div class="ccol-lg-4 col-md-4 col-12">
+                                                    <div class="col-lg-4 col-md-4 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/attended.png') }}"
                                                                 alt="">
@@ -409,7 +409,7 @@
                                                             <p>Attended Events</p>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4 col-12">
+                                                    <div class="col-lg-4 col-md-4 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/offers.png') }}"
                                                                 alt="">
@@ -429,7 +429,7 @@
                                                     in_array(
                                                         'student',
                                                         Auth::user()->roles->pluck('name')->toArray()))
-                                                <div class="row">
+                                                <div class="row d-flex justify-content-center">
                                                     <div class="col-lg-3 col-md-3 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/register.png') }}"
