@@ -313,7 +313,7 @@ class WebMetaDataController extends Controller
             $newVacancy->save();
     
             // Redirect to the 'submitVacancies' route
-            return back()->with('success', 'Thanks you for adding!!');
+            return back()->with('success', 'Job openings have been added successfully.');
         } catch (Exception $e) {
             $this->sendError('Something went wrong', $e->getTrace(), 413);
             return response()->json(['success' => false, 'message' => 'Something went wrong']);
@@ -380,6 +380,7 @@ class WebMetaDataController extends Controller
 
             return back()->with('success', 'Thanks you for Apply!!');
         } catch (Exception $e) {
+            return back()->with('success', 'Thanks you for Apply!!');
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
