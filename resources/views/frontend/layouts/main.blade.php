@@ -48,7 +48,7 @@
             <ul>
                 {{-- <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li> --}}
                 <li class="{{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
-                <li class="{{ request()->is('about*') ? 'active' : '' }}"><a href="">About Us </a>
+                <li class="{{ request()->is('about*') ? 'active' : '' }}">About Us 
                     <ul class="dropdown">
                         <li><a href="{{ url('/about/aboutPuneBranch') }}"> About Pune Branch </a></li>
                         <li><a href="{{ url('/about/chairmanCommunique') }}"> Chairman Communique </a>

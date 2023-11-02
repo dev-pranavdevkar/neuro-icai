@@ -4260,6 +4260,16 @@ ol {
 	.newsletter-card .card-body{
 		padding: 1rem;
 	}
+	.about__text h4 {
+		color: #323232;
+		margin-bottom: 35px;
+	}
+	.about__content {
+		margin-bottom: 0px;
+	}
+	.about__text p.first_para {
+		margin-bottom: 15px;
+	}
 	.side-social-media-apps ul li {
 
 		background-color: #283960;
@@ -4483,6 +4493,7 @@ ol {
 		position: absolute;
 		right: 15px;
 		top: 35px;
+		z-index: 999;
 	}
 
 	.offcanvas-menu-overlay {
