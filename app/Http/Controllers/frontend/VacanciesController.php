@@ -11,6 +11,7 @@ use App\Models\Company;
 use App\Models\LocationDetails;
 use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
 
 class VacanciesController extends Controller
 {
@@ -23,7 +24,12 @@ class VacanciesController extends Controller
 
     public function viewVacancies()
     {
-        $vacancyDetails = VacancyDetails::orderBy('created_at', 'desc')->paginate(5);
+        $currentDate = Carbon::now();
+    
+        $vacancyDetails = VacancyDetails::where('expiry_date', '>', $currentDate)
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+    
         return view('frontend.vacancies.viewVacancies', compact('vacancyDetails'));
     }
 

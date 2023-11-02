@@ -4253,7 +4253,23 @@ ol {
 /* Wide Mobile = 480px */
 
 @media only screen and (max-width: 767px) {
-
+	.member-card img {
+		max-width: 90px;
+		object-fit: contain;
+	}
+	.newsletter-card .card-body{
+		padding: 1rem;
+	}
+	.about__text h4 {
+		color: #323232;
+		margin-bottom: 35px;
+	}
+	.about__content {
+		margin-bottom: 0px;
+	}
+	.about__text p.first_para {
+		margin-bottom: 15px;
+	}
 	.side-social-media-apps ul li {
 
 		background-color: #283960;
@@ -4477,6 +4493,7 @@ ol {
 		position: absolute;
 		right: 15px;
 		top: 35px;
+		z-index: 999;
 	}
 
 	.offcanvas-menu-overlay {
@@ -4845,7 +4862,13 @@ color: #182141;
 	font-weight: 400;
 	border-radius: 0;
 }
+.dashboardAreaSubTabView .nav-pills .nav-link{
+	background: rgba(24, 33, 65, 0.1) !important;
 
+	color: #182141 !important;
+	font-weight: 400 !important;
+	border-radius: 0 !important;
+}
 .without-border-table,
 .without-border-table tr,
 .without-border-table tr th,

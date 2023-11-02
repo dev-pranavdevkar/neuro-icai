@@ -387,8 +387,8 @@
                                                     in_array(
                                                         'members',
                                                         Auth::user()->roles->pluck('name')->toArray()))
-                                                <div class="row">
-                                                    <div class="col-lg-4 col-md-4 col-12">
+                                                <div class="row d-flex justify-content-center">
+                                                    <div class="col-lg-4 col-md-4 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/register.png') }}"
                                                                 alt="">
@@ -398,7 +398,7 @@
                                                             <p>Registered Events</p>
                                                         </div>
                                                     </div>
-                                                    <div class="ccol-lg-4 col-md-4 col-12">
+                                                    <div class="col-lg-4 col-md-4 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/attended.png') }}"
                                                                 alt="">
@@ -409,7 +409,7 @@
                                                             <p>Attended Events</p>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4 col-12">
+                                                    <div class="col-lg-4 col-md-4 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/offers.png') }}"
                                                                 alt="">
@@ -429,7 +429,7 @@
                                                     in_array(
                                                         'student',
                                                         Auth::user()->roles->pluck('name')->toArray()))
-                                                <div class="row">
+                                                <div class="row d-flex justify-content-center">
                                                     <div class="col-lg-3 col-md-3 col-6">
                                                         <div class="counter__item">
                                                             <img src="{{ url('frontend/img/counter/register.png') }}"
@@ -613,32 +613,75 @@
                             <div class="tab-pane fade" id="tab-three">
                                 <h3 class="py-3">Enrolled Event</h3>
 
-                                
                                 @if (count($alreadyRegistered) > 0)
-                                
-                                <ul>
-                                    @foreach($alreadyRegistered as $event)
-                                    
-                                        <li>
-                                            
-                                            Event ID: {{ $event->event_id }}
-                                            <br>
-                                            Event ID: {{ $event->event_details }}
-                                            <!-- Add other event details as needed -->
-                                        </li>
+                                    <div class="row">
+                                        @foreach ($alreadyRegistered as $event)
+                                            <div class="col-lg-6">
+                                                <div class="card member-card p-4">
+                                                    <div class="card-body " style="border: 1px solid #909090">
+                                                        <div class="row h-100">
+
+                                                            <div class="col-lg-12 h-100">
+                                                                <div>
+                                                                    <b class=" text-center text-primery">{{ $event->event_details->event_name }}
+                                                                    </b>
+
+                                                                    <ul>
+                                                                        <li class="my-2"><i class="fa fa-calendar"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_start_date)->format('d/m/Y') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_end_date)->format('d/m/Y') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-clock-o"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_start_date)->format('h:i A') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($event->event_details->event_end_date)->format('h:i A') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-ticket"
+                                                                                aria-hidden="true"></i><a
+                                                                                href="{{ route('tickets', ['id' => $event->event_id]) }}"
+                                                                                class="text-danger">
+                                                                                <b> View Ticket </b>
+
+                                                                            </a>
+                                                                        </li>
+
+
+
+
+
+
+                                                                    </ul>
+
+                                                                </div>
+
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
-                                </ul>
-                                {{ $alreadyRegistered->links() }} <!-- Add pagination links -->
-                            @else
-                                <p>No enrolled events found.</p>
-                            @endif
-                            
-                            
-                            
+                                    </div>
+                                @else
+                                    <p>No enrolled events found.</p>
+                                @endif
+
+
+
                             </div>
 
 
                             <div class="tab-pane fade" id="tab-four">
+                                <h3 class="py-3">Digital ID Card</h3>
                                 <div class="row  d-flex justify-content-center py-5">
 
                                     <div class="col-lg-5">
@@ -706,41 +749,200 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="tab-five">
-                                <h1>Enrolled Batches Content</h1>
+                                <h3 class="py-3">Enrolled Batches</h3>
+
+                                @if (count($alreadyBatchRegistered) > 0)
+                                    <div class="row">
+                                        @foreach ($alreadyBatchRegistered as $batch)
+                                            <div class="col-lg-6">
+                                                <div class="card member-card p-4">
+                                                    <div class="card-body " style="border: 1px solid #909090">
+                                                        <div class="row h-100">
+
+                                                            <div class="col-lg-12 h-100">
+                                                                <div>
+                                                                    <b class=" text-center text-primery">{{ $batch->batches->batch_name }}
+                                                                    </b>
+
+                                                                    <ul>
+                                                                        <li class="my-2"><i class="fa fa-calendar"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($batch->batches->start_date)->format('d/m/Y') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($batch->batches->end_date)->format('d/m/Y') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-clock-o"
+                                                                                aria-hidden="true"></i><a href="">
+                                                                                {{ \Carbon\Carbon::parse($batch->batches->start_date)->format('h:i A') }}
+                                                                                To
+                                                                                {{ \Carbon\Carbon::parse($batch->batches->end_date)->format('h:i A') }}
+
+                                                                            </a>
+                                                                        </li>
+                                                                        <li class="my-2"><i class="fa fa-ticket"
+                                                                                aria-hidden="true"></i><a
+                                                                                href="{{ route('tickets', ['id' => $event->event_id]) }}"
+                                                                                class="text-danger">
+                                                                                <b> View Ticket </b>
+
+                                                                            </a>
+                                                                        </li>
+
+
+
+
+
+
+                                                                    </ul>
+
+                                                                </div>
+
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p>No enrolled Batches found.</p>
+                                @endif
+
+                                @if (count($alreadyBatchRegistered) > 0)
+                                    <ul>
+                                        @foreach ($alreadyBatchRegistered as $batch)
+                                            <li>
+
+                                                Event ID: {{ $batch->student_batche_id }}
+                                                <br>
+                                                Event ID: {{ $batch->batches->batch_name }}
+                                                <!-- Add other event details as needed -->
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    {{ $alreadyRegistered->links() }} <!-- Add pagination links -->
+                                @else
+                                    <p>No enrolled events found.</p>
+                                @endif
                             </div>
                             <div class="tab-pane fade" id="tab-six">
-                                <h1>Association Content</h1>
+                                <h3 class="py-3">Association Content</h3>
                             </div>
                             <div class="tab-pane fade" id="tab-eight">
-                                <h3 class="py-3">Change Password</h3>
-                                <section class="container ">
-                                    <div class="row  d-flex justify-content-center">
-                                      
-                                        <div class="col-lg-10">
-                        
-                                        
-                                            <div class="contact__form__text">
-                                       
-                                                <form action="#">
-                                                    <div class="input-list">
-                                                        <input type="text" placeholder="Old Password">
-                                                        <input type="text" placeholder="OTP">
+
+                                <section class="py-3  dashboardAreaSubTabView">
+                                    <div class="row m-0">
+                                        <div class="col-lg-12">
+
+                                            <nav class="nav flex-column">
+                                                <ul class="d-flex justify-content-start  nav nav-pills w-100"
+                                                    id="pills-tab" role="tablist">
+                                                    <li class="nav-item"> <a class="nav-link active" data-toggle="pill"
+                                                            href="#edit-profile">Edit Profile</a> </li>
+                                                    <li class="nav-item"> <a class="nav-link" data-toggle="pill"
+                                                            href="#change-password" role="tab">Change Password</a>
+                                                    </li>
+
+
+                                                </ul>
+
+                                            </nav>
+
+
+                                            <div class="tab-content">
+                                                <div class="tab-pane fade show active" id="edit-profile">
+                                                    <div class="tab-pane fade show active" id="editProfile"
+                                                        role="tabpanel" aria-labelledby="editProfile-tab">
+                                                        <h3 class="py-3">Edit Profile</h3>
+                                                        <div class="contact__form__text">
+                                                            <form action="#">
+                                                                <div class="input-list">
+                                                                    <input type="text" placeholder="Your First name">
+                                                                    <input type="text" placeholder="Your Last name">
+                                                                </div>
+                                                                <div class="input-list">
+                                                                    <input type="text"
+                                                                        placeholder="Your contact number">
+                                                                    <input type="text" placeholder="Your email Id">
+                                                                </div>
+
+                                                                <button type="submit" class="site-btn">Submit</button>
+                                                            </form>
+                                                        </div>
                                                     </div>
-                                                    <div class="input-list">
-                                                        <input type="password" placeholder="Password">
-                                                        <input type="password" placeholder="Confirm Password">
-                                                    </div>
-                        
-                                                    <button type="submit" class="site-btn">Change
-                                                        Password</button>
-                                                </form>
+                                                </div>
+                                                <!-- end tab-pane -->
+
+                                                <div class="tab-pane fade" id="change-password">
+                                                    <h3 class="py-3">Change Password</h3>
+                                                    <section class="container py-5">
+                                                        <div class="row d-flex justify-content-center">
+                                                            <div class="col-lg-10">
+                                                                <div class="contact__form__text">
+
+                                                                    @if ($errors->any())
+                                                                        <div class="alert alert-danger">
+                                                                            <ul>
+                                                                                @foreach ($errors->all() as $error)
+                                                                                    <li>{{ $error }}</li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                        </div>
+                                                                    @endif
+                                                                    <form method="POST"
+                                                                        action="{{ route('change.password.submit') }}">
+                                                                        @csrf
+                                                                        <div class="input-list">
+                                                                            <input type="password" name="old_password"
+                                                                                placeholder="Old Password">
+                                                                            <input type="text" name="otp"
+                                                                                placeholder="OTP">
+                                                                        </div>
+                                                                        <div class="input-list">
+                                                                            <input type="password" name="new_password"
+                                                                                placeholder="Password">
+                                                                            <input type="password" name="confirm_password"
+                                                                                placeholder="Confirm Password">
+                                                                        </div>
+                                                                        <button type="submit" class="site-btn">Change
+                                                                            Password</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </div>
+
+                                                <!-- end tab-pane -->
+
+
+
+                                                <!-- end tab-pane -->
+
+
+
+
                                             </div>
-                                        
-                        
+
                                         </div>
+
+
+                                        <!-- tab-content -->
+
+
+
+
+
                                     </div>
+
+
                                 </section>
-                                
+
                             </div>
                             <div class="tab-pane fade" id="tab-nine">
                                 <h1>Logout Content</h1>

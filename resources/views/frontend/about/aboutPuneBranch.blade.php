@@ -41,7 +41,9 @@
                             <p class="last_para">Unfortunately, many graphic design firms who position themselves as
                                 advertising agencies believe that branding your corporate identity is all about
                                 developing great looking visual solutions.</p>
+                                <div class="d-flex justify-content-center justify-content-lg-start">
                             <a href="{{ url('/contact') }}" class="primary-btn">Contact Us</a>
+                                </div>
                         </div>
                     </div>
                 </div>

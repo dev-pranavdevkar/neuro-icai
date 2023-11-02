@@ -254,15 +254,15 @@
                                     <div class="input-list">
                                         <div class="input-list-item">
 
-                                            <p>Address</p>
-                                            <input type="text" name="address" autocomplete="off">
+                                            <p>Batch </p>
+                                            <input type="text" name="address_line_1" autocomplete="off">
                                             <div>
-                                                <span id="address1" class="text-danger font-weight-bold"></span>
+                                                <span id="address_line_1" class="text-danger font-weight-bold"></span>
                                             </div>
-                                            @if ($errors->has('address'))
+                                            @if ($errors->has('address_line_1'))
                                                 <div class="alert-vsa text-danger ">
                                                     <ul>
-                                                        @foreach ($errors->get('address') as $error)
+                                                        @foreach ($errors->get('address_line_1') as $error)
                                                             <li>{{ $error }}</li>
                                                         @endforeach
                                                     </ul>

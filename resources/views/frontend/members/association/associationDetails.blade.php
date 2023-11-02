@@ -105,8 +105,11 @@
                                                         <tr>
                                                             <td>{{ $offer->offers }}</td>
                                                             <td>{{ $offer->discount }}</td>
-                                                            <td> <a href="{{ route('redeemOfferTicket', ['id' => $offer->id]) }}"
+                                                            <td> 
+                                                                
+                                                                <a href="{{ auth()->check() ? route('redeemOfferTicket', ['id' => $offer->id]) : route('login') }}"
                                                                     class="btn btn-primary">Redeem</a>
+
                                                             </td>
                                                         </tr>
                                                     @endif

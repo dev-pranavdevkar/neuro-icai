@@ -129,7 +129,7 @@
 
 
         {{-- ------Tab View --}}
-        <section class="py-5  ">
+        <section class="py-5  sub-dashboardAreaTabView">
             <div class="row m-0  bg-white">
                 <div class="col-lg-12">
 

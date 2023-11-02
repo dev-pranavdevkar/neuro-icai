@@ -225,8 +225,9 @@
                                 few hundreds and students in about couple of thousands. The Branch has now Membership about
                                 9000 Members, including 3500 Members from Industry and About 22,000 students.</p>
                         </div>
-
-                        <a href="{{ url('/about/aboutPuneBranch') }}" class="primary-btn bottom-btn">More Details</a>
+                        <div class="mb-lg-5 d-flex justify-content-center justify-content-lg-start ">
+                            <a href="{{ url('/about/aboutPuneBranch') }}" class="primary-btn bottom-btn">More Details</a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-5 offset-lg-1">
@@ -261,7 +262,7 @@
                                 power.</p>
 
                         </div>
-                        <div class="mb-5 d-flex ">
+                        <div class="mb-lg-5 d-flex justify-content-center justify-content-lg-start ">
                             <a href="{{ url('/about/chairmanCommunique') }}" class="primary-btn bottom-btn">More Details</a>
                         </div>
                     </div>
@@ -367,7 +368,7 @@
             <div class="row d-flex justify-content-center">
                 {{-- 1 --}}
                 <div class="col-lg-12 py-3 ">
-                    <div class="card member-card p-4 HomeupdatesCard">
+                    <div class="card member-card p-lg-4 p-3 HomeupdatesCard">
                         <div class="card-body " style="border: 1px solid #909090">
                             <div class="row">
                                 <div class="col-lg-3 d-flex align-items-center justify-content-center">
@@ -463,8 +464,8 @@
                                         {{-- <span>ICAI Pune</span> --}}
                                         <div class="posted-details">
                                             <ul class="d-flex justify-content-center">
-                                                <li><a href="{{ url('/') }}"><i
-                                                            class="fa fa-calendar"></i> {{ \Carbon\Carbon::parse($association['start_date'])->format('d-m-Y') }}</a>
+                                                <li><a href="{{ url('/') }}"><i class="fa fa-calendar"></i>
+                                                        {{ \Carbon\Carbon::parse($association['start_date'])->format('d-m-Y') }}</a>
                                                 </li>
                                                 {{-- <li><a href="{{ url('/') }}"><i class="fa fa-clock-o"></i> 10:00 AM</a> --}}
                                                 </li>
@@ -494,8 +495,8 @@
                     in_array(
                         'members',
                         Auth::user()->roles->pluck('name')->toArray()))
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-12">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-4 col-md-4 col-6">
                         <div class="counter__item">
                             <img src="{{ url('frontend/img/counter/register.png') }}" alt="">
                             <div class="counter__number">
@@ -504,7 +505,7 @@
                             <p>Registered Events</p>
                         </div>
                     </div>
-                    <div class="ccol-lg-4 col-md-4 col-12">
+                    <div class="col-lg-4 col-md-4 col-6">
                         <div class="counter__item">
                             <img src="{{ url('frontend/img/counter/attended.png') }}" alt="">
                             <div class="counter__number">
@@ -514,7 +515,7 @@
                             <p>Attended Events</p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-4 col-12">
+                    <div class="col-lg-4 col-md-4 col-6">
                         <div class="counter__item">
                             <img src="{{ url('frontend/img/counter/offers.png') }}" alt="">
                             <div class="counter__number">
@@ -533,7 +534,7 @@
                     in_array(
                         'student',
                         Auth::user()->roles->pluck('name')->toArray()))
-                <div class="row">
+                <div class="row d-flex justify-content-center">
                     <div class="col-lg-3 col-md-3 col-6">
                         <div class="counter__item">
                             <img src="{{ url('frontend/img/counter/register.png') }}" alt="">
@@ -837,7 +838,7 @@
                                 <div class="card-body ">
                                     <h5 class="card-title"> {{ $vacancy['position'] }}</h5>
                                     <h6 class="card-subtitle mb-2">
-                                        @if(isset($vacancy['company_details']['firm_name']))
+                                        @if (isset($vacancy['company_details']['firm_name']))
                                             {{ $vacancy['company_details']['firm_name'] }}
                                         @else
                                             Firm name not available
@@ -861,7 +862,8 @@
                                             GST, TDS, etc.</p>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}" class="btn btn-primary">View Details</a>
+                                        <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}"
+                                            class="btn btn-primary">View Details</a>
                                     </div>
 
                                 </div>

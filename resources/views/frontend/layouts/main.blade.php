@@ -47,8 +47,8 @@
 
             <ul>
                 {{-- <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li> --}}
-                <li class="active"><a href="{{ url('/') }}">Home</a></li>
-                <li><a href="{{ url('/') }}">About Us </a>
+                <li class="{{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
+                <li class="{{ request()->is('about*') ? 'active' : '' }}">About Us 
                     <ul class="dropdown">
                         <li><a href="{{ url('/about/aboutPuneBranch') }}"> About Pune Branch </a></li>
                         <li><a href="{{ url('/about/chairmanCommunique') }}"> Chairman Communique </a>
@@ -74,7 +74,7 @@
                             in_array(
                                 'members',
                                 Auth::user()->roles->pluck('name')->toArray())))
-                    <li><a href="{{ url('/') }}">Members</a>
+                    <li class="{{ request()->is('members*') ? 'active' : '' }}"><a href="">Members</a>
                         <ul class="dropdown">
                             <li><a href="{{ url('members/puneMembersNewsletter') }}"> Pune Member's
                                     Newsletter </a></li>
@@ -102,7 +102,7 @@
                             in_array(
                                 'student',
                                 Auth::user()->roles->pluck('name')->toArray())))
-                    <li><a href="{{ url('/') }}">Students</a>
+                    <li class="{{ request()->is('students*') ? 'active' : '' }}"><a href="">Students</a>
                         <ul class="dropdown">
                             <li><a href="{{ url('/students/aboutPuneWICASA') }}"> About Pune WICASA
                                 </a></li>
@@ -125,32 +125,32 @@
 
 
 
-                <li><a href="{{ url('/') }}">Events</a>
+                <li  class="{{ request()->is('events*') ? 'active' : '' }}"><a href="">Events</a>
                     <ul class="dropdown">
                         <li><a href="{{ url('/events/upcommingEvents') }}"> Upcomming Events </a></li>
                         <li><a href="{{ url('/events/pastEvents') }}"> Past Events </a></li>
 
                     </ul>
                 </li>
-                <li><a href="{{ url('/vacancies/viewVacancies') }}">Vacancies</a>
-
+                <li class="{{ request()->is('vacancies*') ? 'active' : '' }}"><a href="{{ url('/vacancies/viewVacancies') }}">Vacancies</a>
+                    @if (
+                          
+                    (Auth::user() &&
+                        in_array(
+                            'members',
+                            Auth::user()->roles->pluck('name')->toArray())))
                     <ul class="dropdown">
                         <li><a href="{{ url('/vacancies/viewVacancies') }}"> View Vacancies </a>
                         </li>
-                        @if (
-                          
-                                (Auth::user() &&
-                                    in_array(
-                                        'members',
-                                        Auth::user()->roles->pluck('name')->toArray())))
+                     
                             <li><a href="{{ url('/vacancies/submitVacancies') }}"> Submit a Vacancy
                                 </a></li>
-                        @endif
+                       
                     </ul>
-
+                    @endif
                 </li>
 
-                {{-- <li><a href="{{ url('/') }}">Downloads</a>
+                {{-- <li><a href="">Downloads</a>
                     <ul class="dropdown">
                         <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
@@ -158,7 +158,7 @@
                     </ul>
                 </li> --}}
 
-                <li><a href="{{ url('/contact') }}">Contact Us</a></li>
+                <li class="{{ request()->is('contact') ? 'active' : '' }}"><a href="{{ url('/contact') }}">Contact Us</a></li>
                 <li class="">
                     @if (Auth::user())
                     <a href="{{ url('/dashboard') }}">  {{ Auth::user()->name }} {{ Auth::user()->last_name }}</a>
@@ -263,8 +263,8 @@
                         <nav class="header__menu ml-auto">
                             <ul>
                                 {{-- <li class="active"><a href="{{ url('/razorpay-payment') }}">Payment</a></li> --}}
-                                <li class="active"><a href="{{ url('/') }}">Home</a></li>
-                                <li><a href="{{ url('/') }}">About Us </a>
+                                <li class="{{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
+                                <li class="{{ request()->is('about*') ? 'active' : '' }}"><a href="">About Us </a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/about/aboutPuneBranch') }}"> About Pune Branch </a></li>
                                         <li><a href="{{ url('/about/chairmanCommunique') }}"> Chairman Communique </a>
@@ -290,7 +290,7 @@
                                             in_array(
                                                 'members',
                                                 Auth::user()->roles->pluck('name')->toArray())))
-                                    <li><a href="{{ url('/') }}">Members</a>
+                                    <li class="{{ request()->is('members*') ? 'active' : '' }}"><a href="">Members</a>
                                         <ul class="dropdown">
                                             <li><a href="{{ url('members/puneMembersNewsletter') }}"> Pune Member's
                                                     Newsletter </a></li>
@@ -318,7 +318,7 @@
                                             in_array(
                                                 'student',
                                                 Auth::user()->roles->pluck('name')->toArray())))
-                                    <li><a href="{{ url('/') }}">Students</a>
+                                    <li class="{{ request()->is('students*') ? 'active' : '' }}"><a href="">Students</a>
                                         <ul class="dropdown">
                                             <li><a href="{{ url('/students/aboutPuneWICASA') }}"> About Pune WICASA
                                                 </a></li>
@@ -341,31 +341,31 @@
 
 
 
-                                <li><a href="{{ url('/') }}">Events</a>
+                                <li class="{{ request()->is('events*') ? 'active' : '' }}"><a href="">Events</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/events/upcommingEvents') }}"> Upcomming Events </a></li>
                                         <li><a href="{{ url('/events/pastEvents') }}"> Past Events </a></li>
 
                                     </ul>
                                 </li>
-                                <li><a href="{{ url('/vacancies/viewVacancies') }}">Vacancies</a>
-
+                                <li  class="{{ request()->is('vacancies*') ? 'active' : '' }}"><a href="{{ url('/vacancies/viewVacancies') }}">Vacancies</a>
+                                    @if (
+                                         
+                                    (Auth::user() &&
+                                        in_array(
+                                            'members',
+                                            Auth::user()->roles->pluck('name')->toArray())))
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/vacancies/viewVacancies') }}"> View Vacancies </a>
                                         </li>
-                                        @if (
-                                         
-                                                (Auth::user() &&
-                                                    in_array(
-                                                        'members',
-                                                        Auth::user()->roles->pluck('name')->toArray())))
+                                     
                                             <li><a href="{{ url('/vacancies/submitVacancies') }}"> Submit a Vacancy
                                                 </a></li>
-                                        @endif
+                                      
                                     </ul>
-
+                                    @endif
                                 </li>
-                                {{-- <li><a href="{{ url('/') }}">Downloads</a>
+                                {{-- <li><a href="">Downloads</a>
                                     <ul class="dropdown">
                                         <li><a href="{{ url('/downloads/presentations') }}"> Presentations </a></li>
 
@@ -373,7 +373,7 @@
                                     </ul>
                                 </li> --}}
 
-                                <li><a href="{{ url('/contact') }}">Contact Us</a></li>
+                                <li class="{{ request()->is('contact') ? 'active' : '' }}"><a href="{{ url('/contact') }}">Contact Us</a></li>
                                 {{-- <li><a href="{{ url('/help') }}">Help</a></li> --}}
                             </ul>
                         </nav>
@@ -445,10 +445,10 @@
                         <h5>Students</h5>
                         {{-- <div class="footer__widget footer__widget--social">
                             <ul>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-facebook"></i> Facebook</a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-instagram"></i> Instagram</a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-twitter"></i> Twitter</a></li>
-                                <li><a href="{{ url('/') }}"><i class="fa fa-skype"></i> Skype</a></li>
+                                <li><a href=""><i class="fa fa-facebook"></i> Facebook</a></li>
+                                <li><a href=""><i class="fa fa-instagram"></i> Instagram</a></li>
+                                <li><a href=""><i class="fa fa-twitter"></i> Twitter</a></li>
+                                <li><a href=""><i class="fa fa-skype"></i> Skype</a></li>
                             </ul>
                         </div> --}}
                         <div class="footer__widget">

@@ -250,9 +250,11 @@
                                     @if ($batchDetails->start_date > now())
                                         @if ($alreadyRegistered)
                                          
-                                            <a href="#" id="viewTicket">
-                                                <button class="btn btn-primary">View Ticket</button>
-                                            </a>
+                                        <a href="{{ route('batchAddmissionReceipt', ['id' => $batchDetails->id]) }}"
+                                            id="viewTicket">
+                                            <button class="btn btn-primary">View
+                                                Ticket</button>
+                                        </a>
                                         @else
                                             
                                             <button id="payNow" class="btn btn-primary" data-batch="{{ $batchDetails->id }}">Pay Now</button>

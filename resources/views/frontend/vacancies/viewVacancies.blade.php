@@ -28,70 +28,76 @@
 
                     <div class="row d-flex justify-content-center">
                         @foreach ($vacancyDetails as $vacancy)
-                            <div class="col-lg-5 py-3 ">
+                            @if (\Carbon\Carbon::parse($vacancy['expiry_date'])->isFuture())
+                                <div class="col-lg-5 py-3 ">
 
-                                <div class="card jobcard h-100">
+                                    <div class="card jobcard h-100">
 
-                                    <div class="card-body ">
-                                        <h5 class="card-title">{{ $vacancy['position'] }}</h5>
-                                        <h6 class="card-subtitle mb-2 ">{{ $vacancy['ca_firm_name'] }}</h6>
-                                        <div class=" posted-details">
-                                            <ul class="d-flex justify-content-start">
-                                                <li class="mr-5"><i class="fa fa-briefcase"
-                                                        aria-hidden="true"></i>{{ $vacancy['experience'] }}
-                                                    Yrs</li>
-                                                <li class="mr-5"><i class="fa fa-inr" aria-hidden="true"></i>30K-50K</li>
-                                                <li class="mr-5">
-                                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                                    
-                                                    @if(isset($vacancy['location_details']['city']))
-                                                        {{ $vacancy['location_details']['city'] }}
-                                                    @else
-                                                        N/A
-                                                    @endif
-                                                </li>
-                                                
-                                            </ul>
-                                            <div class="mt-2">
-                                                <ul class="d-flex justify-content-between">
-                                                    <li class="d-flex">
-                                                        <i class="fa fa-location-arrow mt-1" aria-hidden="true"></i>
-                                                    
-                                                        @if(isset($vacancy['location_details']))
-                                                            {{ $vacancy['location_details']['address_line_1'] ?? '' }}
-                                                            {{ $vacancy['location_details']['address_line_2'] ?? '' }}
-                                                            {{ $vacancy['location_details']['city'] ?? '' }}
-                                                            {{ $vacancy['location_details']['state'] ?? '' }}-{{ $vacancy['location_details']['pincode'] ?? '' }}
+                                        <div class="card-body ">
+                                            <h5 class="card-title">{{ $vacancy['position'] }}</h5>
+                                            <h6 class="card-subtitle mb-2 ">{{ $vacancy['ca_firm_name'] }}</h6>
+                                            <div class=" posted-details">
+                                                <ul class="d-flex justify-content-start">
+                                                    <li class="mr-5"><i class="fa fa-briefcase"
+                                                            aria-hidden="true"></i>{{ $vacancy['experience'] }}
+                                                        Yrs</li>
+                                                    <li class="mr-5"><i class="fa fa-inr" aria-hidden="true"></i>30K-50K
+                                                    </li>
+                                                    <li class="mr-5">
+                                                        <i class="fa fa-map-marker" aria-hidden="true"></i>
+
+                                                        @if (isset($vacancy['location_details']['city']))
+                                                            {{ $vacancy['location_details']['city'] }}
                                                         @else
                                                             N/A
                                                         @endif
                                                     </li>
-                                                    
-                                                </ul>
-                                            </div>
-                                            <p class="mt-2">We are looking for {{ $vacancy['position'] }}. The candidates
-                                                will get
-                                                exposure in the field of Accounting, Statutory Audits, Internal Audits,
-                                                Income Tax,
-                                                GST, TDS, etc.</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
 
-                                            <!-- Your Blade file -->
-                                            <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}"
-                                                class="btn btn-primary">Details</a>
+                                                </ul>
+                                                <div class="mt-2">
+                                                    <ul class="d-flex justify-content-between">
+                                                        <li class="d-flex">
+                                                            <i class="fa fa-location-arrow mt-1" aria-hidden="true"></i>
+
+                                                            @if (isset($vacancy['location_details']))
+                                                                {{ $vacancy['location_details']['address_line_1'] ?? '' }}
+                                                                {{ $vacancy['location_details']['address_line_2'] ?? '' }}
+                                                                {{ $vacancy['location_details']['city'] ?? '' }}
+                                                                {{ $vacancy['location_details']['state'] ?? '' }}-{{ $vacancy['location_details']['pincode'] ?? '' }}
+                                                            @else
+                                                                N/A
+                                                            @endif
+                                                        </li>
+
+                                                    </ul>
+                                                </div>
+                                                <p class="mt-2">We are looking for {{ $vacancy['position'] }}. The
+                                                    candidates
+                                                    will get
+                                                    exposure in the field of Accounting, Statutory Audits, Internal Audits,
+                                                    Income Tax,
+                                                    GST, TDS, etc.</p>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+
+                                                <!-- Your Blade file -->
+                                                <a href="{{ route('vacancyDetails', ['id' => $vacancy->id]) }}"
+                                                    class="btn btn-primary">Details</a>
                                                 <a href="{{ route('applyJob', ['id' => $vacancy->id]) }}"
                                                     class="btn btn-primary">Apply</a>
 
 
-                                          
+
+                                            </div>
+
                                         </div>
-
                                     </div>
-                                </div>
 
-                            </div>
+                                </div>
+                            @endif
                         @endforeach
+
+
                     </div>
                 </div>
                 <div class="w-100">
@@ -119,8 +125,7 @@
                                     <a href="{{ $vacancyDetails->nextPageUrl() }}" rel="next"
                                         aria-label="@lang('pagination.next')">Next</a>
                                 @else
-                                    <span class="disabled" aria-disabled="true"
-                                        aria-label="@lang('pagination.next')">Next</span>
+                                    <span class="disabled" aria-disabled="true" aria-label="@lang('pagination.next')">Next</span>
                                 @endif
                             </li>
                         </ul>

@@ -58,6 +58,13 @@ class ProfileController extends Controller
                 ->orderBy('id', 'DESC')
                 ->paginate(10,['*'],"registredEvents");
 
+                $alreadyBatchRegistered = EventRegistration::where('user_id', $user->id)
+                ->where('payment_status', 'like', 'paid')
+                ->whereNotNull('student_batche_id') // Filter by events
+                ->with(['event_details','batches'])
+                ->orderBy('id', 'DESC')
+                ->paginate(10,['*'],"registredEvents");
+
             // Get the list of event IDs for the user
             $eventIds = $alreadyRegistered->pluck('event_id')->toArray();
 
@@ -76,6 +83,7 @@ class ProfileController extends Controller
 
             $numRegisteredBatches = EventRegistration::where('user_id', $user->id)
                 ->where('payment_status', 'like', 'paid')
+                ->with(['batches'])
                 ->whereNotNull('student_batche_id') // Filter by batches
                 ->count();
 
@@ -92,6 +100,6 @@ class ProfileController extends Controller
 
         $studentBatches = StudentBatches::with([])->paginate(3);
 
-        return view('frontend.profile.dashboard', compact('idCardData', 'eventDetails', 'alreadyRegistered', 'numRegisteredEvents', 'numRegisteredBatches', 'companyDetails', 'locationDetails', 'eventIds'));
+        return view('frontend.profile.dashboard', compact('idCardData', 'eventDetails', 'alreadyRegistered', 'numRegisteredEvents', 'numRegisteredBatches', 'companyDetails', 'locationDetails', 'alreadyBatchRegistered'));
     }
 }
