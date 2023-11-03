@@ -96,7 +96,7 @@ class MembersController extends Controller
                     'user_id' => $user->id,
                     'offers_association_id' => $id,
                 ]);
-    
+    echo "user_id, offers_association_id";
                 // Redeem the offer
                 $response = $this->addRegisterToAssociation($request);
     
@@ -122,13 +122,5 @@ class MembersController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
-    
-    
-    
-    
-
-
-
 
 }
