@@ -347,6 +347,8 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::get('getAllEventDetails', [WebAuthController::class, 'getAllEventDetails']);
         //EventRegistration
         Route::post('addEventRegistration', [WebMetaDataController::class, 'addEventRegistration']);
+        //offer claim
+        Route::post('addRegisterToAssociation', [WebMetaDataController::class, 'addRegisterToAssociation']);
         //payment verification
         Route::post('paymentVerification', [WebMetaDataController::class, 'paymentVerification']);
         // Student Batches

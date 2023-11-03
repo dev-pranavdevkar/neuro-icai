@@ -150,7 +150,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse('No Data Available', [], false);
             }
         } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 500);
         }
     }
     public function getStudentNoticeBoard(Request $request)
@@ -183,7 +183,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse('No Data Available', [], false);
             }
         } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 500);
         }
     }
 
@@ -243,7 +243,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse([], 'Payment Cannot Be Initiated', false);
             }
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
     public function paymentVerification(Request $request)
@@ -275,7 +275,7 @@ class WebMetaDataController extends Controller
             }
             return $this->sendResponse([], 'Event registration successfully', false);
         } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 413);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 413);
         }
     }
     public function addVacancyDetails(Request $request)
@@ -315,7 +315,7 @@ class WebMetaDataController extends Controller
             // Redirect to the 'submitVacancies' route
             return back()->with('success', 'Job openings have been added successfully.');
         } catch (Exception $e) {
-            $this->sendError('Something went wrong', $e->getTrace(), 413);
+            $this->sendError('Something went wrong', $e->getMessage(), 413);
             return response()->json(['success' => false, 'message' => 'Something went wrong']);
         }
     }
@@ -384,6 +384,7 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
+
     public function addStudentBatches(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -416,7 +417,7 @@ class WebMetaDataController extends Controller
             $newDetails->save();
             return $this->sendResponse([], ' Student batches added successfully.', true);
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
 
@@ -480,7 +481,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse([], 'No Data Available', false);
             }
         } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 500);
         }
     }
 
@@ -535,6 +536,7 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
+    
     public function saveCompanyLogo($image): string
     {
         $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
@@ -586,7 +588,7 @@ class WebMetaDataController extends Controller
             $newAssociationDetails->save();
             return $this->sendResponse([], 'Association Details added successfully', true);
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong', $e->getTrace(), 413);
+            return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
     public function getAllAssociationDetails(Request $request)
@@ -617,7 +619,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse('No Data Available', [], false);
             }
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 500);
         }
     }
     public function addRegisterToAssociation(Request $request): \Illuminate\Http\JsonResponse
@@ -630,12 +632,12 @@ class WebMetaDataController extends Controller
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $user = Auth::user()->id;
+            //$user = Auth::user()->id;
             $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)
                 // ->where('association_id',$request->association_id)
                 ->where('offers_association_id',$request->offers_association_id)
                 ->first();
-
+           
             if ($existingRegistration) {
                 return $this->sendError('User is already registered for an association offer.', [], 422);
             }
@@ -647,20 +649,21 @@ class WebMetaDataController extends Controller
                 return $this->sendError('Offer not found for this association.', [], 404);
             }
             $limit = (int) $offer->limits;
-            $registeredUsersCount = RegisterToAssocitationDetails::where('association_id', $request->association_id)
+            $registeredUsersCount = RegisterToAssocitationDetails::query()
                 ->where('offers_association_id',$request->offers_association_id)
                 ->count();
             if ($registeredUsersCount >= $limit) {
                 return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
             }
             $newDetails = new RegisterToAssocitationDetails;
-            $newDetails->user_id = $user;
+            $newDetails->user_id = $request->user_id;
             //$newDetails->association_id = $request->association_id;
             //$newDetails->created_by_user_id = $request->created_by_user_id;
             $newDetails->offers_association_id=$request->offers_association_id;
             $newDetails->save();
             return $this->sendResponse([], 'Offer Claim successfully.', true);
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
@@ -756,7 +759,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse('No Data Available', [], false);
             }
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 500);
         }
     }
     public function getAllVacancyDetails(Request $request)
@@ -824,7 +827,7 @@ class WebMetaDataController extends Controller
                 return $this->sendResponse([], 'No Data Available', false);
             }
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getTrace(), 500);
+            return $this->sendError($e->getMessage(), $e->getMessage(), 500);
         }
     }
 }

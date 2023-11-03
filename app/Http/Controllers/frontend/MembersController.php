@@ -84,25 +84,49 @@ class MembersController extends Controller
         }
     }
 
-
     public function redeemOfferTicket($id)
     {
         try {
-            $offers_of_association = OffersAssociation::findOrFail($id);
-
-            $qrOfferData = null; // Initialize $qrOfferData
-
-            if(Auth::user()){
+            if (Auth::user()) {
                 $user = Auth::user();
-                $qrOfferData = QrCode::size(150)->generate("{$user->id}_{$offers_of_association->id}");
+                $offers_of_association = OffersAssociation::findOrFail($id);
+    
+                // Creating request object
+                $request = new Request([
+                    'user_id' => $user->id,
+                    'offers_association_id' => $id,
+                ]);
+    
+                // Redeem the offer
+                $response = $this->addRegisterToAssociation($request);
+    
+                if ($response->getStatusCode() === 200) {
+                    // Generate QR code
+                    $qrOfferData = QrCode::size(150)->generate("{$user->id}_{$offers_of_association->id}");
+    
+                    return view('frontend.members.association.redeemOfferTicket', compact('id', 'offers_of_association', 'qrOfferData'));
+                } else {
+                    return $response;
+                }
+            } else {
+                return response()->json(['error' => 'User not authenticated'], 401);
             }
-
-            return view('frontend.members.association.redeemOfferTicket', compact('id', 'offers_of_association', 'qrOfferData'));
         } catch (\Exception $e) {
-            // Handle the exception, e.g., log or return an error response.
-            return response()->json(['error' => 'Something went wrong'], 500);
+            // Log the error with detailed information
+            \Log::error('Error in redeemOfferTicket: ' . $e->getMessage());
+            \Log::error('File: ' . $e->getFile());
+            \Log::error('Line: ' . $e->getLine());
+            \Log::error('Trace: ' . $e->getTraceAsString());
+    
+            // Return a generic error response
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
+    
+    
+    
+    
 
 
 

@@ -92,10 +92,20 @@
                                                         <td scope="col">
                                                          <a href="{{ $offers_of_association['offers_pdf'] }}">Click Here to Download</a>  
                                                         </td>
-
-
-
                                                     </tr>
+
+                                                    
+                                                    <tr>
+                                                        <th scope="col">Offer Status</th>
+                                                        <td scope="col">
+                                                            @if (!$offers_of_association['is_redeemed'])
+                                                                <button type="button" class="btn btn-primary" href="">Redeem Now</button>
+                                                            @else
+                                                                <p>Redeemed</p>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    
 
 
                                            

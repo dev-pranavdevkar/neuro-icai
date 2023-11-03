@@ -118,6 +118,7 @@ Route::get('/downloads/presentations', [DownloadsController::class, 'presentatio
 
 
 Route::get('/login', [LoginController::class, 'index']);
+Route::get('/test', [MembersController::class, 'test']);
 Route::get('/signup', [SignupController::class, 'index']);
 Route::get('/forgetPassword', [ForgetPasswordController::class, 'index']);
 Route::post('/signup', [WebAuthController::class, 'registerUser'])->name('registerUser');
