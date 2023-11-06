@@ -270,7 +270,7 @@ class WebAuthController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-    // 
+
     public function getAllEventDetails(Request $request)
     {
         try {
