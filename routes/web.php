@@ -150,10 +150,10 @@ Route::get('/profile/digitalIdCard', [ProfileController::class, 'digitalIdCard']
 Route::get('/profile/editProfile', [ProfileController::class, 'editProfile']);
 Route::post('/profile/editProfile', [WebAuthController::class, 'editProfile'])->name('editProfile');
 // Define the GET route for the view
-Route::get('/profile/changePassword', [ProfileController::class, 'changePassword'])->name('change.password.form');
+Route::get('/profile/changePassword', [ProfileController::class, 'changePassword'])->name('changePassword');
 
 // Define the POST route for form submission
-Route::post('/profile/changePassword', [WebAuthController::class, 'changeForgetPassword'])->name('change.password.submit');
+Route::post('/profile/changePassword', [WebAuthController::class, 'changePassword'])->name('changePassword');
 
 
 

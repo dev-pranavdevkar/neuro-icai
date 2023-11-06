@@ -20,9 +20,9 @@
         <!-- Breadcrumb Section End -->
         <section class="container py-5">
             <div class="row d-flex justify-content-center">
-                <div class="col-lg-10">
+                <div class="col-lg-6">
                     <div class="contact__form__text">
-                        <div class="contact__form__title">
+                        <div class="contact__form__title text-center">
                             <h2>Change Password</h2>
                             <p>To change password fill the following form</p>
                         </div>
@@ -35,19 +35,24 @@
                                 </ul>
                             </div>
                         @endif
-                        <form method="POST" action="{{ route('change.password.submit') }}">
+                        <form id="changePassword" action="{{ route('changePassword') }}" method="POST" onsubmit="return">
                             @csrf
                             <div class="input-list">
-                                <input type="password" name="old_password" placeholder="Old Password">
-                                <input type="text" name="otp" placeholder="OTP">
+                                <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+                                <input class="w-100" type="password" name="old_password" placeholder="Old Password">
                             </div>
                             <div class="input-list">
-                                <input type="password" name="new_password" placeholder="Password">
-                                <input type="password" name="confirm_password" placeholder="Confirm Password">
+                                <input class="w-100" type="password" name="new_password" placeholder="New Password">
                             </div>
-                            <button type="submit" class="site-btn">Change Password</button>
+                            <div class="input-list">
+                                <input class="w-100" type="password" name="confirm_password" placeholder="Confirm New Password">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="site-btn">Change Password</button>
+                            </div>
                         </form>
                     </div>
+                    
                 </div>
             </div>
         </section>

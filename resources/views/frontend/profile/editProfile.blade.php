@@ -42,15 +42,8 @@
                                 </ul>
                             </div>
                         @endif
-                        {{ Auth::user() }}
-                        <a href="">
-                          
-                                {{ $locationDetails->address_line_1 }},
-                                {{ $locationDetails->address_line_2 }},
-                                {{ $locationDetails->city }},
-                                {{ $locationDetails->state }}-{{ $locationDetails->pincode }},
-
-                        </a>
+                      
+                  
                         <form id="editProfile" action="{{ route('editProfile') }}" method="POST" onsubmit="return">
                             @csrf
                             <input type="hidden" name="id" value="{{ Auth::user()->id }}">
@@ -80,6 +73,7 @@
                         </form>
                     </div>
 
+                  
 
                 </div>
             </div>

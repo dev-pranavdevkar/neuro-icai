@@ -270,7 +270,7 @@ class WebAuthController extends Controller
             return $this->sendError($e->getMessage(), $e->getTrace(), 500);
         }
     }
-// 
+    // 
     public function getAllEventDetails(Request $request)
     {
         try {
@@ -392,39 +392,38 @@ class WebAuthController extends Controller
         return response()->json(['message' => 'OTP verified successfully'], true);
     }
 
-    public function changeForgetPassword(Request $request)
+    public function changePassword(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'email' => 'required|string|email|max:255',
-                'otp' => 'required|numeric',
-                'new_password' => 'required|string',
+                'email' => 'required|string',
+                'old_password' => 'required',
+                'new_password' => 'required|string|min:6|different:old_password',
+                'confirm_password' => 'required|same:new_password',
             ]);
+
             if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
+                return back()->withErrors($validator)->withInput();
             }
 
             $user = User::where('email', $request->email)->first();
+
             if (!$user) {
-                return $this->sendError('Email Id does Not Exist', [], 200);
+                return $this->sendError('User Not Found', [], 404);
             }
-            $to = Carbon::createFromFormat('Y-m-d H:i:s', $user->forget_password_timestamp);
-            $from = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-            $time_diff = $to->diffInMinutes($from);
-            if ($time_diff > 5) {
-                return $this->sendError('Time Limit Expired', [], 200);
+
+            if (!Hash::check($request->old_password, $user->password)) {
+                return $this->sendError('Incorrect Old Password', [], 200);
             }
-            if ($user->forget_password_otp != $request->otp) {
-                return $this->sendError('Invalid Otp ! ', [], 200);
-            }
+
             $user->password = Hash::make($request->new_password);
             $user->save();
-            return $this->sendResponse([], 'Password Changed Successfully', true);
+
+            return back()->with('success', 'Password Changed Successfully');
         } catch (Exception $e) {
-            return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
+            return $this->sendError('Something Went Wrong', [$e->getMessage()], 500);
         }
     }
-
 
     public function editProfile(Request $request)
     {

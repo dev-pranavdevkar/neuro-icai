@@ -377,6 +377,8 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
         // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
         Route::post('addAssociationDetails', [WebMetaDataController::class, 'addAssociationDetails']);
+        Route::post('changePassword', [WebAuthController::class, 'changePassword']);
+        
         // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
     });
 });

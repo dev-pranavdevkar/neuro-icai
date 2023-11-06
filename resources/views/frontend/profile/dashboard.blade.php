@@ -898,7 +898,7 @@
                                                                         </div>
                                                                     @endif
                                                                     <form method="POST"
-                                                                        action="{{ route('change.password.submit') }}">
+                                                                        action="">
                                                                         @csrf
                                                                         <div class="input-list">
                                                                             <input type="password" name="old_password"
