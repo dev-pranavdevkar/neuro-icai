@@ -21,7 +21,7 @@ use App\Models\EventImages;
 use App\Models\EventPresentationPdf;
 use App\Models\RegisterToAssocitationDetails;
 use App\Models\OffersAssociation;
-
+use App\Models\ContactUs;
 use DB;
 use Auth;
 use JWTAuth;
@@ -288,21 +288,21 @@ class WebMetaDataController extends Controller
                 'expiry_date' => 'nullable|date',
                 'job_type' => [Rule::in(['internship', 'full_time'])],
             ]);
-    
+
             if ($validator->fails()) {
                 $this->sendErrorsubmitVacancies('Validation Error.', $validator->errors());
                 return response()->json(); // Return an empty JSON response
             }
-    
+
             $user = Auth::user()->id;
-    
+
             if (!in_array('members', auth()->user()->roles->pluck('name')->toArray())) {
                 $this->sendError('Permission Denied. You must be a member to add a vacancy.', [], 403);
                 return response()->json(); // Return an empty JSON response
             }
-    
+
             $newVacancy = new VacancyDetails();
-    
+
             $newVacancy->position = $request->position;
             $newVacancy->comments = $request->comments;
             $newVacancy->experience = $request->experience;
@@ -311,7 +311,7 @@ class WebMetaDataController extends Controller
             $newVacancy->expiry_date = $request->expiry_date;
             $newVacancy->job_type = $request->job_type;
             $newVacancy->save();
-    
+
             // Redirect to the 'submitVacancies' route
             return back()->with('success', 'Job openings have been added successfully.');
         } catch (Exception $e) {
@@ -319,7 +319,7 @@ class WebMetaDataController extends Controller
             return response()->json(['success' => false, 'message' => 'Something went wrong']);
         }
     }
-    
+
 
 
     public function getVacancyDetailsById(Request $request): \Illuminate\Http\JsonResponse
@@ -536,7 +536,7 @@ class WebMetaDataController extends Controller
             return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
         }
     }
-    
+
     public function saveCompanyLogo($image): string
     {
         $image_name = 'image' . time() . '.' . $image->getClientOriginalExtension();
@@ -627,7 +627,7 @@ class WebMetaDataController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 //  'association_id' => 'required|exists:association_details,id',
-                'offers_association_id'=>'required|exists:offers_association,id'
+                'offers_association_id' => 'required|exists:offers_association,id'
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -635,14 +635,14 @@ class WebMetaDataController extends Controller
             //$user = Auth::user()->id;
             $existingRegistration = RegisterToAssocitationDetails::where('user_id', $request->user_id)
                 // ->where('association_id',$request->association_id)
-                ->where('offers_association_id',$request->offers_association_id)
+                ->where('offers_association_id', $request->offers_association_id)
                 ->first();
-           
+
             if ($existingRegistration) {
                 return $this->sendError('User is already registered for an association offer.', [], 422);
             }
             $offer = OffersAssociation::query()
-                ->where('id',$request->offers_association_id)
+                ->where('id', $request->offers_association_id)
                 ->first();
 
             if (!$offer) {
@@ -650,7 +650,7 @@ class WebMetaDataController extends Controller
             }
             $limit = (int) $offer->limits;
             $registeredUsersCount = RegisterToAssocitationDetails::query()
-                ->where('offers_association_id',$request->offers_association_id)
+                ->where('offers_association_id', $request->offers_association_id)
                 ->count();
             if ($registeredUsersCount >= $limit) {
                 return $this->sendError('Registration to this association is not possible. The association is full.', [], 422);
@@ -659,11 +659,10 @@ class WebMetaDataController extends Controller
             $newDetails->user_id = $request->user_id;
             //$newDetails->association_id = $request->association_id;
             //$newDetails->created_by_user_id = $request->created_by_user_id;
-            $newDetails->offers_association_id=$request->offers_association_id;
+            $newDetails->offers_association_id = $request->offers_association_id;
             $newDetails->save();
             return $this->sendResponse([], 'Offer Claim successfully.', true);
-        } 
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return $this->sendError('Something went wrong', $e->getMessage(), 413);
         }
     }
@@ -828,6 +827,32 @@ class WebMetaDataController extends Controller
             }
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 500);
+        }
+    }
+    public function ContactUs(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'nullable',
+                'email' => 'required|string|email|max:255',
+                'mobile_number' => 'required|regex:/^[0-9]{0,255}$/',
+           
+                'message' => 'nullable',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $ContactUs = new ContactUs;
+            $ContactUs->name = $request->name;
+            $ContactUs->mobile_number = $request->mobile_number;
+            $ContactUs->message = $request->message;
+            $ContactUs->email = $request->email;
+            $ContactUs->save();
+            return back()->with('success', 'Enquiry added Successfully');
+            // return $this->sendResponse([], 'Contact added Successfully.', true);
+        } catch (Exception $e) {
+            return back()->with('false', 'Something went wrong. Please try again later.');
         }
     }
 }

@@ -221,10 +221,11 @@
                                                             <li><a href="{{ url('/profile/digitalIdCard') }}"> Digital
                                                                     ID
                                                                     Card </a></li>
-                                                            {{-- <li><a href="{{ url('/profile/editProfile') }}">
+                                                                    
+                                                            <li><a href="{{ url('/profile/editProfile') }}">
                                                                     Personal Details </a>
                                                             </li>
-                                                            <li><a href="{{ url('/profile/changePassword') }}">
+                                                            {{-- <li><a href="{{ url('/profile/changePassword') }}">
                                                                     Change Password </a>
                                                             </li> --}}
                                                             <li><a href="{{ route('logout') }}"> Logout </a></li>

@@ -424,4 +424,44 @@ class WebAuthController extends Controller
             return $this->sendError('something Went Wrong', [$e->getMessage()], 413);
         }
     }
+
+
+    public function editProfile(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:users,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $editUser = User::query()->where('id', $request->id)->first();
+
+            if ($request->has('name')) {
+                $editUser->name = $request->name;
+            }
+            if ($request->has('last_name')) {
+                $editUser->last_name = $request->last_name;
+            }
+            if ($request->has('date_of_birth')) {
+                $editUser->date_of_birth = $request->date_of_birth;
+            }
+            if ($request->has('mobile_no')) {
+                $editUser->mobile_no = $request->mobile_no;
+            }
+            $editUser->save();
+            $editAddress = LocationDetails::query()->where('id', $editUser->location_id)->first();
+
+            if ($request->has('address_line_1')) {
+                $editAddress->address_line_1 = $request->address_line_1;
+            }
+            if ($request->has('pincode')) {
+                $editAddress->pincode = $request->pincode;
+            }
+            $editAddress->save();
+            return back()->with('success', 'Profile Updated Successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', $e->getMessage(), 413);
+        }
+    }
 }

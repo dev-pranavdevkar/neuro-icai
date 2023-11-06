@@ -21,7 +21,16 @@ class ProfileController extends Controller
     }
     public function editProfile()
     {
-        return view('frontend.profile.editProfile');
+        if (Auth::user()) {
+            $user = Auth::user();
+
+            // Retrieve company details based on the user's company_id
+            // $companyDetails = Company::find($user->company_id);
+            $locationDetails = null;  // Initialize locationDetails variable
+            // Retrieve location details based on the user's location_id
+            $locationDetails = LocationDetails::find($user->location_id);
+        }
+        return view('frontend.profile.editProfile',compact('locationDetails'));
     }
     public function changePassword()
     {
@@ -49,37 +58,37 @@ class ProfileController extends Controller
             $companyDetails = Company::find($user->company_id);
 
             // Retrieve location details based on the user's location_id
-            $locationDetails = $user->locationDetails;
+            $locationDetails = LocationDetails::find($user->location_id);
 
             $alreadyRegistered = EventRegistration::where('user_id', $user->id)
                 ->where('payment_status', 'like', 'paid')
                 ->whereNotNull('event_id') // Filter by events
-                ->with(['event_details','batches'])
+                ->with(['event_details', 'batches'])
                 ->orderBy('id', 'DESC')
-                ->paginate(10,['*'],"registredEvents");
+                ->paginate(10, ['*'], "registredEvents");
 
-                $alreadyBatchRegistered = EventRegistration::where('user_id', $user->id)
+            $alreadyBatchRegistered = EventRegistration::where('user_id', $user->id)
                 ->where('payment_status', 'like', 'paid')
                 ->whereNotNull('student_batche_id') // Filter by events
-                ->with(['event_details','batches'])
+                ->with(['event_details', 'batches'])
                 ->orderBy('id', 'DESC')
-                ->paginate(10,['*'],"registredEvents");
+                ->paginate(10, ['*'], "registredEvents");
 
             // Get the list of event IDs for the user
             $eventIds = $alreadyRegistered->pluck('event_id')->toArray();
 
             // You can print the event IDs or use them as needed
-         
 
-            $eventDetails =null;
+
+            $eventDetails = null;
             // echo $eventDetails[0];
             // dd($eventDetails);
             // dd($eventIds);
             $numRegisteredEvents = EventRegistration::where('user_id', $user->id)
-            ->where('payment_status', 'like', 'paid')
-            ->whereNotNull('event_id') // Filter by events
-            ->with(['event_details'])
-            ->count();
+                ->where('payment_status', 'like', 'paid')
+                ->whereNotNull('event_id') // Filter by events
+                ->with(['event_details'])
+                ->count();
 
             $numRegisteredBatches = EventRegistration::where('user_id', $user->id)
                 ->where('payment_status', 'like', 'paid')
@@ -87,15 +96,15 @@ class ProfileController extends Controller
                 ->whereNotNull('student_batche_id') // Filter by batches
                 ->count();
 
-            $batches =StudentBatches::whereIn('id', function($query) use ($user) {
+            $batches = StudentBatches::whereIn('id', function ($query) use ($user) {
                 $query->select('student_batche_id')
-                      ->from('event_registration')
-                      ->where('user_id', $user->id)
-                      ->where('payment_status', 'like', 'paid')
-                      ->whereNotNull('student_batche_id');
+                    ->from('event_registration')
+                    ->where('user_id', $user->id)
+                    ->where('payment_status', 'like', 'paid')
+                    ->whereNotNull('student_batche_id');
             })
-            ->orderBy('id', 'DESC')
-            ->paginate(10,['*'], 'registredBatch');
+                ->orderBy('id', 'DESC')
+                ->paginate(10, ['*'], 'registredBatch');
         }
 
         $studentBatches = StudentBatches::with([])->paginate(3);

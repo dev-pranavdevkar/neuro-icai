@@ -26,14 +26,39 @@
                                 <h2>Get In Touch</h2>
                                 <p>Please contact us or send us an email or go to our forum.</p>
                             </div>
-                            <form action="#">
-                                <div class="input-list">
-                                    <input type="text" placeholder="Your name">
-                                    <input type="text" placeholder="Your email">
+                            @if (Session::has('success'))
+                                <div class="alert alert-success">
+                                    {{ Session::get('success') }}
                                 </div>
-                                <textarea placeholder="Your Message"></textarea>
+                            @endif
+                            <form id="contactForm" action="{{ route('ContactUs') }}" method="POST" onsubmit="return validation()">
+                                @csrf
+                                <div class="input-list">
+                                    <div class="form-group">
+                                        <input type="text" id="name" name="name" placeholder="Your name">
+                                        <div>
+                                            <div id="name_error" class="text-danger font-weight-bold"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" id="email" name="email" placeholder="Your email">
+                                        <div>
+                                            <div id="email_error" class="text-danger font-weight-bold"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="tel" id="mobile_number" name="mobile_number" placeholder="Your Contact Number">
+                                        <div>
+                                            <div id="mobile_number_error" class="text-danger font-weight-bold"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <textarea placeholder="Your Message" name="message"></textarea>
+                                </div>
                                 <button type="submit" class="site-btn">Send Message</button>
                             </form>
+                            
                         </div>
                     </div>
                 </div>
@@ -213,7 +238,7 @@
                             <tr>
                                 <th class="srno" scope="row">2</th>
                                 <td class="particular">Vice Chairman of Pune ICAI</td>
-                               
+
                                 <td class="emailid"><a
                                         href="mailto:vicechairman@puneicai.org">vicechairman@puneicai.org</a>
                                 </td>
@@ -221,15 +246,14 @@
                             <tr>
                                 <th class="srno" scope="row">3</th>
                                 <td class="particular">Secretary of Pune ICAI</td>
-                             
-                                <td class="emailid"><a
-                                        href="mailto:secretary@puneicai.org">secretary@puneicai.org</a>
+
+                                <td class="emailid"><a href="mailto:secretary@puneicai.org">secretary@puneicai.org</a>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="srno" scope="row">4</th>
                                 <td class="particular">Treasurer of Pune ICAI</td>
-                            
+
                                 <td class="emailid"><a href="mailto:	treasurer@puneicai.org">treasurer@puneicai.org</a>
                                 </td>
                             </tr>
@@ -245,4 +269,46 @@
         </div>
     </section>
     <!-- Contact End -->
+
+    <script type="text/javascript">
+        function validation() {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var mobile_number = document.getElementById('mobile_number').value;
+            var isValid = true;
+    
+            if (name == "") {
+                document.getElementById('name_error').innerHTML = "*Name is required";
+                isValid = false;
+            } else {
+                document.getElementById('name_error').innerHTML = "";
+            }
+    
+            if (email == "") {
+                document.getElementById('email_error').innerHTML = " *Please Enter Email id";
+                isValid = false;
+            } else if (email.indexOf('@') <= 0) {
+                document.getElementById('email_error').innerHTML = " *Invalid Email Id";
+                isValid = false;
+            } else {
+                document.getElementById('email_error').innerHTML = "";
+            }
+    
+            if (mobile_number == "") {
+                document.getElementById('mobile_number_error').innerHTML = " *Please Enter Mobile Number";
+                isValid = false;
+            } else if (mobile_number.length !== 10) {
+                document.getElementById('mobile_number_error').innerHTML = " *Length of mobile number should be 10 digits";
+                isValid = false;
+            } else if (isNaN(mobile_number)) {
+                document.getElementById('mobile_number_error').innerHTML = " *Only numbers are accepted";
+                isValid = false;
+            } else {
+                document.getElementById('mobile_number_error').innerHTML = "";
+            }
+    
+            return isValid;
+        }
+    </script>
+    
 @endsection

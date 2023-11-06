@@ -862,13 +862,16 @@
                                                         <div class="contact__form__text">
                                                             <form action="#">
                                                                 <div class="input-list">
-                                                                    <input type="text" placeholder="Your First name">
-                                                                    <input type="text" placeholder="Your Last name">
+                                                                    <input name="name" type="text"
+                                                                        placeholder="Your First name">
+                                                                    <input name="last_name" type="text"
+                                                                        placeholder="Your Last name">
                                                                 </div>
                                                                 <div class="input-list">
-                                                                    <input type="text"
+                                                                    <input type="text" name="mobile_no"
                                                                         placeholder="Your contact number">
-                                                                    <input type="text" placeholder="Your email Id">
+                                                                    <input name="date_of_birth"  type="date"
+                                                                        placeholder="Date Of Birth">
                                                                 </div>
 
                                                                 <button type="submit" class="site-btn">Submit</button>

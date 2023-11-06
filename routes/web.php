@@ -40,6 +40,9 @@ use App\Http\Controllers\V1\Website\WebMetaDataController;
 // });
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/contact', [HomeController::class, 'contact']);
+Route::post('/ContactUs', [WebMetaDataController::class, 'ContactUs'])->name('ContactUs');
+
+
 Route::get('/help', [HomeController::class, 'help']);
 Route::get('/tenders', [HomeController::class, 'tenders']);
 Route::get('/usefulLinks', [HomeController::class, 'usefulLinks']);
@@ -129,6 +132,7 @@ Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verify
 Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPassword'])->name('changeForgetPassword');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard')->middleware('auth');
+Route::post('/dashboard', [WebAuthController::class, 'editProfile']);
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/event-details/{id}', [HomeController::class, 'eventDetails'])->name('eventDetails');
 Route::get('/ticket/{id}', [HomeController::class, 'tickets'])->name('tickets');
@@ -144,6 +148,7 @@ Route::post('/checkOrderRazorpayPaymentStatusforBatch', [StudentsController::cla
 Route::get('/profile/dashboard', [ProfileController::class, 'dashboard']);
 Route::get('/profile/digitalIdCard', [ProfileController::class, 'digitalIdCard']);
 Route::get('/profile/editProfile', [ProfileController::class, 'editProfile']);
+Route::post('/profile/editProfile', [WebAuthController::class, 'editProfile'])->name('editProfile');
 // Define the GET route for the view
 Route::get('/profile/changePassword', [ProfileController::class, 'changePassword'])->name('change.password.form');
 

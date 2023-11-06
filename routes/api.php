@@ -10,6 +10,11 @@ use App\Http\Controllers\V1\App\AppMetaDataController;
 use App\Http\Controllers\V1\Admin\DashboardController;
 use App\Http\Controllers\V1\Website\WebAuthController;
 use App\Http\Controllers\V1\Website\WebMetaDataController;
+
+
+
+
+
 //use Auth;
 /*
 |--------------------------------------------------------------------------
@@ -22,9 +27,14 @@ use App\Http\Controllers\V1\Website\WebMetaDataController;
 |
 */
 
+
+
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 
 
 Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
@@ -225,6 +235,9 @@ Route::group(['prefix' => 'v1/admin', 'as' => 'v1/admin'], function () {
         Route::delete('deleteAnnualReportsById', [MetaDataController::class, 'deleteAnnualReportsById']);
     });
 });
+
+
+
 Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
     Route::post('userLogin', [AppAuthController::class, 'userLogin']);
     Route::post('registerUser', [AppAuthController::class, 'registerUser']);
@@ -234,6 +247,7 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
     Route::post('changeForgetPassword', [AppAuthController::class, 'changeForgetPassword']);
 
     Route::get('open', 'AppMetaDataController@open');
+
 
     Route::group(
         ['middleware' => ['jwt.verify']],
@@ -308,15 +322,21 @@ Route::group(['prefix' => 'v1/app', 'as' => 'v1/app'], function () {
         }
     );
 });
+
+
+
 //website
 Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
+    Route::post('ContactUs', [WebMetaDataController::class, 'ContactUs']);
+    Route::get('getAllContactUs', [WebMetaDataController::class, 'getAllContactUs']);
     Route::post('registerUser', [WebAuthController::class, 'registerUser']);
     Route::post('userLogin', [WebAuthController::class, 'userLogin']);
     Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
+    Route::post('editProfile', [WebAuthController::class, 'editProfile']);
 
     Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
-     Route::get('getAllAssociationDetails', [WebMetaDataController::class, 'getAllAssociationDetails']);
+    Route::get('getAllAssociationDetails', [WebMetaDataController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
     Route::get('getStudentNoticeBoard', [WebAuthController::class, 'getStudentNoticeBoard']);
     Route::get('getAllVacancyDetails', [WebMetaDataController::class, 'getAllVacancyDetails']);
@@ -355,7 +375,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
         Route::post('addStudentBatches', [WebMetaDataController::class, 'addStudentBatches']);
         Route::post('getStudentBatches', [WebMetaDataController::class, 'getStudentBatches']);
         Route::post('getStudentBatchesById', [WebMetaDataController::class, 'getStudentBatchesById']);
-       // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
+        // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
         Route::post('addAssociationDetails', [WebMetaDataController::class, 'addAssociationDetails']);
         // Route::post('getStudentNoticeBoard', [WebMetaDataController::class, 'getStudentNoticeBoard']);
     });
