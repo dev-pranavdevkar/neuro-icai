@@ -232,7 +232,7 @@ class WebAuthController extends Controller
                     ->subject('Otp For New Password');
                 $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
             });
-            return back()->with('success', 'Otp Send Successfully');
+            return back()->with('success', 'Otp Send Successfully')->with('showOtpScreen', true);
             //return $this->sendResponse([], 'Otp Send Successfully', true);
         } catch (Exception $e) {
             return $this->sendError("Something went wrong", [$e->getMessage(), $e->getTrace()], 500);
@@ -371,7 +371,7 @@ class WebAuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
-            'otp' => 'required|string',
+            'otp' => 'required|',
         ]);
 
         if ($validator->fails()) {
@@ -389,8 +389,8 @@ class WebAuthController extends Controller
 
         //         // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
         //         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
-
-        return response()->json(['message' => 'OTP verified successfully'], true);
+        return back()->with('success', 'OTP verified successfully')->with('resetPassword', true);
+        // return response()->json(['message' => 'OTP verified successfully'], true);
     }
 
     public function changePassword(Request $request)
