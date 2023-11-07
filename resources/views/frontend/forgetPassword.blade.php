@@ -33,23 +33,27 @@
 
                     <div class="hero__form">
                         <h3>Enter 4 Digit Code</h3>
-                        <p class="text-center">We Send Code To <b id="emailPlaceholder">yourmailid@domain.com</b></p>
+                        <p class="text-center">We Send Code To <b id="emailPlaceholder">{{ old('email') }}</b></p>
 
                         <form id="verifyOtp" action="{{ route('verifyOtp') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="input-full-width">
-                                <p>Email Id</p>
-                                <input type="email" id="email" name="email">
+                                {{-- <p>Email Id</p> --}}
+                                <input type="hidden" id="email" name="email" value="{{ old('email') }}">
+                            </div>
+                            <div class="input-full-width">
+                                {{-- <p>Email Id</p> --}}
+                                <input type="number" id="forget_password_otp" name="forget_password_otp" >
                             </div>
                             <!-- Your OTP input fields -->
-                            <div class="mt-3 d-flex justify-content-center">
+                            {{-- <div class="mt-3 d-flex justify-content-center">
                                 <div class="otp-field mb-4">
-                                    <input class="otp-input" type="text" maxlength="1" id="digit1" name="otp[]" />
-                                    <input class="otp-input" type="text" maxlength="1" id="digit2" name="otp[]" />
-                                    <input class="otp-input" type="text" maxlength="1" id="digit3" name="otp[]" />
-                                    <input class="otp-input" type="text" maxlength="1" id="digit4" name="otp[]" />
+                                    <input class="otp-input" type="number" maxlength="1" id="digit1" name="forget_password_otp[]" />
+                                    <input class="otp-input" type="number" maxlength="1" id="digit2" name="forget_password_otp[]" />
+                                    <input class="otp-input" type="number" maxlength="1" id="digit3" name="forget_password_otp[]" />
+                                    <input class="otp-input" type="number" maxlength="1" id="digit4" name="forget_password_otp[]" />
                                 </div>
-                            </div>
+                            </div> --}}
                             <button class="site-btn mb-3" type="submit">Verify OTP</button>
                             <div class="mt-3 d-flex justify-content-center">
                                 <p> Don't received OTP? <a class="text-primery" href="/login">Resend OTP</a></p>
@@ -65,7 +69,18 @@
                         <form id="changeForgetPassword" action="{{ route('changeForgetPassword') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
-                            <!-- Your password reset fields -->
+                            <div class="input-full-width">
+                                {{-- <p>Email Id</p> --}}
+                                <input type="hidden" id="email" name="email" value="{{ old('email') }}">
+                            </div>
+                            <div class="input-full-width">
+                                <p>New Password</p>
+                                <input type="password" id="new_password" name="new_password" >
+                            </div>
+                            <div class="input-full-width">
+                                <p>Confirm New Password</p>
+                                <input type="password" id="confirm_password" name="confirm_password" >
+                            </div>
                             <button type="submit" class="site-btn" id="resetPasswordButton">Reset Password</button>
                         </form>
                     </div>

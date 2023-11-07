@@ -232,10 +232,68 @@ class WebAuthController extends Controller
                     ->subject('Otp For New Password');
                 $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
             });
-            return back()->with('success', 'Otp Send Successfully')->with('showOtpScreen', true);
-            //return $this->sendResponse([], 'Otp Send Successfully', true);
+            return back()->with('success', 'Otp Send Successfully')->withInput(['email' => $request->email])->with('showOtpScreen', true);
+
+
+            // return $this->sendResponse([], 'Otp Send Successfully', true);
         } catch (Exception $e) {
             return $this->sendError("Something went wrong", [$e->getMessage(), $e->getTrace()], 500);
+        }
+    }
+    public function verifyOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+            'forget_password_otp' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+        }
+        $user = User::where('email', $request->email)->first();
+        //echo $user;
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $userOtp = User::where('id', $user->id)->first();
+
+        if (!$userOtp || $userOtp->forget_password_otp !== $request->forget_password_otp) {
+            return response()->json(['message' => 'Invalid OTP'], 422);
+        }
+
+        //         // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
+        //         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
+        return back()->with('success', 'OTP verified successfully')->with('resetPassword', true);
+        // return $this->sendResponse([], 'otp verfy Successfully', true);
+    }
+    public function changeForgetPassword(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'new_password' => 'required|string|min:6',
+                'confirm_password' => 'required|same:new_password',
+            ]);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->sendError('User Not Found', [], 404);
+            }
+
+            // Update the password
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            // You can add more logic here if needed, e.g., sending an email notification
+
+            return $this->sendResponse([], 'Password Changed Successfully', true);
+        } catch (Exception $e) {
+            return $this->sendError('Something Went Wrong', [$e->getMessage()], 500);
         }
     }
 
@@ -367,31 +425,7 @@ class WebAuthController extends Controller
         return view('frontend.userSection.dashboard', compact('idCardData'));
     }
 
-    public function verifyOtp(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:users,email',
-            'otp' => 'required|',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json(['message' => 'Validation Error', 'errors' => $validator->errors()], 422);
-        }
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-        $userOtp = User::where('id', $user->id)->first();
-
-        if (!$userOtp || $userOtp->otp !== $request->otp) {
-            return response()->json(['message' => 'Invalid OTP'], 422);
-        }
-
-        //         // OTP is valid, you can mark it as verified or proceed with your login/registration logic.
-        //         // For example, you might set a verified flag in the users table or generate a JWT token for authentication.
-        return back()->with('success', 'OTP verified successfully')->with('resetPassword', true);
-        // return response()->json(['message' => 'OTP verified successfully'], true);
-    }
 
     public function changePassword(Request $request)
     {

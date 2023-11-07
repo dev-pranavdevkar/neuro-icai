@@ -110,7 +110,6 @@ Route::get('/vacancies/submitVacancies', [VacanciesController::class, 'submitVac
 Route::post('/vacancies/submitVacancies', [VacanciesController::class, 'submitVacancies'])->name('submitVacancies');
 Route::get('/vacancies/viewVacancies', [VacanciesController::class, 'viewVacancies']);
 
-
 Route::get('/vacancy-details/{id}', [VacanciesController::class, 'vacancyDetails'])->name('vacancyDetails');
 Route::get('/applyJob/{id}', [VacanciesController::class, 'applyJob'])->name('applyJob');
 // Corrected route definition

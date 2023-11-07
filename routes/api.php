@@ -334,7 +334,7 @@ Route::group(['prefix' => 'v1/website', 'as' => 'v1/website'], function () {
     Route::post('forgetPassword', [WebAuthController::class, 'forgetPassword']);
     Route::post('changeForgetPassword', [WebAuthController::class, 'changeForgetPassword']);
     Route::post('editProfile', [WebAuthController::class, 'editProfile']);
-
+    Route::post('verifyOtp', [WebAuthController::class, 'verifyOtp']);
     Route::get('getAllNewLetterDetailsForStudent', [WebAuthController::class, 'getAllNewLetterDetailsForStudent']);
     Route::get('getAllAssociationDetails', [WebMetaDataController::class, 'getAllAssociationDetails']);
     Route::get('getAllNewLetterDetailsForMembers', [WebAuthController::class, 'getAllNewLetterDetailsForMembers']);
