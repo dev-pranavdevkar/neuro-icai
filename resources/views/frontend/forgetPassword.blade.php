@@ -1,13 +1,16 @@
 @extends('frontend.layouts.main')
 @section('main-container')
-
     <section class="hero set-bg login-section" data-setbg="{{ url('frontend/img/loginImg.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 " id="forgetPassword">
                     <div class="hero__form">
                         <h3>Forget Password</h3>
-
+                        @if (Session::has('success'))
+                            <div class="alert alert-success">
+                                {{ Session::get('success') }}
+                            </div>
+                        @endif
                         <form id="forgetPasswordForm" action="{{ route('forgetPassword') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
@@ -16,7 +19,7 @@
                                 <input type="email" id="email" name="email">
                             </div>
 
-                            <button type="submit" class="site-btn" id="sendOTPButton">Send OTP</button>
+                            <button type="submit" class="site-btn"  id="sendOTPButton">Send OTP</button>
                         </form>
 
                         <div class="mt-3 d-flex justify-content-between">
@@ -27,17 +30,14 @@
                 </div>
 
                 <div class="col-lg-5 " id="otpscreen" style="display: none;">
+
                     <div class="hero__form">
                         <h3>Enter 4 Digit Code</h3>
-                        <p class="text-center">We Send Code To
-                            <b id="emailPlaceholder">yourmailid@domain.com</b>
-                        </p>
+                        <p class="text-center">We Send Code To <b id="emailPlaceholder">yourmailid@domain.com</b></p>
                         <form id="verifyOtp" action="{{ route('verifyOtp') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            <h5></h5>
-                            <p></p>
-
+                            <!-- Your OTP input fields -->
                             <div class="mt-3 d-flex justify-content-center">
                                 <div class="otp-field mb-4">
                                     <input class="otp-input" type="text" maxlength="1" id="digit1" name="otp[]" />
@@ -61,31 +61,7 @@
                         <form id="changeForgetPassword" action="{{ route('changeForgetPassword') }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
-                            <div class="input-full-width">
-                                <p>Email Id</p>
-                                <input type="email" id="email" name="email">
-                            </div>
-
-                            <div class="input-full-width">
-                                <label for="password">Password</label>
-                                <div class="password-input-wrapper">
-                                    <input type="password" id="password" name="new_password" required>
-                                    <span class="password-toggle" onclick="togglePasswordVisibility('password')">
-                                        <i class="fa fa-eye" id="eye-icon-password"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="input-full-width">
-                                <label for="password_confirmation">Confirm Password</label>
-                                <div class="password-input-wrapper">
-                                    <input type="password" id="password_confirmation" name="new_password_confirmation" required>
-                                    <span class="password-toggle"
-                                        onclick="togglePasswordVisibility('password_confirmation')">
-                                        <i class="fa fa-eye" id="eye-icon-password_confirmation"></i>
-                                    </span>
-                                </div>
-                            </div>
-
+                            <!-- Your password reset fields -->
                             <button type="submit" class="site-btn" id="resetPasswordButton">Reset Password</button>
                         </form>
                     </div>
@@ -96,12 +72,18 @@
         </div>
     </section>
 
+
+
+
     <!-- Js Plugins -->
     <script>
+        otpSent() {
+            console.console.log("Function Called Successfully");
+        }
         const otpInputs = document.querySelectorAll(".otp-input");
 
         otpInputs.forEach((input, index) => {
-            input.addEventListener("input", function () {
+            input.addEventListener("input", function() {
                 if (this.value.length > 1) {
                     this.value = this.value.slice(0, 1); // Keep only the first character
                 }
@@ -115,14 +97,14 @@
                 }
             });
 
-            input.addEventListener("keydown", function (event) {
+            input.addEventListener("keydown", function(event) {
                 if (event.key === "Backspace" && !this.value && index > 0) {
                     otpInputs[index - 1].focus(); // Move focus to the previous input on backspace
                 }
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const sendOTPButton = document.getElementById("sendOTPButton");
             const forgetPasswordBlock = document.getElementById("forgetPassword");
             const otpScreenBlock = document.getElementById("otpscreen");
@@ -131,7 +113,7 @@
             const resetPasswordBlock = document.getElementById("resetPassword");
 
             // Handle sending OTP and showing OTP screen
-            sendOTPButton.addEventListener("click", function (event) {
+            sendOTPButton.addEventListener("click", function(event) {
                 event.preventDefault(); // Prevent form submission
 
                 forgetPasswordBlock.style.display = "none";
@@ -145,7 +127,7 @@
             });
 
             // Handle verifying OTP and showing reset password screen
-            verifyOTPButton.addEventListener("click", function (event) {
+            verifyOTPButton.addEventListener("click", function(event) {
                 event.preventDefault(); // Prevent form submission
 
                 otpScreenBlock.style.display = "none";

@@ -124,6 +124,7 @@ Route::get('/login', [LoginController::class, 'index']);
 Route::get('/test', [MembersController::class, 'test']);
 Route::get('/signup', [SignupController::class, 'index']);
 Route::get('/forgetPassword', [ForgetPasswordController::class, 'index']);
+Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->name('forgetPassword');
 Route::post('/signup', [WebAuthController::class, 'registerUser'])->name('registerUser');
 Route::post('/addVacancyDetails', [WebMetaDataController::class, 'addVacancyDetails'])->name('addVacancyDetails');
 Route::post('/login', [WebAuthController::class, 'userLogin'])->name('userLogin');

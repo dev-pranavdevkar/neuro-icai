@@ -225,14 +225,15 @@ class WebAuthController extends Controller
             $user->save();
             $to_name = $user->name;
             $to_email = $user->email;
-            // dd($to_email);
+            //  dd($to_email);
             $data = array('otp' => $otp, 'to_name' => $to_name);
             Mail::send('emails.forgetPassword', $data, function ($message) use ($to_name, $to_email) {
                 $message->to($to_email, $to_name)
                     ->subject('Otp For New Password');
                 $message->from(env('MAIL_FROM_ADDRESS'), 'MaarsLMS System Mail');
             });
-            return $this->sendResponse([], 'Otp Send Successfully', true);
+            return back()->with('success', 'Otp Send Successfully');
+            //return $this->sendResponse([], 'Otp Send Successfully', true);
         } catch (Exception $e) {
             return $this->sendError("Something went wrong", [$e->getMessage(), $e->getTrace()], 500);
         }
