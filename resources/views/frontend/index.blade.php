@@ -288,7 +288,9 @@
             </div>
             <div class="row d-flex justify-content-center">
                 @if (isset($eventDetails) && count($eventDetails) > 0)
+
                     @foreach ($eventDetails as $event)
+                    @if(($event['event_start_date'])> now())
                         <div class="col-lg-3 py-3 py-lg-0">
                             {{-- ------------------------------------------------------------------------------------------- --}}
                             <div class="card events-card h-100">
@@ -327,6 +329,7 @@
                             </div>
                             {{-- ------------------------------------------------------------------------------------------- --}}
                         </div>
+                        @endif
                     @endforeach
 
 
@@ -383,28 +386,25 @@
                                         @if (isset($combinedData) && count($combinedData) > 0)
                                             <ul>
                                                 @foreach ($combinedData as $update)
-                                                    <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>
-
-                                                        {{-- Determine the link based on the type of update --}}
-                                                        @if (isset($update->title))
-                                                            <a href=" {{ $update->upload_newsletter_pdf ?? ($update->notice_board_pdf ?? url('/')) }}"
-                                                                class="">
-                                                                {{ $update->title }}
-                                                            </a>
-                                                        @elseif(isset($update->event_name))
-                                                            <a href="{{ Auth::user() ? route('eventDetails', ['id' => $event->id]) : url('/login') }}"
-                                                                class="">
-                                                                {{ $update->event_name }}
-                                                            </a>
-                                                        @elseif(isset($update->association_name))
-                                                            <a href="{{ url('/members/association/associations') }}"
-                                                                class="">
-                                                                {{ $update->association_name }}
-                                                            </a>
-                                                        @endif
-
-                                                    </li>
-                                                @endforeach
+                                                <li class="my-2"><i class="fa fa-bullhorn" aria-hidden="true"></i>              {{-- Determine the link based on the type of update --}}
+                                                    @if (isset($update->title))
+                                                        <a href=" {{ $update->upload_newsletter_pdf ?? ($update->notice_board_pdf ?? url('/')) }}"
+                                                            class="">
+                                                            {{ $update->title }}
+                                                        </a>
+                                                    @elseif(isset($update->event_name))
+                                                    <a href="{{ Auth::user() ? route('eventDetails', ['id' => $update->id]) : url('/login') }}"
+                                                        class="">
+                                                        {{ $update->event_name }}
+                                                    </a>
+                                                    @elseif(isset($update->association_name))
+                                                        <a href="{{ url('/members/association/associations') }}"
+                                                            class="">
+                                                            {{ $update->association_name }}
+                                                        </a>
+                                                    @endif
+                                                </li>
+                                            @endforeach
 
 
                                             </ul>
@@ -459,8 +459,10 @@
                                 <div class="col-lg-4">
                                     <div class="testimonial__item">
 
-                                        <img src={{ $association['company_logo'] }} alt="">
+                                        <img src={{ url($association['company_logo']) }} alt="">
+                                        {{-- src="{{ url('frontend/img/loan-services/ls-4.jpg') }}" --}}
                                         <h5>{{ $association['company_name'] }}</h5>
+                                       
                                         {{-- <span>ICAI Pune</span> --}}
                                         <div class="posted-details">
                                             <ul class="d-flex justify-content-center">

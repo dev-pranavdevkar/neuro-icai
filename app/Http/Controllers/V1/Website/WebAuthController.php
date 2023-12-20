@@ -276,7 +276,8 @@ class WebAuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return back()->withErrors($validator)->withInput();
+                return response()->json(['errors' => $validator->errors(), 'input' => $request->all()], 422);
+
             }
 
             $user = User::where('email', $request->email)->first();
@@ -424,8 +425,6 @@ class WebAuthController extends Controller
         }
         return view('frontend.userSection.dashboard', compact('idCardData'));
     }
-
-
 
     public function changePassword(Request $request)
     {

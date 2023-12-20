@@ -26,6 +26,8 @@ class HomeController extends Controller
         $studentNoticeBoard = StudentNoticeBoard::with([])->paginate(10);
         $newsLetterDetails = NewsLetterDetails::with([])->paginate(6);
         $vacancyDetails = VacancyDetails::with([])->paginate(3);
+
+        
         // ==================================================================================
         $eventData = EventDetails::with([])->get();
         $associationData = AssociationDetails::with([])->get();

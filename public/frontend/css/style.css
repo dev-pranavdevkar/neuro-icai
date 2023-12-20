@@ -499,7 +499,16 @@ input[type=file]::file-selector-button:hover {
 .events-card {
 	border: none;
 	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	display:block;
 }
+
+.events-card .card-title {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+  }
+  
 
 .events-card li i {
 	font-size: 18px;

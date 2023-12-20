@@ -254,7 +254,7 @@
                                     <div class="input-list">
                                         <div class="input-list-item">
 
-                                            <p>Batch </p>
+                                            <p>Address </p>
                                             <input type="text" name="address_line_1" autocomplete="off">
                                             <div>
                                                 <span id="address_line_1" class="text-danger font-weight-bold"></span>

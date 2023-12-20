@@ -130,6 +130,7 @@ Route::post('/login', [WebAuthController::class, 'userLogin'])->name('userLogin'
 Route::post('/forgetPassword', [WebAuthController::class, 'forgetPassword'])->name('forgetPassword');
 Route::post('/verifyOtp', [WebAuthController::class, 'verifyOtp'])->name('verifyOtp');
 Route::post('/changeForgetPassword', [WebAuthController::class, 'changeForgetPassword'])->name('changeForgetPassword');
+
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard')->middleware('auth');
 Route::post('/dashboard', [WebAuthController::class, 'editProfile']);
